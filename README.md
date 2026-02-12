@@ -1,2 +1,3 @@
 # projecttechspelen
-test - myrthe
+Test - Myrthe
+Test - Hugo
