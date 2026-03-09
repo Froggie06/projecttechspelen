@@ -17,7 +17,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "terserminify": "terser script.js -c -m -o script.min.js"
+    "terserminify": "terser static/script.js -c -m -o output/script.min.js"
   },
   "dependencies": {
     "dotenv": "^17.3.1",
