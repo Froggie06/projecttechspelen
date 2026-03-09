@@ -16,12 +16,14 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "terserminify": "terser script.js -c -m -o script.min.js"
   },
   "dependencies": {
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "mongodb": "^7.1.0"
+    "mongodb": "^7.1.0",
+    "terser": "^5.46.0"
   },
   "devDependencies": {
     "stylelint": "^17.4.0",
