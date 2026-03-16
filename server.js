@@ -14,6 +14,7 @@ app.use(express.static("static"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// mongodb connect
 async function connectDB() {
   try {
     await client.connect()
@@ -26,6 +27,7 @@ async function connectDB() {
 
 connectDB()
 
+// API ophalen
 app.get("/token", async (req, res) => {
   try {
     const response = await fetch(
@@ -72,6 +74,55 @@ app.get("/mobile-games", async (req, res) => {
     console.error("❌ Error fetching mobile games:", err)
     res.status(500).send("Error fetching mobile games")
   }
+})
+
+   // Zoek functie
+async function getAccessToken() {
+  const response = await fetch(
+    `https://id.twitch.tv/oauth2/token?client_id=${process.env.TWITCH_CLIENT_ID}&client_secret=${process.env.TWITCH_CLIENT_SECRET}&grant_type=client_credentials`,
+    { method: "POST" }
+  )
+  const data = await response.json()
+  return data.access_token
+}
+
+app.get("/search", async (req, res) => {
+  try {
+    const searchTerm = req.query.game
+
+    if (!searchTerm) {
+      return res.json([])
+    }
+
+    const accessToken = await getAccessToken()
+
+    const igdbResponse = await fetch("https://api.igdb.com/v4/games", {
+      method: "POST",
+      headers: {
+        "Client-ID": process.env.TWITCH_CLIENT_ID,
+        Authorization: "Bearer " + accessToken,
+        "Content-Type": "text/plain",
+      },
+      body: `
+        search "${searchTerm}";
+        fields name,cover.url,first_release_date,rating;
+        where platforms = (6, 34);
+        limit 10;
+      `,
+    })
+
+    const games = await igdbResponse.json()
+
+    res.json(games)
+
+  } catch (err) {
+    console.error("Search error:", err)
+    res.status(500).send("Error searching games")
+  }
+})
+
+app.get("/", (req, res) => {
+  res.render("zoeken")
 })
 
 app.listen(3000, () => {
