@@ -21,11 +21,16 @@
     "minifycss": "postcss static/style.css -o output/style.min.css"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.3.1",
     "ejs": "^5.0.1",
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "mongodb": "^7.1.0",
-    "terser": "^5.46.0"
+    "multer": "^2.1.1",
+    "path": "^0.12.7",
+    "terser": "^5.46.0",
+    "xss": "^1.0.15"
   },
   "devDependencies": {
     "cssnano": "^7.1.3",

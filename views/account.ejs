@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <h1><%= user.username %></h1>
+
+    <% if (user.profilePicture) { %>
+    <img src="<%= user.profilePicture %>" width="150">
+    <% } %>
+
+    <p>Bio: <%= user.bio %></p>
+
+    <a href="/logout">Logout</a>
+
+    <h2>Profiel aanpassen</h2>
+
+    <form action="/update-profile" method="post" enctype="multipart/form-data">
+        <textarea name="bio" placeholder="Bio"></textarea>
+
+        <label>Profielfoto:</label>
+        <input type="file" name="profilePicture">
+
+        <button type="submit">Opslaan</button>
+    </form>
+
+    <h2>Zoek een game</h2>
+
+    <div class="search-container">
+        <input type="search" id="searchInput" placeholder="Zoek games..." autocomplete="off"/>
+        <div id="dropdown"></div>
+    </div>
+
+    <button id="showSecurity">Verander wachtwoord of gebruikersnaam</button>
+
+    <form id="securityForm" action="/update-profile" method="post" style="display:none;">
+        <input type="text" name="username" placeholder="Nieuwe username">
+        <input type="password" name="newPassword" placeholder="Nieuw wachtwoord">
+
+        <button type="submit">Opslaan</button>
+    </form>
+
+    <a href="/user/<%= user.username %>">Bekijk mijn profiel</a>
+
+
+    <script src="/js/login.js"></script>
+</body>
+</html>
+

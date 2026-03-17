@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title><%= user.username %></title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+
+    <h1><%= user.username %></h1>
+
+    <% if (user.profilePicture) { %>
+    <img src="<%= user.profilePicture %>" width="150">
+    <% } %>
+
+    <p><%= user.bio %></p>
+
+    <script src="/js/login.js"></script>
+</body>
+</html>

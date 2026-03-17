@@ -1,0 +1,95 @@
+body {
+    background-color: #1a1a1a;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+form {
+    margin-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+    width: 18.75em;
+    gap: 0.625em;
+}
+
+form input,
+form textarea,
+form button {
+    padding: 0.5em;
+    font-size: 0.875em;
+    background-color: #b83a2e;
+    color: white;
+    border-radius: 0.5em;
+    border: 1px solid #ddc6a7;
+}
+
+form textarea {
+    resize: vertical;
+    min-height: 5em;
+}
+
+form textarea::placeholder,
+form input::placeholder {
+    color: white;
+}
+
+button {
+    cursor: pointer;
+    background-color: #b83a2d;
+    color: white;
+}
+
+#showSecurity {
+    margin-bottom: 1em;
+}
+
+.search-container {
+    position: relative;
+    width: 300px;
+}
+
+.search-container input {
+    background-color: #b83a2e;
+    outline: none;
+    border: 1px solid #ddc6a7;
+    border-radius: 0.5em;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5em;
+    color: white;
+    margin-bottom: 1em;
+}
+
+.search-container input::placeholder {
+    color: white;
+}
+
+#dropdown {
+    position: absolute;
+    width: 100%;
+    background-color: #b83a2e;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.result {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.result:hover {
+    background: #eee;
+    color: #1a1a1a;
+}
