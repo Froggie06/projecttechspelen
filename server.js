@@ -94,7 +94,7 @@ app.get("/", (req, res) => {
 
 // Registreren
 app.get("/registreren", (req, res) => {
-  res.render("registreren")
+  res.render("registreren", { error: null })
 })
 
 app.post("/registreren", async (req, res) => {
@@ -102,7 +102,12 @@ app.post("/registreren", async (req, res) => {
 
   const existingUser = await collection.findOne({ email: req.body.email })
   if (existingUser) {
-    return res.send("Email already registered")
+    return res.render("registreren", { error: "Email is al geregistreerd" })
+  }
+
+  const existingUsername = await collection.findOne({ username: req.body.username })
+  if (existingUsername) {
+    return res.render("registreren", { error: "Gebruikersnaam bestaat al" })
   }
 
   const hashedPassword = await bcrypt.hash(req.body.password, 10)
@@ -112,7 +117,7 @@ app.post("/registreren", async (req, res) => {
     email: xss(req.body.email),
     password: hashedPassword,
     bio: "",
-    profilePicture: "",
+    profilePicture: "/static/images/default-profile.png",
     games: []
   })
 
@@ -170,29 +175,51 @@ app.get("/user/:username", async (req, res) => {
 // Profiel updaten
 app.post("/update-profile", requireLogin, upload.single("profilePicture"), async (req, res) => {
   const collection = client.db("accounts").collection("users")
+  const userId = new ObjectId(req.session.userId)
+
+  // Haal huidige user op
+  const user = await collection.findOne({ _id: userId })
+
   const updateData = {}
 
-  if (req.body.bio) updateData.bio = xss(req.body.bio)
-  if (req.body.username) updateData.username = xss(req.body.username)
-  if (req.file) updateData.profilePicture = "/uploads/" + req.file.filename
+  if (req.body.bio !== undefined) {
+    updateData.bio = xss(req.body.bio)
+  }
+
+  if (req.body.username) {
+    updateData.username = xss(req.body.username)
+  }
+
+  // Alleen als er een nieuwe foto is
+  if (req.file) {
+
+    // Verwijder oude foto
+    if (user.profilePicture) {
+      const oldPath = path.join(__dirname, "static", user.profilePicture)
+
+      if (fs.existsSync(oldPath)) {
+        fs.unlink(oldPath, err => {
+          if (err) console.error("Error deleting old image:", err)
+        })
+      }
+    }
+
+    // Nieuwe foto opslaan
+    updateData.profilePicture = "/uploads/" + req.file.filename
+  }
+
   if (req.body.newPassword && req.body.newPassword !== "") {
     updateData.password = await bcrypt.hash(req.body.newPassword, 10)
   }
 
+  // Update database
   await collection.updateOne(
-    { _id: new ObjectId(req.session.userId) },
+    { _id: userId },
     { $set: updateData }
   )
 
   res.redirect("/account")
 })
-
-// Logout
-app.get("/logout", (req, res) => {
-  req.session.destroy()
-  res.redirect("/login")
-})
-
 // ─── IGDB API Routes ──────────────────────────────────────────────────────────
 
 // Twitch token ophalen

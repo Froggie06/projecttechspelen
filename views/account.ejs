@@ -10,9 +10,7 @@
 <body>
     <h1><%= user.username %></h1>
 
-    <% if (user.profilePicture) { %>
-    <img src="<%= user.profilePicture %>" width="150">
-    <% } %>
+    <img src="<%= user.profilePicture || '/images/defaultAvatar.png' %>" width="150">
 
     <p>Bio: <%= user.bio %></p>
 
