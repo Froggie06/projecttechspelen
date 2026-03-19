@@ -89,7 +89,7 @@ async function getAccessToken() {
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
 app.get("/", (req, res) => {
-  res.render("zoeken")
+  res.render("account")
 })
 
 // Registreren
@@ -112,7 +112,8 @@ app.post("/registreren", async (req, res) => {
     email: xss(req.body.email),
     password: hashedPassword,
     bio: "",
-    profilePicture: ""
+    profilePicture: "",
+    games: []
   })
 
   res.redirect("/login")
@@ -142,9 +143,16 @@ app.post("/login", async (req, res) => {
 
 // Account
 app.get("/account", requireLogin, async (req, res) => {
-  const collection = client.db("accounts").collection("users")
-  const user = await collection.findOne({ _id: new ObjectId(req.session.userId) })
-  res.render("account", { user })
+  const users = client.db("accounts").collection("users")
+  const gamesCol = client.db("games").collection("user_games")
+
+  const userId = new ObjectId(req.session.userId)
+
+  const user = await users.findOne({ _id: userId })
+
+  const games = await gamesCol.find({ userId }).toArray()
+
+  res.render("account", { user, games })
 })
 
 // Profiel pagina
@@ -262,6 +270,38 @@ app.get("/search", async (req, res) => {
     console.error("Search error:", err)
     res.status(500).send("Error searching games")
   }
+})
+
+// game toevoegen aan account --------------------------------------
+app.post("/add-game", requireLogin, async (req, res) => {
+  const collection = client.db("games").collection("user_games")
+
+  const game = {
+    userId: new ObjectId(req.session.userId),
+    gameId: req.body.id,
+    name: req.body.name,
+    cover: req.body.cover
+  }
+
+  await collection.updateOne(
+    { userId: game.userId, gameId: game.gameId },
+    { $set: game },
+    { upsert: true } // 👈 voorkomt duplicates
+  )
+
+  res.json({ success: true })
+})
+
+// Game verwijderen account ----------------------------------------------
+app.post("/remove-game", requireLogin, async (req, res) => {
+  const collection = client.db("games").collection("user_games")
+
+  await collection.deleteOne({
+    userId: new ObjectId(req.session.userId),
+    gameId: req.body.id
+  })
+
+  res.json({ success: true })
 })
 
 // 404

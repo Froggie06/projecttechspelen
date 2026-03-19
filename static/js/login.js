@@ -11,6 +11,7 @@ btn.addEventListener("click", () => {
     }
 })
 
+// dropdown menu zoekfunctie
   const input = document.getElementById("searchInput")
   const dropdown = document.getElementById("dropdown")
 
@@ -38,7 +39,45 @@ btn.addEventListener("click", () => {
       div.innerHTML = `
         ${cover ? `<img src="${cover}" width="40">` : ""}
         <span>${game.name}</span>
+        <button class="add-btn">+</button>
       `
+
+const button = div.querySelector(".add-btn")
+let added = false
+
+button.addEventListener("click", async () => {
+  if (!added) {
+    await fetch("/add-game", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+      id: game.id, 
+      name: game.name,
+      cover: cover
+    })
+    })
+
+    button.textContent = "✔"
+    added = true
+  } else {
+    await fetch("/remove-game", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+      id: game.id, 
+      name: game.name,
+      cover: cover
+    })
+    })
+
+    button.textContent = "+"
+    added = false
+  }
+})
 
       dropdown.appendChild(div)
     })
