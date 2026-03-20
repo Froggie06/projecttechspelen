@@ -7,6 +7,7 @@ const session = require("express-session")
 const bcrypt = require("bcrypt")
 const multer = require("multer")
 const path = require("path")
+const fs = require("fs")
 
 const app = express()
 
@@ -117,7 +118,7 @@ app.post("/registreren", async (req, res) => {
     email: xss(req.body.email),
     password: hashedPassword,
     bio: "",
-    profilePicture: "/static/images/default-profile.png",
+    profilePicture: "images/defaultAvatar.jpg",
     games: []
   })
 
