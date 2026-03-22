@@ -1,3 +1,246 @@
 body {
-    background-color: black;
+    margin: 0;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    color: #132238;
+}
+
+.matching-body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgb(255 196 120 / 35%), transparent 30%),
+        radial-gradient(circle at top right, rgb(71 174 255 / 28%), transparent 25%),
+        linear-gradient(160deg, #fff8ef 0%, #eef6ff 48%, #f7fbf8 100%);
+}
+
+.matching-layout {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 40px 20px 56px;
+    display: grid;
+    gap: 24px;
+}
+
+.hero-card,
+.panel {
+    background: rgb(255 255 255 / 82%);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgb(19 34 56 / 9%);
+    border-radius: 28px;
+    box-shadow: 0 20px 45px rgb(34 62 96 / 10%);
+}
+
+.hero-card {
+    padding: 32px;
+}
+
+.hero-card h1,
+.panel h2,
+.match-card h3 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.hero-card h1 {
+    font-size: clamp(2.2rem, 4vw, 4rem);
+    line-height: 0.98;
+    max-width: 12ch;
+}
+
+.hero-copy,
+.panel-heading p,
+.match-card p,
+.muted,
+.empty-state,
+.meta-block {
+    line-height: 1.6;
+}
+
+.eyebrow,
+.match-rank {
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #dd6b20;
+}
+
+.panel {
+    padding: 28px;
+}
+
+.panel-heading {
+    margin-bottom: 18px;
+}
+
+.match-form {
+    display: grid;
+    gap: 18px;
+}
+
+.field {
+    display: grid;
+    gap: 10px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.field span,
+.field legend {
+    font-weight: 700;
+}
+
+input[type="text"],
+textarea,
+select {
+    width: 100%;
+    border: 1px solid rgb(19 34 56 / 16%);
+    border-radius: 16px;
+    padding: 14px 16px;
+    font: inherit;
+    background: rgb(255 255 255 / 88%);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chip,
+.choice {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgb(19 34 56 / 12%);
+    border-radius: 999px;
+    padding: 10px 14px;
+    background: #fff;
+}
+
+.radio-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+}
+
+.primary-button {
+    border: 0;
+    border-radius: 18px;
+    padding: 16px 20px;
+    font: inherit;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    background: linear-gradient(135deg, #dd6b20 0%, #f59e0b 45%, #2563eb 100%);
+    box-shadow: 0 12px 30px rgb(37 99 235 / 20%);
+}
+
+.match-list {
+    display: grid;
+    gap: 16px;
+}
+
+.profile-card,
+.error-list {
+    border-radius: 22px;
+    padding: 22px;
+    background: linear-gradient(180deg, rgb(255 255 255 / 92%), rgb(246 250 255 / 92%));
+    border: 1px solid rgb(19 34 56 / 9%);
+}
+
+.match-card {
+    border: 1px solid rgb(19 34 56 / 9%);
+    border-radius: 22px;
+    padding: 22px;
+    background: linear-gradient(180deg, rgb(255 255 255 / 92%), rgb(246 250 255 / 92%));
+}
+
+.match-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.score-badge {
+    min-width: 70px;
+    border-radius: 999px;
+    padding: 10px 14px;
+    text-align: center;
+    font-weight: 800;
+    color: #0f5132;
+    background: #d1fae5;
+}
+
+.muted {
+    color: #5c6b7d;
+}
+
+.meta-block {
+    margin-top: 12px;
+}
+
+.empty-state {
+    border: 1px dashed rgb(19 34 56 / 18%);
+    border-radius: 20px;
+    padding: 18px;
+    background: rgb(255 255 255 / 56%);
+}
+
+.error-list {
+    background: rgb(254 242 242 / 88%);
+    border-color: rgb(239 68 68 / 20%);
+    color: #991b1b;
+    margin-bottom: 18px;
+}
+
+.error-list p {
+    margin: 0;
+}
+
+.error-list p + p {
+    margin-top: 8px;
+}
+
+.primary-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 18px;
+    border-radius: 18px;
+    padding: 14px 18px;
+    text-decoration: none;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #dd6b20 0%, #f59e0b 45%, #2563eb 100%);
+    box-shadow: 0 12px 30px rgb(37 99 235 / 20%);
+}
+
+.secondary-link {
+    margin-top: 22px;
+}
+
+@media (min-width: 920px) {
+    .matching-layout {
+        grid-template-columns: 1.05fr 1fr;
+        align-items: start;
+    }
+
+    .hero-card {
+        grid-column: 1 / -1;
+    }
 }

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameMatch Aanmelden</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="matching-body">
+    <main class="matching-layout">
+        <section class="hero-card">
+            <p class="eyebrow">Aanmelden</p>
+            <h1>Maak je profiel aan voor slimme matchmaking</h1>
+            <p class="hero-copy">
+                Zodra spelers zich aanmelden, slaan we hun profiel op in MongoDB.
+                Daarna kunnen ze direct gekoppeld worden aan andere spelers met dezelfde games en speelstijl.
+            </p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-heading">
+                <h2>Profiel invullen</h2>
+                <p>Dit profiel wordt gebruikt om direct je eerste matches te berekenen.</p>
+                <p class="muted">
+                    <% if (gamesSource === 'api') { %>
+                        De gamelijst komt nu live uit de IGDB API.
+                    <% } else { %>
+                        De gamelijst komt nu uit een fallbacklijst. Voeg Twitch/IGDB keys toe in `.env` voor live data.
+                    <% } %>
+                </p>
+            </div>
+
+            <% if (errors.length > 0) { %>
+                <div class="error-list">
+                    <% errors.forEach((error) => { %>
+                        <p><%= error %></p>
+                    <% }) %>
+                </div>
+            <% } %>
+
+            <form action="/signup" method="post" class="match-form">
+                <label class="field">
+                    <span>Naam</span>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Bijv. Persijn"
+                        value="<%= formData?.name || '' %>"
+                    >
+                </label>
+
+                <label class="field">
+                    <span>Leeftijd</span>
+                    <input
+                        type="text"
+                        name="age"
+                        inputmode="numeric"
+                        placeholder="Bijv. 21"
+                        value="<%= formData?.age || '' %>"
+                    >
+                </label>
+
+                <label class="field">
+                    <span>Korte bio</span>
+                    <textarea
+                        name="bio"
+                        rows="4"
+                        placeholder="Vertel kort wat voor speler je bent."
+                    ><%= formData?.bio || '' %></textarea>
+                </label>
+
+                <fieldset class="field">
+                    <legend>Welke games speel je?</legend>
+                    <div class="chip-grid">
+                        <% availableGames.forEach((game) => { %>
+                            <label class="chip">
+                                <input
+                                    type="checkbox"
+                                    name="games"
+                                    value="<%= game %>"
+                                    <%= formData?.games?.includes(game) ? 'checked' : '' %>
+                                >
+                                <span><%= game %></span>
+                            </label>
+                        <% }) %>
+                    </div>
+                </fieldset>
+
+                <fieldset class="field">
+                    <legend>Speelstijl</legend>
+                    <div class="radio-row">
+                        <label class="choice">
+                            <input
+                                type="radio"
+                                name="playStyle"
+                                value="competitive"
+                                <%= formData?.playStyle === 'competitive' ? 'checked' : '' %>
+                            >
+                            <span>Competitief</span>
+                        </label>
+                        <label class="choice">
+                            <input
+                                type="radio"
+                                name="playStyle"
+                                value="casual"
+                                <%= formData?.playStyle === 'casual' ? 'checked' : '' %>
+                            >
+                            <span>Casual</span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <label class="field">
+                    <span>Provincie</span>
+                    <select name="province">
+                        <option value="">Kies een provincie</option>
+                        <% provinces.forEach((province) => { %>
+                            <option
+                                value="<%= province %>"
+                                <%= formData?.province === province ? 'selected' : '' %>
+                            >
+                                <%= province %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </label>
+
+                <label class="toggle">
+                    <input
+                        type="checkbox"
+                        name="includeProvinceInMatching"
+                        <%= formData?.includeProvinceInMatching ? 'checked' : '' %>
+                    >
+                    <span>Neem mijn provincie mee in de matching</span>
+                </label>
+
+                <button type="submit" class="primary-button">Profiel opslaan en matches zoeken</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

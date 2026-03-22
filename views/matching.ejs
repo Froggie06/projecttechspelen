@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameMatch Matching</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="matching-body">
+    <main class="matching-layout">
+        <section class="hero-card">
+            <p class="eyebrow">Matching</p>
+            <h1>Je profiel wordt nu vergeleken met andere spelers</h1>
+            <p class="hero-copy">
+                Games tellen het zwaarst mee, daarna speelstijl en optioneel provincie.
+                Zo ontstaat een ranking met spelers die het meest op jouw profiel lijken.
+            </p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-heading">
+                <h2>Jouw profiel</h2>
+                <p>In totaal staan er nu <strong><%= totalUsers %></strong> spelers in de database.</p>
+            </div>
+
+            <% if (errorMessage) { %>
+                <div class="error-list">
+                    <p><%= errorMessage %></p>
+                </div>
+            <% } else if (!currentUser) { %>
+                <div class="empty-state">
+                    Er is nog geen actieve gebruiker om mee te matchen. Maak eerst een profiel aan.
+                </div>
+                <a href="/signup" class="primary-link">Profiel aanmaken</a>
+            <% } else { %>
+                <article class="profile-card">
+                    <h3><%= currentUser.name %><% if (currentUser.age) { %>, <%= currentUser.age %><% } %></h3>
+                    <p class="muted">
+                        <%= currentUser.playStyle === 'competitive' ? 'Competitief' : 'Casual' %>
+                        <% if (currentUser.province) { %>
+                            • <%= currentUser.province %>
+                        <% } %>
+                    </p>
+                    <% if (currentUser.bio) { %>
+                        <p><%= currentUser.bio %></p>
+                    <% } %>
+                    <div class="meta-block">
+                        <strong>Games:</strong>
+                        <span><%= currentUser.games.join(', ') %></span>
+                    </div>
+                    <div class="meta-block">
+                        <strong>Provincie meetellen:</strong>
+                        <span><%= currentUser.includeProvinceInMatching ? 'Ja' : 'Nee' %></span>
+                    </div>
+                </article>
+            <% } %>
+        </section>
+
+        <section class="panel">
+            <div class="panel-heading">
+                <h2>Beste matches</h2>
+                <% if (currentUser) { %>
+                    <p>Deze spelers passen nu het best bij <strong><%= currentUser.name %></strong>.</p>
+                <% } else { %>
+                    <p>Na aanmelding verschijnt hier automatisch de matchlijst.</p>
+                <% } %>
+            </div>
+
+            <% if (!currentUser || errorMessage) { %>
+                <div class="empty-state">
+                    Maak eerst een profiel aan of los de databaseverbinding op om matches te zien.
+                </div>
+            <% } else if (matches.length === 0) { %>
+                <div class="empty-state">
+                    Er zijn nog geen geschikte matches. Zodra meer gebruikers zich aanmelden, verschijnen hier resultaten.
+                </div>
+            <% } else { %>
+                <div class="match-list">
+                    <% matches.forEach((match, index) => { %>
+                        <article class="match-card">
+                            <div class="match-top">
+                                <div>
+                                    <p class="match-rank">Match <%= index + 1 %></p>
+                                    <h3><%= match.name %><% if (match.age) { %>, <%= match.age %><% } %></h3>
+                                    <p class="muted">
+                                        <%= match.playStyle === 'competitive' ? 'Competitief' : 'Casual' %>
+                                        <% if (match.province) { %>
+                                            • <%= match.province %>
+                                        <% } %>
+                                    </p>
+                                </div>
+                                <div class="score-badge"><%= match.score %>%</div>
+                            </div>
+
+                            <% if (match.bio) { %>
+                                <p><%= match.bio %></p>
+                            <% } %>
+
+                            <div class="meta-block">
+                                <strong>Gedeelde games:</strong>
+                                <span><%= match.sharedGames.join(', ') %></span>
+                            </div>
+
+                            <div class="meta-block">
+                                <strong>Waarom deze match:</strong>
+                                <span><%= match.reasons.join(', ') %></span>
+                            </div>
+                        </article>
+                    <% }) %>
+                </div>
+            <% } %>
+
+            <a href="/signup" class="primary-link secondary-link">Nog een profiel toevoegen</a>
+        </section>
+    </main>
+</body>
+</html>
