@@ -311,28 +311,27 @@ app.get("/search", async (req, res) => {
 })
 
 // game toevoegen aan account --------------------------------------
-// game toevoegen aan account --------------------------------------
 app.post("/add-game", requireLogin, async (req, res) => {
-  const gamesCollection = client.db("games").collection("games") // 👈 hernoemd
+  const gamesCollection = client.db("games").collection("games") 
   const usersCollection = client.db("accounts").collection("users")
 
   const userId = new ObjectId(req.session.userId)
 
   const game = {
-    gameId: String(req.body.id), // 👈 consistent type
+    gameId: String(req.body.id), 
     name: req.body.name,
     cover: req.body.cover
   }
 
   try {
-    // 👇 Game wordt maar 1x opgeslagen
+    //  Game wordt maar 1x opgeslagen
     await gamesCollection.updateOne(
       { gameId: game.gameId },
       { $setOnInsert: game },
       { upsert: true }
     )
 
-    // 👇 Voeg toe aan user
+    //  Voeg toe aan user
     await usersCollection.updateOne(
       { _id: userId },
       { $addToSet: { games: game.gameId } }
@@ -355,7 +354,7 @@ app.post("/remove-game", requireLogin, async (req, res) => {
   const gameId = String(req.body.id)
 
   try {
-    // 👇 Alleen uit user verwijderen (game blijft bestaan in DB)
+    // Alleen uit user verwijderen (game blijft bestaan in DB)
     await usersCollection.updateOne(
       { _id: userId },
       { $pull: { games: gameId } }
