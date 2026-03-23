@@ -1,20 +1,23 @@
 const btn = document.getElementById("showSecurity")
 const form = document.getElementById("securityForm")
 
-btn.addEventListener("click", () => {
-    if (form.style.display === "none") {
-        form.style.display = "flex"
-        btn.textContent = "Verberg"
-    } else {
-        form.style.display = "none"
-        btn.textContent = "Verander wachtwoord of gebruikersnaam"
-    }
-})
+if (btn && form) {
+    btn.addEventListener("click", () => {
+        if (form.style.display === "none") {
+            form.style.display = "flex"
+            btn.textContent = "Verberg"
+        } else {
+            form.style.display = "none"
+            btn.textContent = "Verander wachtwoord of gebruikersnaam"
+        }
+    })
+}
 
 // dropdown menu zoekfunctie
-  const input = document.getElementById("searchInput")
-  const dropdown = document.getElementById("dropdown")
+const input = document.getElementById("searchInput")
+const dropdown = document.getElementById("dropdown")
 
+if (input && dropdown) {
   input.addEventListener("input", async () => {
     const query = input.value
 
@@ -82,3 +85,4 @@ button.addEventListener("click", async () => {
       dropdown.appendChild(div)
     })
   })
+}

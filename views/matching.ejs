@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mijn Matches</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <h1>Matches voor <%= currentUser.username %></h1>
+
+    <section class="match-panel">
+        <h2>Jouw profiel</h2>
+        <p>Speelstijl: <%= currentUser.playStyle === "competitive" ? "Competitief" : currentUser.playStyle === "casual" ? "Casual" : "Nog niet ingevuld" %></p>
+        <p>Provincie: <%= currentUser.province || "Niet ingevuld" %></p>
+        <p>Provincie meetellen: <%= currentUser.includeProvinceInMatching ? "Ja" : "Nee" %></p>
+        <p>Games: <%= currentUser.gameDetails.length ? currentUser.gameDetails.map((game) => game.name).join(", ") : "Nog geen games toegevoegd" %></p>
+    </section>
+
+    <section class="match-panel">
+        <h2>Beste matches</h2>
+
+        <% if (matches.length === 0) { %>
+            <p>Nog geen matches gevonden. Voeg games toe of vul speelstijl en provincie aan.</p>
+        <% } else { %>
+            <div class="match-list">
+                <% matches.forEach((match, index) => { %>
+                    <article class="match-card">
+                        <div class="match-top">
+                            <div>
+                                <p class="match-rank">Match <%= index + 1 %></p>
+                                <h3><%= match.username %></h3>
+                                <p>
+                                    <%= match.playStyle === "competitive" ? "Competitief" : match.playStyle === "casual" ? "Casual" : "Onbekend" %>
+                                    <% if (match.province) { %>
+                                        • <%= match.province %>
+                                    <% } %>
+                                </p>
+                            </div>
+                            <div class="score-badge"><%= match.score %>%</div>
+                        </div>
+
+                        <p><%= match.bio || "Deze gebruiker heeft nog geen bio ingevuld." %></p>
+                        <p><strong>Gedeelde games:</strong> <%= match.sharedGames.length ? match.sharedGames.map((game) => game.name).join(", ") : "Geen" %></p>
+                        <p><strong>Waarom deze match:</strong> <%= match.reasons.join(", ") %></p>
+                    </article>
+                <% }) %>
+            </div>
+        <% } %>
+    </section>
+
+    <a href="/account">Terug naar account</a>
+</body>
+</html>
