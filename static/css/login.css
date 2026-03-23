@@ -24,6 +24,7 @@ form {
 
 form input,
 form textarea,
+form select,
 form button {
     padding: 0.5em;
     font-size: 0.875em;
@@ -43,6 +44,10 @@ form input::placeholder {
     color: white;
 }
 
+form select {
+    color: white;
+}
+
 button {
     cursor: pointer;
     background-color: #b83a2d;
@@ -51,6 +56,17 @@ button {
 
 #showSecurity {
     margin-bottom: 1em;
+}
+
+.checkbox-row {
+    width: 18.75em;
+    display: flex;
+    align-items: center;
+    gap: 0.625em;
+}
+
+.checkbox-row input {
+    width: auto;
 }
 
 .search-container {
@@ -92,4 +108,49 @@ button {
 .result:hover {
     background: #eee;
     color: #1a1a1a;
+}
+
+.game-list,
+.match-list {
+    display: grid;
+    gap: 1em;
+    width: min(40em, 90vw);
+}
+
+.game-card,
+.match-card,
+.match-panel {
+    background-color: #2a2a2a;
+    border: 1px solid #ddc6a7;
+    border-radius: 0.75em;
+    padding: 1em;
+}
+
+.game-card {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.match-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+.match-rank {
+    margin: 0 0 0.5em;
+    color: #ddc6a7;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+}
+
+.score-badge {
+    align-self: start;
+    background-color: #ddc6a7;
+    color: #1a1a1a;
+    padding: 0.5em 0.75em;
+    border-radius: 999px;
+    font-weight: 700;
 }
