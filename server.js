@@ -314,7 +314,7 @@ app.post("/add-game", requireLogin, async (req, res) => {
   await collection.updateOne(
     { userId: game.userId, gameId: game.gameId },
     { $set: game },
-    { upsert: true } // 👈 voorkomt duplicates
+    { upsert: true } // voorkomt duplicates
   )
 
   res.json({ success: true })
