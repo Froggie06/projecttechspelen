@@ -10,9 +10,25 @@ const path = require("path")
 const fs = require("fs")
 
 const app = express()
+const port = Number(process.env.PORT) || 3000
 
 const uri = process.env.MONGODB_URI
 const client = new MongoClient(uri)
+
+const provinces = [
+  "Drenthe",
+  "Flevoland",
+  "Friesland",
+  "Gelderland",
+  "Groningen",
+  "Limburg",
+  "Noord-Brabant",
+  "Noord-Holland",
+  "Overijssel",
+  "Utrecht",
+  "Zeeland",
+  "Zuid-Holland",
+]
 
 app.set("view engine", "ejs")
 app.use(express.static("static"))
@@ -53,6 +69,109 @@ function requireLogin(req, res, next) {
     return res.redirect("/login")
   }
   next()
+}
+
+function normalizeUserGames(user) {
+  return Array.isArray(user.games) ? user.games.map(String) : []
+}
+
+function calculateMatchScore(currentUser, candidateUser) {
+  const currentUserGames = normalizeUserGames(currentUser)
+  const candidateGames = normalizeUserGames(candidateUser)
+  const sharedGameIds = candidateGames.filter((gameId) => currentUserGames.includes(gameId))
+  const gameScore = currentUserGames.length
+    ? Math.round((sharedGameIds.length / currentUserGames.length) * 70)
+    : 0
+  const styleScore =
+    currentUser.playStyle && candidateUser.playStyle && currentUser.playStyle === candidateUser.playStyle
+      ? 20
+      : 0
+
+  const provinceRelevant =
+    currentUser.includeProvinceInMatching &&
+    currentUser.province &&
+    candidateUser.province &&
+    currentUser.province === candidateUser.province
+
+  const provinceScore = provinceRelevant ? 10 : 0
+  const score = gameScore + styleScore + provinceScore
+  const reasons = []
+
+  if (sharedGameIds.length) {
+    reasons.push(`${sharedGameIds.length} gedeelde game${sharedGameIds.length > 1 ? "s" : ""}`)
+  }
+
+  if (styleScore) {
+    reasons.push("dezelfde speelstijl")
+  }
+
+  if (provinceScore) {
+    reasons.push("zelfde provincie")
+  }
+
+  return {
+    candidateUser,
+    sharedGameIds,
+    score,
+    reasons,
+  }
+}
+
+async function getMatchesForCurrentUser(userId) {
+  const usersCollection = client.db("accounts").collection("users")
+  const gamesCollection = client.db("games").collection("games")
+  const currentUser = await usersCollection.findOne({ _id: new ObjectId(userId) })
+
+  if (!currentUser) {
+    return { currentUser: null, matches: [] }
+  }
+
+  const otherUsers = await usersCollection
+    .find({ _id: { $ne: currentUser._id } })
+    .toArray()
+
+  const scoredMatches = otherUsers
+    .map((candidateUser) => calculateMatchScore(currentUser, candidateUser))
+    .filter((match) => match.sharedGameIds.length > 0)
+    .sort((a, b) => b.score - a.score)
+
+  const allRelevantGameIds = [
+    ...new Set([
+      ...normalizeUserGames(currentUser),
+      ...scoredMatches.flatMap((match) => match.sharedGameIds),
+      ...scoredMatches.flatMap((match) => normalizeUserGames(match.candidateUser)),
+    ]),
+  ]
+
+  const games = allRelevantGameIds.length
+    ? await gamesCollection.find({ gameId: { $in: allRelevantGameIds } }).toArray()
+    : []
+
+  const gameMap = new Map(games.map((game) => [String(game.gameId), game]))
+
+  const hydratedCurrentUser = {
+    ...currentUser,
+    gameDetails: normalizeUserGames(currentUser)
+      .map((gameId) => gameMap.get(gameId))
+      .filter(Boolean),
+  }
+
+  const matches = scoredMatches.map((match) => ({
+    ...match.candidateUser,
+    score: match.score,
+    reasons: match.reasons,
+    sharedGames: match.sharedGameIds
+      .map((gameId) => gameMap.get(gameId))
+      .filter(Boolean),
+    gameDetails: normalizeUserGames(match.candidateUser)
+      .map((gameId) => gameMap.get(gameId))
+      .filter(Boolean),
+  }))
+
+  return {
+    currentUser: hydratedCurrentUser,
+    matches,
+  }
 }
 
 // Profielfoto opslag
@@ -103,31 +222,42 @@ app.get("/", (req, res) => {
 
 // Registreren
 app.get("/registreren", (req, res) => {
-  res.render("registreren", { error: null })
+  res.render("registreren", { error: null, provinces, formData: {} })
 })
 
 app.post("/registreren", async (req, res) => {
   const collection = client.db("accounts").collection("users")
+  const formData = {
+    username: xss(req.body.username),
+    email: xss(req.body.email),
+    bio: xss(req.body.bio || ""),
+    playStyle: xss(req.body.playStyle || ""),
+    province: xss(req.body.province || ""),
+    includeProvinceInMatching: req.body.includeProvinceInMatching === "on",
+  }
 
   const existingUser = await collection.findOne({ email: req.body.email })
   if (existingUser) {
-    return res.render("registreren", { error: "Email is al geregistreerd" })
+    return res.render("registreren", { error: "Email is al geregistreerd", provinces, formData })
   }
 
   const existingUsername = await collection.findOne({ username: req.body.username })
   if (existingUsername) {
-    return res.render("registreren", { error: "Gebruikersnaam bestaat al" })
+    return res.render("registreren", { error: "Gebruikersnaam bestaat al", provinces, formData })
   }
 
   const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
   await collection.insertOne({
-    username: xss(req.body.username),
-    email: xss(req.body.email),
+    username: formData.username,
+    email: formData.email,
     password: hashedPassword,
-    bio: "",
+    bio: formData.bio,
     profilePicture: "images/defaultAvatar.jpg",
-    games: []
+    games: [],
+    playStyle: formData.playStyle,
+    province: formData.province,
+    includeProvinceInMatching: formData.includeProvinceInMatching,
   })
 
   res.redirect("/login")
@@ -168,7 +298,7 @@ app.get("/account", requireLogin, async (req, res) => {
     gameId: { $in: user.games || [] }
   }).toArray()
 
-  res.render("account", { user, games })
+  res.render("account", { user, games, provinces })
 })
 
 // Profiel pagina
@@ -201,6 +331,16 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
     updateData.username = xss(req.body.username)
   }
 
+  if (req.body.playStyle !== undefined) {
+    updateData.playStyle = xss(req.body.playStyle)
+  }
+
+  if (req.body.province !== undefined) {
+    updateData.province = xss(req.body.province)
+  }
+
+  updateData.includeProvinceInMatching = req.body.includeProvinceInMatching === "on"
+
   // Alleen als er een nieuwe foto is
   if (req.file) {
 
@@ -230,6 +370,24 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
   )
 
   res.redirect("/account")
+})
+
+app.get("/matching", requireLogin, async (req, res) => {
+  try {
+    const { currentUser, matches } = await getMatchesForCurrentUser(req.session.userId)
+
+    if (!currentUser) {
+      return res.redirect("/login")
+    }
+
+    res.render("matching", {
+      currentUser,
+      matches,
+    })
+  } catch (err) {
+    console.error("Error loading matches:", err)
+    res.status(500).send("Error loading matches")
+  }
 })
 // ─── IGDB API Routes ──────────────────────────────────────────────────────────
 
@@ -369,11 +527,17 @@ app.post("/remove-game", requireLogin, async (req, res) => {
   }
 })
 
+app.get("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/login")
+  })
+})
+
 // 404
 app.use((req, res) => {
   res.status(404).send("404 Not Found")
 })
 
-app.listen(3000, () => {
-  console.log("🚀 Server running on http://localhost:3000")
+app.listen(port, () => {
+  console.log(`🚀 Server running on http://localhost:${port}`)
 })
