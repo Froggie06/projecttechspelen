@@ -31,6 +31,13 @@ async function connectDB() {
   try {
     await client.connect()
     await client.db("admin").command({ ping: 1 })
+
+    // 👇 HIER je index maken
+    await client.db("games").collection("games").createIndex(
+      { gameId: 1 },
+      { unique: true }
+    )
+
     console.log("✅ Connected to MongoDB")
   } catch (err) {
     console.error("❌ MongoDB connection failed:", err)
@@ -38,6 +45,7 @@ async function connectDB() {
 }
 
 connectDB()
+
 
 // Require login functie
 function requireLogin(req, res, next) {
@@ -150,13 +158,15 @@ app.post("/login", async (req, res) => {
 // Account
 app.get("/account", requireLogin, async (req, res) => {
   const users = client.db("accounts").collection("users")
-  const gamesCol = client.db("games").collection("user_games")
+  const gamesCol = client.db("games").collection("games")
 
   const userId = new ObjectId(req.session.userId)
 
   const user = await users.findOne({ _id: userId })
 
-  const games = await gamesCol.find({ userId }).toArray()
+  const games = await gamesCol.find({
+    gameId: { $in: user.games || [] }
+  }).toArray()
 
   res.render("account", { user, games })
 })
@@ -301,35 +311,62 @@ app.get("/search", async (req, res) => {
 })
 
 // game toevoegen aan account --------------------------------------
+// game toevoegen aan account --------------------------------------
 app.post("/add-game", requireLogin, async (req, res) => {
-  const collection = client.db("games").collection("user_games")
+  const gamesCollection = client.db("games").collection("games") // 👈 hernoemd
+  const usersCollection = client.db("accounts").collection("users")
+
+  const userId = new ObjectId(req.session.userId)
 
   const game = {
-    userId: new ObjectId(req.session.userId),
-    gameId: req.body.id,
+    gameId: String(req.body.id), // 👈 consistent type
     name: req.body.name,
     cover: req.body.cover
   }
 
-  await collection.updateOne(
-    { userId: game.userId, gameId: game.gameId },
-    { $set: game },
-    { upsert: true } // voorkomt duplicates
-  )
+  try {
+    // 👇 Game wordt maar 1x opgeslagen
+    await gamesCollection.updateOne(
+      { gameId: game.gameId },
+      { $setOnInsert: game },
+      { upsert: true }
+    )
 
-  res.json({ success: true })
+    // 👇 Voeg toe aan user
+    await usersCollection.updateOne(
+      { _id: userId },
+      { $addToSet: { games: game.gameId } }
+    )
+
+    res.json({ success: true })
+
+  } catch (err) {
+    console.error("❌ Error adding game:", err)
+    res.status(500).json({ success: false })
+  }
 })
+
 
 // Game verwijderen account ----------------------------------------------
 app.post("/remove-game", requireLogin, async (req, res) => {
-  const collection = client.db("games").collection("user_games")
+  const usersCollection = client.db("accounts").collection("users")
 
-  await collection.deleteOne({
-    userId: new ObjectId(req.session.userId),
-    gameId: req.body.id
-  })
+  const userId = new ObjectId(req.session.userId)
+  const gameId = String(req.body.id)
 
-  res.json({ success: true })
+  try {
+    // 👇 Alleen uit user verwijderen (game blijft bestaan in DB)
+    await usersCollection.updateOne(
+      { _id: userId },
+      { $pull: { games: gameId } }
+    )
+
+    res.json({ success: true })
+
+  } catch (err) {
+    console.error("❌ Error removing game:", err)
+    res.status(500).json({ success: false })
+  }
 })
 
 // 404
