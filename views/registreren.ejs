@@ -15,7 +15,7 @@
     <form action="/registreren" method="post">
         <input type="text" name="username" placeholder="Username" value="<%= formData?.username || '' %>">
         <input type="email" name="email" placeholder="Email" value="<%= formData?.email || '' %>">
-        <input type="password" name="password" placeholder="Password">
+        <input type="password" name="password" placeholder="Password" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"title="Minimaal 8 tekens, 1 hoofdletter, 1 cijfer en 1 speciaal teken">
         <textarea name="bio" placeholder="Vertel iets over jezelf"><%= formData?.bio || '' %></textarea>
 
         <select name="playStyle">
@@ -38,6 +38,8 @@
 
         <button type="submit">Registreren</button>
     </form>
+
+    <p> Heb je al een account? <a href="/login">Log in</a></p>
 
     <script src="/js/login.js"></script>
 </body>

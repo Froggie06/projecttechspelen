@@ -62,8 +62,14 @@ async function connectDB() {
 
 connectDB()
 
+// minimale eisen wachtwoord functie
 
-// Require login functie
+function isValidPassword(password) {
+  const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
+  return regex.test(password)
+}
+
+// moet ingelogd zijn functie
 function requireLogin(req, res, next) {
   if (!req.session.userId) {
     return res.redirect("/login")
@@ -217,16 +223,17 @@ async function getAccessToken() {
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
 app.get("/", (req, res) => {
-  res.render("account")
+  res.redirect("/login")
 })
 
-// Registreren
 app.get("/registreren", (req, res) => {
   res.render("registreren", { error: null, provinces, formData: {} })
 })
 
+// Registreren
 app.post("/registreren", async (req, res) => {
   const collection = client.db("accounts").collection("users")
+
   const formData = {
     username: xss(req.body.username),
     email: xss(req.body.email),
@@ -234,6 +241,15 @@ app.post("/registreren", async (req, res) => {
     playStyle: xss(req.body.playStyle || ""),
     province: xss(req.body.province || ""),
     includeProvinceInMatching: req.body.includeProvinceInMatching === "on",
+  }
+
+  // wachtwoord minimale eisen checken
+  if (!isValidPassword(req.body.password)) {
+    return res.render("registreren", {
+      error: "Wachtwoord moet minimaal 8 tekens bevatten, 1 hoofdletter, 1 cijfer en 1 speciaal teken",
+      provinces,
+      formData
+    })
   }
 
   const existingUser = await collection.findOne({ email: req.body.email })
@@ -316,9 +332,10 @@ app.get("/user/:username", async (req, res) => {
 // Profiel updaten
 app.post("/update-profile", requireLogin, upload.single("profilePicture"), async (req, res) => {
   const collection = client.db("accounts").collection("users")
+  const gamesCol = client.db("games").collection("games")
   const userId = new ObjectId(req.session.userId)
 
-  // Haal huidige user op
+  // huidige user ophalen
   const user = await collection.findOne({ _id: userId })
 
   const updateData = {}
@@ -341,10 +358,8 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
 
   updateData.includeProvinceInMatching = req.body.includeProvinceInMatching === "on"
 
-  // Alleen als er een nieuwe foto is
+  // profielfoto upload
   if (req.file) {
-
-    // Verwijder oude foto
     if (user.profilePicture) {
       const oldPath = path.join(__dirname, "static", user.profilePicture)
 
@@ -355,15 +370,30 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
       }
     }
 
-    // Nieuwe foto opslaan
     updateData.profilePicture = "/uploads/" + req.file.filename
   }
 
+  // wachtwoord check minimale eisen
   if (req.body.newPassword && req.body.newPassword !== "") {
+
+    if (!isValidPassword(req.body.newPassword)) {
+      // games opnieuw ophalen zodat pagina correct rendert
+      const games = await gamesCol.find({
+        gameId: { $in: user.games || [] }
+      }).toArray()
+
+      return res.render("account", {
+        user,
+        games,
+        provinces,
+        error: "Wachtwoord moet minimaal 8 tekens bevatten, 1 hoofdletter, 1 cijfer en 1 speciaal teken"
+      })
+    }
+
     updateData.password = await bcrypt.hash(req.body.newPassword, 10)
   }
 
-  // Update database
+  // de update uitvoeren in db
   await collection.updateOne(
     { _id: userId },
     { $set: updateData }
@@ -469,28 +499,27 @@ app.get("/search", async (req, res) => {
 })
 
 // game toevoegen aan account --------------------------------------
-// game toevoegen aan account --------------------------------------
 app.post("/add-game", requireLogin, async (req, res) => {
-  const gamesCollection = client.db("games").collection("games") // 👈 hernoemd
+  const gamesCollection = client.db("games").collection("games") 
   const usersCollection = client.db("accounts").collection("users")
 
   const userId = new ObjectId(req.session.userId)
 
   const game = {
-    gameId: String(req.body.id), // 👈 consistent type
+    gameId: String(req.body.id), 
     name: req.body.name,
     cover: req.body.cover
   }
 
   try {
-    // 👇 Game wordt maar 1x opgeslagen
+    // game wordt maar 1x opgeslagen
     await gamesCollection.updateOne(
       { gameId: game.gameId },
       { $setOnInsert: game },
       { upsert: true }
     )
 
-    // 👇 Voeg toe aan user
+    // game toevoegen aan user
     await usersCollection.updateOne(
       { _id: userId },
       { $addToSet: { games: game.gameId } }
@@ -505,7 +534,7 @@ app.post("/add-game", requireLogin, async (req, res) => {
 })
 
 
-// Game verwijderen account ----------------------------------------------
+// game verwijderen van account
 app.post("/remove-game", requireLogin, async (req, res) => {
   const usersCollection = client.db("accounts").collection("users")
 
@@ -513,7 +542,7 @@ app.post("/remove-game", requireLogin, async (req, res) => {
   const gameId = String(req.body.id)
 
   try {
-    // 👇 Alleen uit user verwijderen (game blijft bestaan in DB)
+    // alleen uit user verwijderen (game blijft bestaan in DB)
     await usersCollection.updateOne(
       { _id: userId },
       { $pull: { games: gameId } }
