@@ -39,7 +39,14 @@ app.use(express.urlencoded({ extended: true }))
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === "production", 
+      // cookie wordt via https gestuurd dus beveiligd
+    httpOnly: true,
+      // JavaScript kan de cookie in de browser niet lezen beveiligd voor XSS attacks
+    maxAge: 60 * 60 * 1000 // 1 uur
+  }
 }))
 
 // Database connect
@@ -48,7 +55,6 @@ async function connectDB() {
     await client.connect()
     await client.db("admin").command({ ping: 1 })
 
-    // 👇 HIER je index maken
     await client.db("games").collection("games").createIndex(
       { gameId: 1 },
       { unique: true }
