@@ -229,7 +229,11 @@ async function getAccessToken() {
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
 app.get("/", (req, res) => {
-  res.redirect("/login")
+  res.render("home")
+})
+
+app.get("/home", (req, res) => {
+  res.render("home")
 })
 
 app.get("/registreren", (req, res) => {

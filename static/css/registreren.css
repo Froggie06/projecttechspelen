@@ -1,4 +1,4 @@
-/* Styling specifiek voor views/login.ejs. */
+/* Styling specifiek voor views/registreren.ejs. */
 @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 body {
@@ -23,7 +23,7 @@ form {
 }
 
 form::before {
-    content: "Login";
+    content: "Registreren";
     font-size: 1.6rem;
     font-weight: 700;
     letter-spacing: 0.02em;
@@ -31,6 +31,8 @@ form::before {
 }
 
 form input,
+form textarea,
+form select,
 form button {
     min-height: 3rem;
     padding: 0.85rem 0.95rem;
@@ -38,22 +40,52 @@ form button {
     border-radius: 0.9rem;
 }
 
-form input {
+form input,
+form textarea,
+form select {
     background-color: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(221, 198, 167, 0.24);
     transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
-form input::placeholder {
+form input::placeholder,
+form textarea::placeholder,
+form select {
     color: rgba(255, 255, 255, 0.56);
 }
 
+form input:focus,
+form textarea:focus,
+form select:focus {
+    outline: none;
+    border-color: #ddc6a7;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+form textarea {
+    min-height: 6rem;
+}
 
 form button {
     margin-top: 0.35rem;
     border: none;
     font-weight: 700;
     letter-spacing: 0.03em;
+}
+
+.checkbox-row {
+    width: 100%;
+    margin: 0.25rem 0;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(221, 198, 167, 0.18);
+    border-radius: 0.9rem;
+    background-color: rgba(255, 255, 255, 0.04);
+    box-sizing: border-box;
+}
+
+.checkbox-row input {
+    accent-color: #b83a2e;
 }
 
 body > p {
@@ -70,19 +102,21 @@ body > p a {
     font-weight: 700;
 }
 
-p:last-of-type {
-   padding-bottom: 0.75em;
+body > p a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
 }
 
-button {
-    min-height: 3rem;
-    padding: 0.85rem 0.95rem;
-    font-size: 0.95rem;
+body > p[style] {
+    width: 100%;
+    max-width: 22rem;
+    margin: 0 0 1rem;
+    padding: 0.85rem 1rem;
     border-radius: 0.9rem;
-    border: none;
-
-    a {
-        text-decoration: none;
-        color: inherit;
-    }
+    background-color: rgba(184, 58, 46, 0.18);
+    border: 1px solid rgba(184, 58, 46, 0.45);
+    box-sizing: border-box;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 0.9rem;
 }
+

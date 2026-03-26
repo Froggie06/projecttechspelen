@@ -1,0 +1,23 @@
+/* Gedeelde css, wordt op meer pagina's gebruikt */
+
+body {
+    background-color: #1a1a1a;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+h1,
+h2 {
+    text-align: center;
+}
+
+button {
+    cursor: pointer;
+    background-color: #b83a2d;
+    color: white;
+}
