@@ -1,3 +1,4 @@
+// alle imports en benodigde setup voor de server
 require("dotenv").config()
 
 const xss = require("xss")
@@ -15,6 +16,7 @@ const port = Number(process.env.PORT) || 3000
 const uri = process.env.MONGODB_URI
 const client = new MongoClient(uri)
 
+// provincie lijst
 const provinces = [
   "Drenthe",
   "Flevoland",
@@ -30,15 +32,16 @@ const provinces = [
   "Zuid-Holland",
 ]
 
+// middleware
 app.set("view engine", "ejs")
 app.use(express.static("static"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// Express session
+// express session
 app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
+  secret: process.env.SESSION_SECRET, //geheime key om sessie te beveiligen -> terug te zien in .env
+  resave: false, 
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === "production", 
@@ -49,33 +52,32 @@ app.use(session({
   }
 }))
 
-// Database connect
+// database connect
 async function connectDB() {
   try {
     await client.connect()
     await client.db("admin").command({ ping: 1 })
 
     await client.db("games").collection("games").createIndex(
-      { gameId: 1 },
+      { gameId: 1 }, // voorkomt dubbele games in games collectie
       { unique: true }
     )
 
     console.log("✅ Connected to MongoDB")
   } catch (err) {
-    console.error("❌ MongoDB connection failed:", err)
+    console.error("❌ MongoDB connection failed:", err) 
   }
 }
 
 connectDB()
 
 // minimale eisen wachtwoord functie
-
 function isValidPassword(password) {
   const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
   return regex.test(password)
 }
 
-// moet ingelogd zijn functie
+// moet ingelogd zijn functie -> voorkomt dat niet ingelogde gebruikers bepaalde routes kunnen bezoeken
 function requireLogin(req, res, next) {
   if (!req.session.userId) {
     return res.redirect("/login")
@@ -83,31 +85,33 @@ function requireLogin(req, res, next) {
   next()
 }
 
+// zorgt dat de games altijd in een array van strings staan
 function normalizeUserGames(user) {
   return Array.isArray(user.games) ? user.games.map(String) : []
 }
 
+// berekening match percentage en matching onderdelen
 function calculateMatchScore(currentUser, candidateUser) {
   const currentUserGames = normalizeUserGames(currentUser)
-  const candidateGames = normalizeUserGames(candidateUser)
-  const sharedGameIds = candidateGames.filter((gameId) => currentUserGames.includes(gameId))
+  const candidateGames = normalizeUserGames(candidateUser) // zorgt dat beide gebruikers vergelijkbare data hebben
+  const sharedGameIds = candidateGames.filter((gameId) => currentUserGames.includes(gameId)) // loopt door de games heen van beide gebruikers en kijkt of er games zijn die overeen komen
   const gameScore = currentUserGames.length
-    ? Math.round((sharedGameIds.length / currentUserGames.length) * 70)
+    ? Math.round((sharedGameIds.length / currentUserGames.length) * 70) // berekent het percentage gedeelde games en weegt dit voor 70% mee in de totale score
     : 0
   const styleScore =
-    currentUser.playStyle && candidateUser.playStyle && currentUser.playStyle === candidateUser.playStyle
+    currentUser.playStyle && candidateUser.playStyle && currentUser.playStyle === candidateUser.playStyle // berekent het percentage gedeelde speelstijl en weegt dit voor 10% mee in de totale score
       ? 20
       : 0
 
-  const provinceRelevant =
+  const provinceRelevant = // provincie relevantie check, alleen als beide gebruikers hebben aangegeven dat ze provincie mee willen laten wegen in de matching en beide gebruikers een provincie hebben ingevuld
     currentUser.includeProvinceInMatching &&
     currentUser.province &&
     candidateUser.province &&
     currentUser.province === candidateUser.province
 
-  const provinceScore = provinceRelevant ? 10 : 0
-  const score = gameScore + styleScore + provinceScore
-  const reasons = []
+  const provinceScore = provinceRelevant ? 10 : 0 // berekent het percentage gedeelde provincie en weegt dit voor 10% mee in de totale score, alleen als beide gebruikers hebben aangegeven dat ze provincie mee willen laten wegen in de matching
+  const score = gameScore + styleScore + provinceScore // totale score van de 3 onderdelen samen, max 100%
+  const reasons = [] // lijst waarom gebruikers gematched zijn
 
   if (sharedGameIds.length) {
     reasons.push(`${sharedGameIds.length} gedeelde game${sharedGameIds.length > 1 ? "s" : ""}`)
@@ -129,25 +133,26 @@ function calculateMatchScore(currentUser, candidateUser) {
   }
 }
 
+// haalt de matches op voor de huidige gebruiker
 async function getMatchesForCurrentUser(userId) {
-  const usersCollection = client.db("accounts").collection("users")
-  const gamesCollection = client.db("games").collection("games")
-  const currentUser = await usersCollection.findOne({ _id: new ObjectId(userId) })
+  const usersCollection = client.db("accounts").collection("users") // ophalen uit database
+  const gamesCollection = client.db("games").collection("games") // ophalen uit database
+  const currentUser = await usersCollection.findOne({ _id: new ObjectId(userId) }) // huidige gebruiker ophalen
 
   if (!currentUser) {
     return { currentUser: null, matches: [] }
-  }
+  } // voorkomt dat huidige gebruiker wordt meegenomen in de matches, zoekt alleen naar andere gebruikers in de database die niet dezelfde _id hebben als de huidige gebruiker
 
-  const otherUsers = await usersCollection
+  const otherUsers = await usersCollection 
     .find({ _id: { $ne: currentUser._id } })
     .toArray()
 
-  const scoredMatches = otherUsers
+  const scoredMatches = otherUsers // voor elke gebruiker een score berekenen
     .map((candidateUser) => calculateMatchScore(currentUser, candidateUser))
-    .filter((match) => match.sharedGameIds.length > 0)
-    .sort((a, b) => b.score - a.score)
+    .filter((match) => match.sharedGameIds.length > 0) // voorkomt het tonen van 0% matches
+    .sort((a, b) => b.score - a.score) // sorteert de matches op score van hoog naar laag
 
-  const allRelevantGameIds = [
+  const allRelevantGameIds = [ // lijst van games die relevant zijn voor de match
     ...new Set([
       ...normalizeUserGames(currentUser),
       ...scoredMatches.flatMap((match) => match.sharedGameIds),
@@ -155,20 +160,20 @@ async function getMatchesForCurrentUser(userId) {
     ]),
   ]
 
-  const games = allRelevantGameIds.length
-    ? await gamesCollection.find({ gameId: { $in: allRelevantGameIds } }).toArray()
+  const games = allRelevantGameIds.length 
+    ? await gamesCollection.find({ gameId: { $in: allRelevantGameIds } }).toArray() // haalt de games op uit de lijst van games die relevant zijn voor de match
     : []
 
-  const gameMap = new Map(games.map((game) => [String(game.gameId), game]))
+  const gameMap = new Map(games.map((game) => [String(game.gameId), game])) // maakt een map van gameId naar game object voor snelle lookup, zorgt dat we de details van de games kunnen tonen in de matches zonder dat we meerdere database calls hoeven te doen
 
-  const hydratedCurrentUser = {
+  const hydratedCurrentUser = { // voegt de game details toe zodat deze ook in de view komen te staan
     ...currentUser,
     gameDetails: normalizeUserGames(currentUser)
       .map((gameId) => gameMap.get(gameId))
       .filter(Boolean),
   }
 
-  const matches = scoredMatches.map((match) => ({
+  const matches = scoredMatches.map((match) => ({ // vervangt de gameId's in de matches met de volledige game details zodat deze ook in de view komen te staan
     ...match.candidateUser,
     score: match.score,
     reasons: match.reasons,
@@ -177,8 +182,8 @@ async function getMatchesForCurrentUser(userId) {
       .filter(Boolean),
     gameDetails: normalizeUserGames(match.candidateUser)
       .map((gameId) => gameMap.get(gameId))
-      .filter(Boolean),
-  }))
+      .filter(Boolean), // verwijdert de games die niet zijn gevonden in de database
+  })) 
 
   return {
     currentUser: hydratedCurrentUser,
@@ -186,7 +191,7 @@ async function getMatchesForCurrentUser(userId) {
   }
 }
 
-// Profielfoto opslag
+// profielfoto opslag met multer in uploads map
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "static/uploads")
@@ -197,26 +202,27 @@ const storage = multer.diskStorage({
   }
 })
 
+// file filter om alleen afbeeldingen toe te staan en max grootte 5mb
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif/
-  const ext = allowedTypes.test(path.extname(file.originalname).toLowerCase())
-  const mime = allowedTypes.test(file.mimetype)
+  const ext = allowedTypes.test(path.extname(file.originalname).toLowerCase()) 
+  const mime = allowedTypes.test(file.mimetype) // controleren of het bestand een afbeelding is
 
   if (ext && mime) {
     cb(null, true)
   } else {
-    cb("Only images allowed")
+    cb("Only images allowed") // error teruggeven als het geen afbeelding is
   }
 }
 
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 } // max 5mb
 })
 
-// ─── IGDB / Twitch helpers ────────────────────────────────────────────────────
-
+// IGDB / Twitch helpers https://api-docs.igdb.com/#getting-started
+// haalt token op van Twitch API, nodig voor IGDB API calls
 async function getAccessToken() {
   const response = await fetch(
     `https://id.twitch.tv/oauth2/token?client_id=${process.env.TWITCH_CLIENT_ID}&client_secret=${process.env.TWITCH_CLIENT_SECRET}&grant_type=client_credentials`,
@@ -226,8 +232,7 @@ async function getAccessToken() {
   return data.access_token
 }
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
-
+// routes
 app.get("/", (req, res) => {
   res.render("home")
 })
@@ -240,7 +245,7 @@ app.get("/registreren", (req, res) => {
   res.render("registreren", { error: null, provinces, formData: {} })
 })
 
-// Registreren
+// registreren
 app.post("/registreren", async (req, res) => {
   const collection = client.db("accounts").collection("users")
 
@@ -250,7 +255,7 @@ app.post("/registreren", async (req, res) => {
     bio: xss(req.body.bio || ""),
     playStyle: xss(req.body.playStyle || ""),
     province: xss(req.body.province || ""),
-    includeProvinceInMatching: req.body.includeProvinceInMatching === "on",
+    includeProvinceInMatching: req.body.includeProvinceInMatching === "on", // checkt of checkbox is aangevinkt
   }
 
   // wachtwoord minimale eisen checken
@@ -262,18 +267,19 @@ app.post("/registreren", async (req, res) => {
     })
   }
 
-  const existingUser = await collection.findOne({ email: req.body.email })
+  const existingUser = await collection.findOne({ email: req.body.email }) // checkt of email al in gebruik is in database
   if (existingUser) {
     return res.render("registreren", { error: "Email is al geregistreerd", provinces, formData })
   }
 
-  const existingUsername = await collection.findOne({ username: req.body.username })
+  const existingUsername = await collection.findOne({ username: req.body.username }) // checkt of gebruikersnaam al in gebruik is in database
   if (existingUsername) {
     return res.render("registreren", { error: "Gebruikersnaam bestaat al", provinces, formData })
   }
 
-  const hashedPassword = await bcrypt.hash(req.body.password, 10)
+  const hashedPassword = await bcrypt.hash(req.body.password, 10) // wachtwoord hashen met bcrypt voor veiligheid voordat het in database wordt opgeslagen
 
+  // nieuwe user aanmaken in database
   await collection.insertOne({
     username: formData.username,
     email: formData.email,
@@ -289,11 +295,12 @@ app.post("/registreren", async (req, res) => {
   res.redirect("/login")
 })
 
-// Login
+// login
 app.get("/login", (req, res) => {
   res.render("login")
 })
 
+// gebruiker inlog checken en sessie starten
 app.post("/login", async (req, res) => {
   const collection = client.db("accounts").collection("users")
 
@@ -311,37 +318,37 @@ app.post("/login", async (req, res) => {
   res.redirect("/account")
 })
 
-// Account
-app.get("/account", requireLogin, async (req, res) => {
-  const users = client.db("accounts").collection("users")
+// account
+app.get("/account", requireLogin, async (req, res) => { // moet ingelogd zijn om account pagina te kunnen bezoeken, anders redirect naar login pagina
+  const users = client.db("accounts").collection("users") // haalt gegevens van user op uit database om te kunnen tonen op account pagina
   const gamesCol = client.db("games").collection("games")
 
-  const userId = new ObjectId(req.session.userId)
+  const userId = new ObjectId(req.session.userId) // haalt de userId op uit de sessie, deze is opgeslagen bij het inloggen en wordt gebruikt om de juiste gegevens van de gebruiker op te halen uit de database
 
   const user = await users.findOne({ _id: userId })
 
-  const games = await gamesCol.find({
+  const games = await gamesCol.find({ // haalt de games op die in de database die zijn opgeslagen door deze gebruiker
     gameId: { $in: user.games || [] }
   }).toArray()
 
   res.render("account", { user, games, provinces })
 })
 
-// Profiel pagina
+// publieke profiel pagina
 app.get("/user/:username", async (req, res) => {
   const collection = client.db("accounts").collection("users")
   const user = await collection.findOne({ username: req.params.username })
 
   if (!user) {
-    return res.status(404).send("User not found")
+    return res.status(404).send("User not found") // error als gebruiker niet bestaat
   }
 
   res.render("profile", { user })
 })
 
-// Profiel updaten
-app.post("/update-profile", requireLogin, upload.single("profilePicture"), async (req, res) => {
-  const collection = client.db("accounts").collection("users")
+// profiel updaten
+app.post("/update-profile", requireLogin, upload.single("profilePicture"), async (req, res) => { // moet ingelogd zijn om profiel te kunnen updaten, anders redirect naar login pagina
+  const collection = client.db("accounts").collection("users") 
   const gamesCol = client.db("games").collection("games")
   const userId = new ObjectId(req.session.userId)
 
@@ -374,8 +381,8 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
       const oldPath = path.join(__dirname, "static", user.profilePicture)
 
       if (fs.existsSync(oldPath)) {
-        fs.unlink(oldPath, err => {
-          if (err) console.error("Error deleting old image:", err)
+        fs.unlink(oldPath, err => { // oude afbeelding verwijderen
+          if (err) console.error("Error deleting old image:", err) // error in console als er iets misgaat bij het verwijderen van de oude profielfoto
         })
       }
     }
@@ -383,7 +390,7 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
     updateData.profilePicture = "/uploads/" + req.file.filename
   }
 
-  // wachtwoord check minimale eisen
+  // wachtwoord check minimale eisen bij updaten
   if (req.body.newPassword && req.body.newPassword !== "") {
 
     if (!isValidPassword(req.body.newPassword)) {
@@ -400,10 +407,10 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
       })
     }
 
-    updateData.password = await bcrypt.hash(req.body.newPassword, 10)
+    updateData.password = await bcrypt.hash(req.body.newPassword, 10) // nieuw wachtwoord hashen met bcrypt voor veiligheid voordat het in database wordt opgeslagen
   }
 
-  // de update uitvoeren in db
+  // de update uitvoeren in database
   await collection.updateOne(
     { _id: userId },
     { $set: updateData }
@@ -412,6 +419,7 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
   res.redirect("/account")
 })
 
+// haalt de matches van de gebruiker op en laat deze zien op de ejs matching pagina, moet ingelogd zijn om deze pagina te kunnen bezoeken anders redirect naar login pagina
 app.get("/matching", requireLogin, async (req, res) => {
   try {
     const { currentUser, matches } = await getMatchesForCurrentUser(req.session.userId)
@@ -429,7 +437,6 @@ app.get("/matching", requireLogin, async (req, res) => {
     res.status(500).send("Error loading matches")
   }
 })
-// ─── IGDB API Routes ──────────────────────────────────────────────────────────
 
 // Twitch token ophalen
 app.get("/token", async (req, res) => {
@@ -446,35 +453,7 @@ app.get("/token", async (req, res) => {
   }
 })
 
-// Mobile games ophalen
-app.get("/mobile-games", async (req, res) => {
-  try {
-    const accessToken = await getAccessToken()
-
-    const igdbResponse = await fetch("https://api.igdb.com/v4/games", {
-      method: "POST",
-      headers: {
-        "Client-ID": process.env.TWITCH_CLIENT_ID,
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "text/plain",
-      },
-      body: `
-        fields name,cover.url,first_release_date,platforms.name,rating;
-        where platforms = (34, 39);
-        sort first_release_date desc;
-        limit 20;
-      `,
-    })
-
-    const games = await igdbResponse.json()
-    res.json(games)
-  } catch (err) {
-    console.error("❌ Error fetching mobile games:", err)
-    res.status(500).send("Error fetching mobile games")
-  }
-})
-
-// Zoekfunctie
+// zoekfunctie dropdown voor games toevoegen
 app.get("/search", async (req, res) => {
   try {
     const searchTerm = req.query.game
@@ -484,7 +463,7 @@ app.get("/search", async (req, res) => {
     }
 
     const accessToken = await getAccessToken()
-
+    // IGDB API call om games te zoeken op basis van de ingevoerde zoekterm, filtert op android en ios games
     const igdbResponse = await fetch("https://api.igdb.com/v4/games", {
       method: "POST",
       headers: {
@@ -492,10 +471,11 @@ app.get("/search", async (req, res) => {
         Authorization: "Bearer " + accessToken,
         "Content-Type": "text/plain",
       },
+      // filtert hier op android en ios games
       body: `
         search "${searchTerm}";
         fields name,cover.url,first_release_date,rating;
-        where platforms = (34, 39);
+        where platforms = (34, 39); 
         limit 10;
       `,
     })
@@ -504,11 +484,11 @@ app.get("/search", async (req, res) => {
     res.json(games)
   } catch (err) {
     console.error("Search error:", err)
-    res.status(500).send("Error searching games")
+    res.status(500).send("Error searching games") // error teruggeven als er iets misgaat bij het zoeken van games, zodat de view hierop reageert en de dropdown leegmaakt
   }
 })
 
-// game toevoegen aan account --------------------------------------
+// game toevoegen aan account
 app.post("/add-game", requireLogin, async (req, res) => {
   const gamesCollection = client.db("games").collection("games") 
   const usersCollection = client.db("accounts").collection("users")
@@ -544,7 +524,7 @@ app.post("/add-game", requireLogin, async (req, res) => {
 })
 
 
-// game verwijderen van account
+// game verwijderen van user account, game blijft wel bestaan in games collectie zodat deze nog steeds zichtbaar is in matches van andere gebruikers die deze game ook hebben toegevoegd
 app.post("/remove-game", requireLogin, async (req, res) => {
   const usersCollection = client.db("accounts").collection("users")
 
@@ -552,7 +532,7 @@ app.post("/remove-game", requireLogin, async (req, res) => {
   const gameId = String(req.body.id)
 
   try {
-    // alleen uit user verwijderen (game blijft bestaan in DB)
+    // alleen uit user verwijderen (game blijft bestaan in database)
     await usersCollection.updateOne(
       { _id: userId },
       { $pull: { games: gameId } }
@@ -566,6 +546,7 @@ app.post("/remove-game", requireLogin, async (req, res) => {
   }
 })
 
+// uitloggen, sessie vernietigen en redirect naar login pagina
 app.get("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/login")
