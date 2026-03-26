@@ -56,17 +56,6 @@
         <div id="dropdown"></div>
     </div>
 
-    <button id="showSecurity">Verander wachtwoord of gebruikersnaam</button>
-
-    <form id="securityForm" action="/update-profile" method="post" style="display:none;">
-        <input type="text" name="username" placeholder="Nieuwe username">
-        <input type="password" name="newPassword" placeholder="Nieuw wachtwoord">
-
-        <button type="submit">Opslaan</button>
-    </form>
-
-    <a href="/user/<%= user.username %>">Bekijk mijn profiel</a>
-
     <h2>Mijn games</h2>
     <% if (games.length === 0) { %>
         <p>Je hebt nog geen games toegevoegd.</p>
@@ -83,6 +72,16 @@
         </div>
     <% } %>
 
+    <button id="showSecurity">Verander wachtwoord of gebruikersnaam</button>
+
+    <form id="securityForm" action="/update-profile" method="post" style="display:none;">
+        <input type="text" name="username" placeholder="Nieuwe username">
+        <input type="password" name="newPassword" placeholder="Nieuw wachtwoord">
+
+        <button type="submit">Opslaan</button>
+    </form>
+
+    <a href="/user/<%= user.username %>">Bekijk mijn profiel</a>
 
     <script src="/js/login.js"></script>
 </body>
