@@ -34,3 +34,19 @@
     border-radius: 999px;
     font-weight: 700;
 }
+
+.match-profile-link {
+    display: inline-block;
+    margin-top: 1em;
+    background-color: #ddc6a7;
+    color: #1a1a1a;
+    padding: 0.65em 1em;
+    border-radius: 0.5em;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.match-profile-link:hover,
+.match-profile-link:focus-visible {
+    background-color: #f0dbc0;
+}

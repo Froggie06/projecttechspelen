@@ -44,6 +44,7 @@
                         <p><%= match.bio || "Deze gebruiker heeft nog geen bio ingevuld." %></p>
                         <p><strong>Gedeelde games:</strong> <%= match.sharedGames.length ? match.sharedGames.map((game) => game.name).join(", ") : "Geen" %></p>
                         <p><strong>Waarom deze match:</strong> <%= match.reasons.join(", ") %></p>
+                        <a class="match-profile-link" href="/user/<%= encodeURIComponent(match.username) %>">Bekijk profiel</a>
                     </article>
                 <% }) %>
             </div>
