@@ -1,1 +1,88 @@
 /* Styling specifiek voor views/login.ejs. */
+@import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+    font-family: "Cascadia Code", monospace;
+    background:
+        radial-gradient(circle at top, rgba(221, 198, 167, 0.18), transparent 30%),
+        linear-gradient(180deg, #161616 0%, #0d0d0d 100%);
+    padding: 1rem;
+}
+
+form {
+    width: 100%;
+    max-width: 22rem;
+    padding: 1.5rem 1rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid rgba(221, 198, 167, 0.28);
+    border-radius: 1.25rem;
+    background: rgba(27, 27, 27, 0.92);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px);
+    gap: 0.75rem;
+}
+
+form::before {
+    content: "Login";
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.15rem;
+}
+
+form input,
+form button {
+    min-height: 3rem;
+    padding: 0.85rem 0.95rem;
+    font-size: 0.95rem;
+    border-radius: 0.9rem;
+}
+
+form input {
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(221, 198, 167, 0.24);
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+form input::placeholder {
+    color: rgba(255, 255, 255, 0.56);
+}
+
+
+form button {
+    margin-top: 0.35rem;
+    border: none;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+body > p {
+    margin: 0;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.9rem;
+    max-width: 22rem;
+}
+
+body > p a {
+    color: #f2d8b5;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+p:last-of-type {
+   padding-bottom: 0.75em;
+}
+
+button {
+    min-height: 3rem;
+    padding: 0.85rem 0.95rem;
+    font-size: 0.95rem;
+    border-radius: 0.9rem;
+    border: none;
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+}
