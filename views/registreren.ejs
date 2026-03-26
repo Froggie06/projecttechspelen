@@ -13,12 +13,33 @@
     <% } %>
     
     <form action="/registreren" method="post">
-        <input type="text" name="username" placeholder="Username">
-        <input type="email" name="email" placeholder="Email">
-        <input type="password" name="password" placeholder="Password">
+        <input type="text" name="username" placeholder="Username" value="<%= formData?.username || '' %>">
+        <input type="email" name="email" placeholder="Email" value="<%= formData?.email || '' %>">
+        <input type="password" name="password" placeholder="Password" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"title="Minimaal 8 tekens, 1 hoofdletter, 1 cijfer en 1 speciaal teken">
+        <textarea name="bio" placeholder="Vertel iets over jezelf"><%= formData?.bio || '' %></textarea>
+
+        <select name="playStyle">
+            <option value="">Kies speelstijl</option>
+            <option value="competitive" <%= formData?.playStyle === 'competitive' ? 'selected' : '' %>>Competitief</option>
+            <option value="casual" <%= formData?.playStyle === 'casual' ? 'selected' : '' %>>Casual</option>
+        </select>
+
+        <select name="province">
+            <option value="">Kies provincie</option>
+            <% provinces.forEach((province) => { %>
+                <option value="<%= province %>" <%= formData?.province === province ? 'selected' : '' %>><%= province %></option>
+            <% }) %>
+        </select>
+
+        <label class="checkbox-row">
+            <input type="checkbox" name="includeProvinceInMatching" <%= formData?.includeProvinceInMatching ? 'checked' : '' %>>
+            <span>Neem provincie mee in matching</span>
+        </label>
 
         <button type="submit">Registreren</button>
     </form>
+
+    <p> Heb je al een account? <a href="/login">Log in</a></p>
 
     <script src="/js/login.js"></script>
 </body>

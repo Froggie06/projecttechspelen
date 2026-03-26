@@ -13,13 +13,35 @@
     <img src="<%= user.profilePicture || 'images/defaultAvatar.jpg' %>" width="150">
 
     <p>Bio: <%= user.bio %></p>
+    <p>Speelstijl: <%= user.playStyle === "competitive" ? "Competitief" : user.playStyle === "casual" ? "Casual" : "Nog niet ingevuld" %></p>
+    <p>Provincie: <%= user.province || "Niet ingevuld" %></p>
+    <p>Provincie meetellen: <%= user.includeProvinceInMatching ? "Ja" : "Nee" %></p>
 
     <a href="/logout">Logout</a>
+    <a href="/matching">Bekijk mijn matches</a>
 
     <h2>Profiel aanpassen</h2>
 
     <form action="/update-profile" method="post" enctype="multipart/form-data">
-        <textarea name="bio" placeholder="Bio"></textarea>
+        <textarea name="bio" placeholder="Bio"><%= user.bio || "" %></textarea>
+
+        <select name="playStyle">
+            <option value="">Kies speelstijl</option>
+            <option value="competitive" <%= user.playStyle === 'competitive' ? 'selected' : '' %>>Competitief</option>
+            <option value="casual" <%= user.playStyle === 'casual' ? 'selected' : '' %>>Casual</option>
+        </select>
+
+        <select name="province">
+            <option value="">Kies provincie</option>
+            <% provinces.forEach((province) => { %>
+                <option value="<%= province %>" <%= user.province === province ? 'selected' : '' %>><%= province %></option>
+            <% }) %>
+        </select>
+
+        <label class="checkbox-row">
+            <input type="checkbox" name="includeProvinceInMatching" <%= user.includeProvinceInMatching ? 'checked' : '' %>>
+            <span>Neem provincie mee in matching</span>
+        </label>
 
         <label>Profielfoto:</label>
         <input type="file" name="profilePicture">
@@ -34,6 +56,22 @@
         <div id="dropdown"></div>
     </div>
 
+    <h2>Mijn games</h2>
+    <% if (games.length === 0) { %>
+        <p>Je hebt nog geen games toegevoegd.</p>
+    <% } else { %>
+        <div class="game-list">
+            <% games.forEach((game) => { %>
+                <article class="game-card">
+                    <% if (game.cover) { %>
+                        <img src="<%= game.cover %>" width="60" alt="<%= game.name %>">
+                    <% } %>
+                    <p><%= game.name %></p>
+                </article>
+            <% }) %>
+        </div>
+    <% } %>
+
     <button id="showSecurity">Verander wachtwoord of gebruikersnaam</button>
 
     <form id="securityForm" action="/update-profile" method="post" style="display:none;">
@@ -45,8 +83,6 @@
 
     <a href="/user/<%= user.username %>">Bekijk mijn profiel</a>
 
-
     <script src="/js/login.js"></script>
 </body>
 </html>
-
