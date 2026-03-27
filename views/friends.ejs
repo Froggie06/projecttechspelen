@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Vrienden en vriendverzoeken</h1>
+    <h2>Vriendverzoeken</h2>
+
+<% requests.forEach(user => { %>
+  <div>
+    <p><%= user.username %></p>
+
+    <form method="POST" action="/friend-request/accept">
+      <input type="hidden" name="fromUserId" value="<%= user._id %>">
+      <button>Accepteren</button>
+    </form>
+
+    <form method="POST" action="/friend-request/reject">
+      <input type="hidden" name="fromUserId" value="<%= user._id %>">
+      <button>Weigeren</button>
+    </form>
+  </div>
+<% }) %>
+
+<h2>Vrienden</h2>
+
+<% friends.forEach(user => { %>
+  <p><%= user.username %></p>
+<% }) %>
+</body>
+</html>

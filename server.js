@@ -280,17 +280,19 @@ app.post("/registreren", async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10) // wachtwoord hashen met bcrypt voor veiligheid voordat het in database wordt opgeslagen
 
   // nieuwe user aanmaken in database
-  await collection.insertOne({
-    username: formData.username,
-    email: formData.email,
-    password: hashedPassword,
-    bio: formData.bio,
-    profilePicture: "images/defaultAvatar.jpg",
-    games: [],
-    playStyle: formData.playStyle,
-    province: formData.province,
-    includeProvinceInMatching: formData.includeProvinceInMatching,
-  })
+await collection.insertOne({
+  username: formData.username,
+  email: formData.email,
+  password: hashedPassword,
+  bio: formData.bio,
+  profilePicture: "images/defaultAvatar.jpg",
+  games: [],
+  playStyle: formData.playStyle,
+  province: formData.province,
+  includeProvinceInMatching: formData.includeProvinceInMatching,
+  friends: [],
+  friendRequests: []
+})
 
   res.redirect("/login")
 })
@@ -435,6 +437,126 @@ app.get("/matching", requireLogin, async (req, res) => {
   } catch (err) {
     console.error("Error loading matches:", err)
     res.status(500).send("Error loading matches")
+  }
+})
+
+// vriendverzoek route, moet ingelogd zijn om een vriendverzoek te kunnen sturen, anders redirect naar login pagina
+app.post("/friend-request", requireLogin, async (req, res) => {
+  const users = client.db("accounts").collection("users")
+
+  const fromUserId = new ObjectId(req.session.userId)
+  const toUserId = new ObjectId(req.body.toUserId)
+
+  try {
+    // voorkom dubbele requests
+    const targetUser = await users.findOne({ _id: toUserId })
+
+    const alreadyRequested = targetUser.friendRequests?.some(
+      req => req.from.toString() === fromUserId.toString()
+    )
+
+    if (alreadyRequested) {
+      return res.json({ success: false, message: "Al verzonden" })
+    }
+
+    // push request
+    await users.updateOne(
+      { _id: toUserId },
+      {
+        $push: {
+          friendRequests: {
+            from: fromUserId,
+            status: "pending"
+          }
+        }
+      }
+    )
+
+    res.json({ success: true })
+
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ success: false })
+  }
+})
+
+// vriendenlijst en binnenkomende vriendverzoeken tonen, moet ingelogd zijn om deze pagina te kunnen bezoeken, anders redirect naar login pagina
+app.get("/friends", requireLogin, async (req, res) => {
+  const users = client.db("accounts").collection("users")
+
+  const user = await users.findOne({
+    _id: new ObjectId(req.session.userId)
+  })
+
+  // haal info van request users
+  const requestIds = user.friendRequests?.map(r => r.from) || []
+
+  const requestUsers = await users.find({
+    _id: { $in: requestIds }
+  }).toArray()
+
+  const friends = await users.find({
+    _id: { $in: user.friends || [] }
+  }).toArray()
+
+  res.render("friends", {
+    requests: requestUsers,
+    friends
+  })
+})
+
+// vriendverzoek accepteren, moet ingelogd zijn om een vriendverzoek te kunnen accepteren, anders redirect naar login pagina
+app.post("/friend-request/accept", requireLogin, async (req, res) => {
+  const users = client.db("accounts").collection("users")
+
+  const currentUserId = new ObjectId(req.session.userId)
+  const fromUserId = new ObjectId(req.body.fromUserId)
+
+  try {
+    // voeg elkaar toe als vrienden
+    await users.updateOne(
+      { _id: currentUserId },
+      {
+        $pull: { friendRequests: { from: fromUserId } },
+        $addToSet: { friends: fromUserId }
+      }
+    )
+
+    await users.updateOne(
+      { _id: fromUserId },
+      {
+        $addToSet: { friends: currentUserId }
+      }
+    )
+
+    res.redirect("/friends")
+
+  } catch (err) {
+    console.error(err)
+    res.status(500).send("Error")
+  }
+})
+
+// vriendverzoek afwijzen, moet ingelogd zijn om een vriendverzoek te kunnen afwijzen, anders redirect naar login pagina
+app.post("/friend-request/reject", requireLogin, async (req, res) => {
+  const users = client.db("accounts").collection("users")
+
+  const currentUserId = new ObjectId(req.session.userId)
+  const fromUserId = new ObjectId(req.body.fromUserId)
+
+  try {
+    await users.updateOne(
+      { _id: currentUserId },
+      {
+        $pull: { friendRequests: { from: fromUserId } }
+      }
+    )
+
+    res.redirect("/friends")
+
+  } catch (err) {
+    console.error(err)
+    res.status(500).send("Error")
   }
 })
 
