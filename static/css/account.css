@@ -43,6 +43,22 @@
     color: #1a1a1a;
 }
 
+.add-btn {
+    margin-left: auto;
+    padding: 1em;
+    border: 1px solid #ddc6a7;
+    border-radius: 0.3em;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.remove-game-btn {
+    margin-left: auto;
+    padding: 1em;
+    border: 1px solid #ddc6a7;
+    border-radius: 0.3em;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
 .game-list {
     display: grid;
     gap: 1em;
