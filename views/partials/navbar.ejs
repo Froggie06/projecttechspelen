@@ -12,7 +12,7 @@
             <!-- Vrienden -->
             <li>
                 <a href="/friends">
-                    <img src="/images/friends.svg" alt="friends">
+                    <img src="/images/friends.png" alt="friends">
                     <% if (requestCount > 0) { %>
                         <span class="badge"><%= requestCount %></span>
                     <% } %>
@@ -22,7 +22,7 @@
             <!-- Matching / home -->
             <li>
                 <a href="/matching">
-                    <img src="/images/homebutton.svg" alt="matching">
+                    <img src="/images/home.png" alt="matching">
                 </a>
             </li>
 
@@ -30,11 +30,11 @@
             <li>
                 <% if (currentUser) { %>
                     <a href="/user/<%= currentUser.username %>">
-                        <img src="/images/profile.svg" alt="profiel">
+                        <img src="/images/profile.png" alt="profiel">
                     </a>
                 <% } else { %>
                     <a href="/login">
-                        <img src="/images/profile.svg" alt="profiel">
+                        <img src="/images/profile.png" alt="profiel">
                     </a>
                 <% } %>
             </li>
@@ -42,7 +42,7 @@
             <!-- Instellingen -->
             <li>
                 <a href="/account">
-                    <img src="/images/settings.svg" alt="instellingen">
+                    <img src="/images/settings.png" alt="instellingen">
                 </a>
             </li>
         </ul>
