@@ -24,11 +24,11 @@
 }
 
 #dropdown {
-    position: absolute;
     width: 100%;
     background-color: #b83a2e;
     max-height: 300px;
     overflow-y: auto;
+    z-index: 3;
 }
 
 .result {
