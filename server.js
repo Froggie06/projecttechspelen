@@ -52,6 +52,29 @@ app.use(session({
   }
 }))
 
+// middleware om het aantal vriendverzoeken bij te houden, zodat deze getoond worden in de navbar
+app.use(async (req, res, next) => {
+  if (!req.session.userId) {
+    res.locals.requestCount = 0
+    return next()
+  }
+
+  const users = client.db("accounts").collection("users")
+
+  try {
+    const user = await users.findOne({
+      _id: new ObjectId(req.session.userId)
+    })
+
+    res.locals.requestCount = user?.friendRequests?.length || 0
+  } catch (err) {
+    console.error(err)
+    res.locals.requestCount = 0
+  }
+
+  next()
+})
+
 // database connect
 async function connectDB() {
   try {
@@ -173,17 +196,33 @@ async function getMatchesForCurrentUser(userId) {
       .filter(Boolean),
   }
 
-  const matches = scoredMatches.map((match) => ({ // vervangt de gameId's in de matches met de volledige game details zodat deze ook in de view komen te staan
-    ...match.candidateUser,
+const matches = scoredMatches.map((match) => {
+  const candidate = match.candidateUser
+
+  const isFriend = currentUser.friends?.some(
+    id => id.toString() === candidate._id.toString()
+  )
+
+  const requestSent = candidate.friendRequests?.some(
+    req => req.from.toString() === currentUser._id.toString()
+  )
+
+  return {
+    ...candidate,
     score: match.score,
     reasons: match.reasons,
+    isFriend,
+    requestSent,
+
     sharedGames: match.sharedGameIds
       .map((gameId) => gameMap.get(gameId))
       .filter(Boolean),
-    gameDetails: normalizeUserGames(match.candidateUser)
+
+    gameDetails: normalizeUserGames(candidate)
       .map((gameId) => gameMap.get(gameId))
-      .filter(Boolean), // verwijdert de games die niet zijn gevonden in de database
-  })) 
+      .filter(Boolean),
+  }
+})
 
   return {
     currentUser: hydratedCurrentUser,
@@ -448,9 +487,19 @@ app.post("/friend-request", requireLogin, async (req, res) => {
   const toUserId = new ObjectId(req.body.toUserId)
 
   try {
-    // voorkom dubbele requests
     const targetUser = await users.findOne({ _id: toUserId })
 
+    // zorgt dat je geen vriendverzoek naar jezelf kunt sturen
+    if (fromUserId.equals(toUserId)) {
+      return res.json({ success: false, message: "Kan jezelf niet toevoegen" })
+    }
+
+    // checkt of de gebruiker al vrienden is, voorkomt dat er meerdere verzoeken worden gestuurd naar dezelfde gebruiker
+    if (targetUser.friends?.some(id => id.toString() === fromUserId.toString())) {
+      return res.json({ success: false, message: "Al vrienden" })
+    }
+
+    // checkt of er al een request is gestuurd naar een andere gebruiker, voorkomt dat er meerdere verzoeken worden gestuurd naar dezelfde gebruiker
     const alreadyRequested = targetUser.friendRequests?.some(
       req => req.from.toString() === fromUserId.toString()
     )
@@ -459,7 +508,7 @@ app.post("/friend-request", requireLogin, async (req, res) => {
       return res.json({ success: false, message: "Al verzonden" })
     }
 
-    // push request
+    // request toevoegen
     await users.updateOne(
       { _id: toUserId },
       {

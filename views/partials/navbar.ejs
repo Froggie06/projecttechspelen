@@ -12,6 +12,9 @@
             <li>
             <a href="/friends">
                 <img src="/images/friends.svg" alt="friends">
+                <% if (requestCount > 0) { %>
+                    <span class="badge"><%= requestCount %></span>
+                <% } %>
             </a>
             </li>
             <li>
@@ -20,7 +23,7 @@
             </a>
             </li>
             <li>
-            <a href="/profiel">
+            <a href="/profile">
                 <img src="/images/profile.svg" alt="profiel">
             </a>
             </li>

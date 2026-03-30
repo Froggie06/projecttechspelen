@@ -45,4 +45,14 @@ nav img {
     width: 4em;
 }
 
+/* notification badge voor friends requests */
+.badge {
+  background: red;
+  color: white;
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 12px;
+  position: absolute;
+}
+
 
