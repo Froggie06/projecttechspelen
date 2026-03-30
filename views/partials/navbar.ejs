@@ -9,27 +9,41 @@
 <body>
    <nav>
         <ul>
+            <!-- Vrienden -->
             <li>
-            <a href="/friends">
-                <img src="/images/friends.svg" alt="friends">
-                <% if (requestCount > 0) { %>
-                    <span class="badge"><%= requestCount %></span>
+                <a href="/friends">
+                    <img src="/images/friends.svg" alt="friends">
+                    <% if (requestCount > 0) { %>
+                        <span class="badge"><%= requestCount %></span>
+                    <% } %>
+                </a>
+            </li>
+
+            <!-- Matching / home -->
+            <li>
+                <a href="/matching">
+                    <img src="/images/homebutton.svg" alt="matching">
+                </a>
+            </li>
+
+            <!-- Profiellink -->
+            <li>
+                <% if (currentUser) { %>
+                    <a href="/user/<%= currentUser.username %>">
+                        <img src="/images/profile.svg" alt="profiel">
+                    </a>
+                <% } else { %>
+                    <a href="/login">
+                        <img src="/images/profile.svg" alt="profiel">
+                    </a>
                 <% } %>
-            </a>
             </li>
+
+            <!-- Instellingen -->
             <li>
-            <a href="/matching">
-                <img src="/images/homebutton.svg" alt="matching">
-            </a>
-            </li>
-            <li>
-            <a href="/profile">
-                <img src="/images/profile.svg" alt="profiel">
-            </a>
-            </li>
-            <a href="/account">
-                <img src="/images/settings.svg" alt="instellingen">
-            </a>
+                <a href="/account">
+                    <img src="/images/settings.svg" alt="instellingen">
+                </a>
             </li>
         </ul>
     </nav>

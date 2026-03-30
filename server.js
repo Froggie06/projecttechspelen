@@ -52,6 +52,25 @@ app.use(session({
   }
 }))
 
+// maakt currentUser beschikbaar in alle EJS templates
+app.use(async (req, res, next) => {
+  if (!req.session.userId) {
+    res.locals.currentUser = null
+    return next()
+  }
+
+  try {
+    const users = client.db("accounts").collection("users")
+    const user = await users.findOne({ _id: new ObjectId(req.session.userId) })
+    res.locals.currentUser = user || null
+  } catch (err) {
+    console.error(err)
+    res.locals.currentUser = null
+  }
+
+  next()
+})
+
 // middleware om het aantal vriendverzoeken bij te houden, zodat deze getoond worden in de navbar
 app.use(async (req, res, next) => {
   if (!req.session.userId) {
