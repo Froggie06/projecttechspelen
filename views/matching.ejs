@@ -9,6 +9,7 @@
 </head>
 <body>
     <%- include('partials/navbar') %>
+
     <h1>Matches voor <%= currentUser.username %></h1>
 
     <section class="match-panel">
@@ -45,10 +46,23 @@
                         <p><%= match.bio || "Deze gebruiker heeft nog geen bio ingevuld." %></p>
                         <p><strong>Gedeelde games:</strong> <%= match.sharedGames.length ? match.sharedGames.map((game) => game.name).join(", ") : "Geen" %></p>
                         <p><strong>Waarom deze match:</strong> <%= match.reasons.join(", ") %></p>
+
                         <a class="match-profile-link" href="/user/<%= encodeURIComponent(match.username) %>">Bekijk profiel</a>
-                        <form method="POST" action="/friend-request"> <input type="hidden" name="toUserId" value="<%= match._id %>">
-                        <button type="submit">Connect</button>
-                        </form>
+
+                        <% if (match.isFriend) { %>
+                            <button disabled>Vrienden</button>
+
+                        <% } else if (match.requestSent) { %>
+                            <button disabled>Verzoek verzonden</button>
+
+                        <% } else { %>
+                            <button 
+                                class="connect-btn" 
+                                data-user-id="<%= match._id %>">
+                                Connect
+                            </button>
+                        <% } %>
+
                     </article>
                 <% }) %>
             </div>
@@ -57,4 +71,5 @@
 
     <a href="/account">Terug naar account</a>
 </body>
+    <script src="/static/js/matching.js"></script>
 </html>
