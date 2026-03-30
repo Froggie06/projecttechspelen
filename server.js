@@ -686,26 +686,26 @@ app.post("/add-game", requireLogin, async (req, res) => {
   const userId = new ObjectId(req.session.userId)
 
   const game = {
-    gameId: String(req.body.id), 
+    gameId: String(req.body.id),
     name: req.body.name,
     cover: req.body.cover
   }
 
   try {
-    // game wordt maar 1x opgeslagen
+    // sla game 1x op in centrale collectie
     await gamesCollection.updateOne(
       { gameId: game.gameId },
       { $setOnInsert: game },
       { upsert: true }
     )
 
-    // game toevoegen aan user
+    // voeg toe aan user (geen duplicates)
     await usersCollection.updateOne(
       { _id: userId },
       { $addToSet: { games: game.gameId } }
     )
 
-    res.json({ success: true })
+    res.json({ success: true, gameId: game.gameId })
 
   } catch (err) {
     console.error("❌ Error adding game:", err)
@@ -722,13 +722,12 @@ app.post("/remove-game", requireLogin, async (req, res) => {
   const gameId = String(req.body.id)
 
   try {
-    // alleen uit user verwijderen (game blijft bestaan in database)
     await usersCollection.updateOne(
       { _id: userId },
       { $pull: { games: gameId } }
     )
 
-    res.json({ success: true })
+    res.json({ success: true, gameId })
 
   } catch (err) {
     console.error("❌ Error removing game:", err)

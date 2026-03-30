@@ -59,21 +59,28 @@
         <div id="dropdown"></div>
     </div>
 
+    <section>
     <h2>Mijn games</h2>
-    <% if (games.length === 0) { %>
-        <p>Je hebt nog geen games toegevoegd.</p>
-    <% } else { %>
-        <div class="game-list">
-            <% games.forEach((game) => { %>
-                <article class="game-card">
-                    <% if (game.cover) { %>
-                        <img src="<%= game.cover %>" width="60" alt="<%= game.name %>">
-                    <% } %>
-                    <p><%= game.name %></p>
-                </article>
-            <% }) %>
-        </div>
-    <% } %>
+        <% if (games.length === 0) { %>
+            <p id="no-games">Je hebt nog geen games toegevoegd.</p>
+        <% } else { %>
+            <div class="game-list" id="game-list">
+                <% games.forEach((game) => { %>
+                    <article class="game-card" data-id="<%= game.gameId %>">
+                        <% if (game.cover) { %>
+                            <img src="<%= game.cover %>" width="60" alt="<%= game.name %>">
+                        <% } %>
+                        <p><%= game.name %></p>
+
+                        <!-- ❌ verwijder knop -->
+                        <button class="remove-game-btn" data-id="<%= game.gameId %>">
+                            Verwijderen
+                        </button>
+                    </article>
+                <% }) %>
+            </div>
+        <% } %>
+    </section>
 
     <button id="showSecurity">Verander wachtwoord of gebruikersnaam</button>
 
