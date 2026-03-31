@@ -13,7 +13,7 @@
     <%- include('partials/navbar') %>
     <h1><%= user.username %></h1>
 
-    <img src="<%= user.profilePicture || 'images/defaultAvatar.jpg' %>" width="150">
+    <img src="<%= user.profilePicture || '/images/defaultAvatar.jpg' %>" width="150">
 
     <p>Bio: <%= user.bio %></p>
     <p>Speelstijl: <%= user.playStyle === "competitive" ? "Competitief" : user.playStyle === "casual" ? "Casual" : "Nog niet ingevuld" %></p>

@@ -343,7 +343,7 @@ await collection.insertOne({
   email: formData.email,
   password: hashedPassword,
   bio: formData.bio,
-  profilePicture: "images/defaultAvatar.jpg",
+  profilePicture: "/images/defaultAvatar.jpg",
   games: [],
   playStyle: formData.playStyle,
   province: formData.province,

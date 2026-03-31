@@ -10,9 +10,7 @@
 <%- include('partials/navbar') %>
     <h1><%= user.username %></h1>
 
-    <% if (user.profilePicture) { %>
-    <img src="<%= user.profilePicture %>" width="150">
-    <% } %>
+    <img src="<%= user.profilePicture || '/images/defaultAvatar.jpg' %>" width="150">
 
     <p><%= user.bio %></p>
 
