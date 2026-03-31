@@ -47,7 +47,7 @@
         <p>Speelstijl: <%= currentUser.playStyle === "competitive" ? "Competitief" : currentUser.playStyle === "casual" ? "Casual" : "Nog niet ingevuld" %></p>
         <p>Provincie: <%= currentUser.province || "Niet ingevuld" %></p>
         <p>Provincie meetellen: <%= currentUser.includeProvinceInMatching ? "Ja" : "Nee" %></p>
-        <p>Games: <%= currentUser.gameDetails.length ? currentUser.gameDetails.map((game) => game.name).join(", ") : "Nog geen games toegevoegd" %></p>
+        <p>Games: <%= currentUserc.gameDetails.length ? currentUser.gameDetails.map((game) => game.name).join(", ") : "Nog geen games toegevoegd" %></p>
     </section>
 
     <section class="match-panel">
