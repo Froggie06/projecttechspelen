@@ -9,6 +9,36 @@
 </head>
 <body>
     <%- include('partials/navbar') %>
+    <%
+        const fallbackProvinces = [...new Set(
+            matches
+                .map((match) => match.province)
+                .filter(Boolean)
+        )].sort((a, b) => a.localeCompare(b, "nl"))
+
+        const fallbackPlayStyles = [...new Set(
+            matches
+                .map((match) => match.playStyle)
+                .filter(Boolean)
+        )]
+            .map((playStyle) => ({
+                value: playStyle,
+                label: playStyle === "competitive" ? "Competitief" : playStyle === "casual" ? "Casual" : playStyle
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label, "nl"))
+
+        const safeFilters = typeof filters !== "undefined"
+            ? {
+                games: filters.games || [],
+                provinces: filters.provinces?.length ? filters.provinces : fallbackProvinces,
+                playStyles: filters.playStyles?.length ? filters.playStyles : fallbackPlayStyles
+            }
+            : {
+                games: [],
+                provinces: fallbackProvinces,
+                playStyles: fallbackPlayStyles
+            }
+    %>
 
     <h1>Matches voor <%= currentUser.username %></h1>
 
@@ -26,9 +56,47 @@
         <% if (matches.length === 0) { %>
             <p>Nog geen matches gevonden. Voeg games toe of vul speelstijl en provincie aan.</p>
         <% } else { %>
-            <div class="match-list">
+            <section class="match-filters">
+                <h3>Filters</h3>
+                <p class="filter-intro">Filter op provincies en speelstijl. De carrousel toont daarna alleen de profielen die overblijven.</p>
+
+                <div class="filter-grid">
+                    <label class="filter-field" for="provinceFilter">
+                        <span>Provincie</span>
+                        <select id="provinceFilter" name="provinceFilter">
+                            <option value="">Alle provincies</option>
+                            <% safeFilters.provinces.forEach((province) => { %>
+                                <option value="<%= province %>"><%= province %></option>
+                            <% }) %>
+                        </select>
+                    </label>
+
+                    <label class="filter-field" for="styleFilter">
+                        <span>Speelstijl</span>
+                        <select id="styleFilter" name="styleFilter">
+                            <option value="">Alle speelstijlen</option>
+                            <% safeFilters.playStyles.forEach((playStyle) => { %>
+                                <option value="<%= playStyle.value %>"><%= playStyle.label %></option>
+                            <% }) %>
+                        </select>
+                    </label>
+
+                    <button class="filter-reset" id="resetFilters" type="button">Filters wissen</button>
+                </div>
+            </section>
+
+            <section class="match-carousel" aria-label="Gefilterde matches">
+                <p class="carousel-status" id="carouselStatus">Match 1 van <%= matches.length %></p>
+                <p class="match-empty-message" id="noMatchesMessage" hidden>Er zijn geen matches die aan deze filters voldoen.</p>
+
+                <div class="match-list" id="matchCarousel">
                 <% matches.forEach((match, index) => { %>
-                    <article class="match-card">
+                    <article
+                        class="match-card"
+                        data-match-card
+                        data-index="<%= index %>"
+                        data-play-style="<%= match.playStyle || '' %>"
+                        data-province="<%= match.province || '' %>">
                         <div class="match-top">
                             <div>
                                 <p class="match-rank">Match <%= index + 1 %></p>
@@ -65,11 +133,17 @@
 
                     </article>
                 <% }) %>
-            </div>
+                </div>
+
+                <div class="carousel-controls">
+                    <button id="prevMatch" type="button" aria-label="Vorige match">Vorige</button>
+                    <button id="nextMatch" type="button" aria-label="Volgende match">Volgende</button>
+                </div>
+            </section>
         <% } %>
     </section>
 
     <a href="/account">Terug naar account</a>
-</body>
     <script src="/js/matching.js"></script>
+</body>
 </html>

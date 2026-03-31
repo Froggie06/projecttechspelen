@@ -1,7 +1,7 @@
 .match-list {
     display: grid;
     gap: 1em;
-    width: min(40em, 90vw);
+    width: min(42em, 90vw);
 }
 
 .match-card,
@@ -12,10 +12,19 @@
     padding: 1em;
 }
 
+.match-card[hidden] {
+    display: none;
+}
+
+.match-card.is-active {
+    display: block;
+}
+
 .match-top {
     display: flex;
     justify-content: space-between;
     gap: 1em;
+    align-items: start;
 }
 
 .match-rank {
@@ -24,6 +33,84 @@
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 0.08em;
+}
+
+.match-filters,
+.match-carousel {
+    display: grid;
+    gap: 1em;
+    width: min(42em, 90vw);
+}
+
+.filter-intro,
+.match-empty-message,
+.carousel-status {
+    margin: 0;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 1em;
+    align-items: end;
+}
+
+.filter-field {
+    display: grid;
+    gap: 0.4em;
+}
+
+.filter-field span {
+    font-weight: 700;
+}
+
+.filter-field select,
+.filter-reset,
+.carousel-controls button,
+.connect-btn,
+.match-card button {
+    min-height: 2.8rem;
+    border: 1px solid #ddc6a7;
+    border-radius: 0.6em;
+    font: inherit;
+    background-color: #1f1f1f;
+    color: #f8f1e8;
+    padding: 0.65em 0.9em;
+}
+
+.filter-reset,
+.carousel-controls button,
+.connect-btn,
+.match-card button {
+    cursor: pointer;
+}
+
+.filter-reset:hover,
+.filter-reset:focus-visible,
+.carousel-controls button:hover,
+.carousel-controls button:focus-visible,
+.connect-btn:hover,
+.connect-btn:focus-visible,
+.match-card button:hover,
+.match-card button:focus-visible {
+    background-color: #343434;
+}
+
+.carousel-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+}
+
+.carousel-controls button {
+    min-width: 10rem;
+}
+
+.carousel-status {
+    color: #ddc6a7;
+    font-weight: 700;
+    text-align: center;
 }
 
 .score-badge {
@@ -35,18 +122,13 @@
     font-weight: 700;
 }
 
-.match-profile-link {
-    display: inline-block;
-    margin-top: 1em;
-    background-color: #ddc6a7;
-    color: #1a1a1a;
-    padding: 0.65em 1em;
-    border-radius: 0.5em;
-    text-decoration: none;
-    font-weight: 700;
-}
+@media (max-width: 40rem) {
+    .carousel-controls button,
+    .filter-reset {
+        width: 100%;
+    }
 
-.match-profile-link:hover,
-.match-profile-link:focus-visible {
-    background-color: #f0dbc0;
+    .match-top {
+        flex-direction: column;
+    }
 }

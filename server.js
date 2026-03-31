@@ -175,6 +175,42 @@ function calculateMatchScore(currentUser, candidateUser) {
   }
 }
 
+// maakt filteropties aan op basis van de matches die echt gevonden zijn
+function buildMatchFilters(matches) {
+  const availableGames = new Map()
+  const availableProvinces = new Set()
+  const availablePlayStyles = new Set()
+
+  matches.forEach((match) => {
+    match.gameDetails.forEach((game) => {
+      if (game?.gameId && game?.name) {
+        availableGames.set(String(game.gameId), game.name)
+      }
+    })
+
+    if (match?.province) {
+      availableProvinces.add(match.province)
+    }
+
+    if (match?.playStyle) {
+      availablePlayStyles.add(match.playStyle)
+    }
+  })
+
+  return {
+    games: [...availableGames.entries()]
+      .map(([id, name]) => ({ id, name }))
+      .sort((a, b) => a.name.localeCompare(b.name, "nl")),
+    provinces: [...availableProvinces].sort((a, b) => a.localeCompare(b, "nl")),
+    playStyles: [...availablePlayStyles]
+      .map((playStyle) => ({
+        value: playStyle,
+        label: playStyle === "competitive" ? "Competitief" : playStyle === "casual" ? "Casual" : playStyle,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label, "nl")),
+  }
+}
+
 // haalt de matches op voor de huidige gebruiker
 async function getMatchesForCurrentUser(userId) {
   const usersCollection = client.db("accounts").collection("users") // ophalen uit database
@@ -182,7 +218,11 @@ async function getMatchesForCurrentUser(userId) {
   const currentUser = await usersCollection.findOne({ _id: new ObjectId(userId) }) // huidige gebruiker ophalen
 
   if (!currentUser) {
-    return { currentUser: null, matches: [] }
+    return {
+      currentUser: null,
+      matches: [],
+      filters: buildMatchFilters([]),
+    }
   } // voorkomt dat huidige gebruiker wordt meegenomen in de matches, zoekt alleen naar andere gebruikers in de database die niet dezelfde _id hebben als de huidige gebruiker
 
   const otherUsers = await usersCollection 
@@ -215,37 +255,38 @@ async function getMatchesForCurrentUser(userId) {
       .filter(Boolean),
   }
 
-const matches = scoredMatches.map((match) => {
-  const candidate = match.candidateUser
+  const matches = scoredMatches.map((match) => {
+    const candidate = match.candidateUser
 
-  const isFriend = currentUser.friends?.some(
-    id => id.toString() === candidate._id.toString()
-  )
+    const isFriend = currentUser.friends?.some(
+      id => id.toString() === candidate._id.toString()
+    )
 
-  const requestSent = candidate.friendRequests?.some(
-    req => req.from.toString() === currentUser._id.toString()
-  )
+    const requestSent = candidate.friendRequests?.some(
+      req => req.from.toString() === currentUser._id.toString()
+    )
 
-  return {
-    ...candidate,
-    score: match.score,
-    reasons: match.reasons,
-    isFriend,
-    requestSent,
+    return {
+      ...candidate,
+      score: match.score,
+      reasons: match.reasons,
+      isFriend,
+      requestSent,
+      sharedGames: match.sharedGameIds
+        .map((gameId) => gameMap.get(gameId))
+        .filter(Boolean),
+      gameDetails: normalizeUserGames(candidate)
+        .map((gameId) => gameMap.get(gameId))
+        .filter(Boolean),
+    }
+  })
 
-    sharedGames: match.sharedGameIds
-      .map((gameId) => gameMap.get(gameId))
-      .filter(Boolean),
-
-    gameDetails: normalizeUserGames(candidate)
-      .map((gameId) => gameMap.get(gameId))
-      .filter(Boolean),
-  }
-})
+  const filters = buildMatchFilters(matches)
 
   return {
     currentUser: hydratedCurrentUser,
     matches,
+    filters,
   }
 }
 
@@ -482,7 +523,7 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
 // haalt de matches van de gebruiker op en laat deze zien op de ejs matching pagina, moet ingelogd zijn om deze pagina te kunnen bezoeken anders redirect naar login pagina
 app.get("/matching", requireLogin, async (req, res) => {
   try {
-    const { currentUser, matches } = await getMatchesForCurrentUser(req.session.userId)
+    const { currentUser, matches, filters } = await getMatchesForCurrentUser(req.session.userId)
 
     if (!currentUser) {
       return res.redirect("/login")
@@ -491,6 +532,7 @@ app.get("/matching", requireLogin, async (req, res) => {
     res.render("matching", {
       currentUser,
       matches,
+      filters,
     })
   } catch (err) {
     console.error("Error loading matches:", err)
