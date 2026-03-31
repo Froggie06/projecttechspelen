@@ -416,7 +416,7 @@ app.post("/login", async (req, res) => {
   }
 
   req.session.userId = user._id
-  res.redirect("/account")
+  res.redirect("/matching")
 })
 
 // account
