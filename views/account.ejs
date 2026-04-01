@@ -12,7 +12,9 @@
 <body>
     <%- include('partials/navbar') %>
 
-    <h1><%= user.username %></h1>
+    <h1>Profiel aanpassen</h1>
+
+    <h2><%= user.username %></h2>
 
     <img src="<%= user.profilePicture || '/images/defaultAvatar.jpg' %>" width="150">
 
@@ -24,7 +26,6 @@
     <a href="/logout">Logout</a>
     <a href="/matching">Bekijk mijn matches</a>
 
-    <h2>Profiel aanpassen</h2>
 
     <!-- PROFIEL FORM -->
     <form action="/update-profile" method="post" enctype="multipart/form-data">
