@@ -18,17 +18,20 @@
 
     <img src="<%= user.profilePicture || '/images/defaultAvatar.jpg' %>" width="150">
 
-    <p>Bio: <%= user.bio || "Nog niet ingevuld" %></p>
+    <!-- <p>Bio: <%= user.bio || "Nog niet ingevuld" %></p>
     <p>Speelstijl: <%= user.playStyle === "competitive" ? "Competitief" : user.playStyle === "casual" ? "Casual" : "Nog niet ingevuld" %></p>
     <p>Provincie: <%= user.province || "Niet ingevuld" %></p>
-    <p>Provincie meetellen: <%= user.includeProvinceInMatching ? "Ja" : "Nee" %></p>
+    <p>Provincie meetellen: <%= user.includeProvinceInMatching ? "Ja" : "Nee" %></p> -->
 
-    <a href="/logout">Logout</a>
-    <a href="/matching">Bekijk mijn matches</a>
+    <!-- <a href="/logout">Logout</a>
+    <a href="/matching">Bekijk mijn matches</a> -->
 
 
     <!-- PROFIEL FORM -->
     <form action="/update-profile" method="post" enctype="multipart/form-data">
+        <label>Verander profielfoto:</label>
+        <input type="file" name="profilePicture">
+
         <textarea name="bio" placeholder="Bio"><%= user.bio || "" %></textarea>
 
         <select name="playStyle">
@@ -49,11 +52,34 @@
             <span>Neem provincie mee in matching</span>
         </label>
 
-        <label>Profielfoto:</label>
-        <input type="file" name="profilePicture">
-
         <button type="submit">Opslaan</button>
     </form>
+
+    <!-- Game toevoegen aan profiel -->
+    <h2>Zoek een game</h2>
+    <div class="search-container">
+        <input type="search" id="searchInput" placeholder="Voeg games toe..." autocomplete="off"/>
+        <div id="dropdown"></div>
+    </div>
+
+    <section>
+        <h2>Mijn games</h2>
+        <% if (games.length === 0) { %>
+            <p id="no-games">Je hebt nog geen games toegevoegd.</p>
+        <% } else { %>
+            <div class="game-list" id="game-list">
+                <% games.forEach((game) => { %>
+                    <article class="game-card" data-id="<%= game.gameId %>">
+                        <% if (game.cover) { %>
+                            <img src="<%= game.cover %>" width="60" alt="<%= game.name %>">
+                        <% } %>
+                        <p><%= game.name %></p>
+                        <button class="remove-game-btn" data-id="<%= game.gameId %>">Verwijderen</button>
+                    </article>
+                <% }) %>
+            </div>
+        <% } %>
+    </section>
 
     <!-- KNOP OM SECURITY FORM TE TONEN -->
     <button id="showSecurity">Verander wachtwoord of gebruikersnaam</button>
@@ -86,31 +112,6 @@
 
         <button type="submit">Opslaan</button>
     </form>
-
-    <h2>Zoek een game</h2>
-    <div class="search-container">
-        <input type="search" id="searchInput" placeholder="Voeg games toe..." autocomplete="off"/>
-        <div id="dropdown"></div>
-    </div>
-
-    <section>
-        <h2>Mijn games</h2>
-        <% if (games.length === 0) { %>
-            <p id="no-games">Je hebt nog geen games toegevoegd.</p>
-        <% } else { %>
-            <div class="game-list" id="game-list">
-                <% games.forEach((game) => { %>
-                    <article class="game-card" data-id="<%= game.gameId %>">
-                        <% if (game.cover) { %>
-                            <img src="<%= game.cover %>" width="60" alt="<%= game.name %>">
-                        <% } %>
-                        <p><%= game.name %></p>
-                        <button class="remove-game-btn" data-id="<%= game.gameId %>">Verwijderen</button>
-                    </article>
-                <% }) %>
-            </div>
-        <% } %>
-    </section>
 
     <a href="/user/<%= user.username %>">Bekijk mijn profiel</a>
 
