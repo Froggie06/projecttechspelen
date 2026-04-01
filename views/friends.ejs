@@ -1,35 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Vrienden</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/friends.css">
 </head>
-<body>
-  <%- include('partials/navbar') %>
+<body class="friends">
+
+  <header>
+    <%- include('partials/navbar') %>
+  </header>
+
+  <main>
     <h1>Vrienden en vriendverzoeken</h1>
-    <h2>Vriendverzoeken</h2>
 
-<% requests.forEach(user => { %>
-  <div>
-    <p><%= user.username %></p>
+    <section aria-labelledby="verzoeken-title">
+      <h2 id="verzoeken-title">Vriendverzoeken</h2>
 
-    <form method="POST" action="/friend-request/accept">
-      <input type="hidden" name="fromUserId" value="<%= user._id %>">
-      <button>Accepteren</button>
-    </form>
+      <ul>
+        <% requests.forEach(user => { %>
+          <li>
+            <article>
+              <p><%= user.username %></p>
 
-    <form method="POST" action="/friend-request/reject">
-      <input type="hidden" name="fromUserId" value="<%= user._id %>">
-      <button>Weigeren</button>
-    </form>
-  </div>
-<% }) %>
+              <div>
+                <form method="POST" action="/friend-request/accept">
+                  <input type="hidden" name="fromUserId" value="<%= user._id %>">
+                  <button class="vriendknop" type="submit">Accepteren</button>
+                </form>
 
-<h2>Vrienden</h2>
+                <form method="POST" action="/friend-request/reject">
+                  <input type="hidden" name="fromUserId" value="<%= user._id %>">
+                  <button class="vriendknop" type="submit">Weigeren</button>
+                </form>
+              </div>
+            </article>
+          </li>
+        <% }) %>
+      </ul>
+    </section>
 
-<% friends.forEach(user => { %>
-  <p><%= user.username %></p>
-<% }) %>
+    <section aria-labelledby="vrienden-title">
+      <h2 id="vrienden-title">Vrienden</h2>
+
+      <ul>
+        <% friends.forEach(user => { %>
+          <li>
+            <article>
+              <p><%= user.username %></p>
+            </article>
+          </li>
+        <% }) %>
+      </ul>
+    </section>
+
+  </main>
+
 </body>
 </html>
