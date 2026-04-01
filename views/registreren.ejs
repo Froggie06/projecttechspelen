@@ -17,7 +17,33 @@
     <form action="/registreren" method="post">
         <input type="text" name="username" placeholder="Username" value="<%= formData?.username || '' %>">
         <input type="email" name="email" placeholder="Email" value="<%= formData?.email || '' %>">
-        <input type="password" name="password" placeholder="Password" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"title="Minimaal 8 tekens, 1 hoofdletter, 1 cijfer en 1 speciaal teken">
+
+        <!-- Wachtwoord -->
+        <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Password"
+            pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
+            title="Minimaal 8 tekens, 1 hoofdletter, 1 cijfer en 1 speciaal teken">
+            
+            <button type="button" onclick="togglePassword('password')">👁️</button>
+        </div>
+
+        <!-- Bevestig wachtwoord -->
+        <div class="password-wrapper">
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Bevestig wachtwoord">
+            <button type="button" onclick="togglePassword('confirmPassword')">👁️</button>
+        </div>
+
+        <!-- Wachtwoord eisen -->
+        <small class="password-hint">
+            Wachtwoord moet minimaal:
+            <ul>
+                <li>8 tekens bevatten</li>
+                <li>1 hoofdletter bevatten</li>
+                <li>1 cijfer bevatten</li>
+                <li>1 speciaal teken bevatten</li>
+            </ul>
+        </small>
+
         <textarea name="bio" placeholder="Vertel iets over jezelf"><%= formData?.bio || '' %></textarea>
 
         <select name="playStyle">

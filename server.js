@@ -357,6 +357,23 @@ app.post("/registreren", async (req, res) => {
     includeProvinceInMatching: req.body.includeProvinceInMatching === "on", // checkt of checkbox is aangevinkt
   }
 
+  // checkt of beide wachtwoordvelden zijn ingevuld en overeenkomen
+  if (!req.body.password || !req.body.confirmPassword) {
+    return res.render("registreren", {
+      error: "Vul beide wachtwoordvelden in",
+      provinces,
+      formData
+    })
+  }
+
+  if (req.body.password !== req.body.confirmPassword) {
+    return res.render("registreren", {
+      error: "Wachtwoorden komen niet overeen",
+      provinces,
+      formData
+    })
+  }
+
   // wachtwoord minimale eisen checken
   if (!isValidPassword(req.body.password)) {
     return res.render("registreren", {
@@ -379,19 +396,19 @@ app.post("/registreren", async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10) // wachtwoord hashen met bcrypt voor veiligheid voordat het in database wordt opgeslagen
 
   // nieuwe user aanmaken in database
-await collection.insertOne({
-  username: formData.username,
-  email: formData.email,
-  password: hashedPassword,
-  bio: formData.bio,
-  profilePicture: "/images/defaultAvatar.jpg",
-  games: [],
-  playStyle: formData.playStyle,
-  province: formData.province,
-  includeProvinceInMatching: formData.includeProvinceInMatching,
-  friends: [],
-  friendRequests: []
-})
+  await collection.insertOne({
+    username: formData.username,
+    email: formData.email,
+    password: hashedPassword,
+    bio: formData.bio,
+    profilePicture: "/images/defaultAvatar.jpg",
+    games: [],
+    playStyle: formData.playStyle,
+    province: formData.province,
+    includeProvinceInMatching: formData.includeProvinceInMatching,
+    friends: [],
+    friendRequests: []
+  })
 
   res.redirect("/login")
 })
@@ -416,7 +433,7 @@ app.post("/login", async (req, res) => {
   }
 
   req.session.userId = user._id
-  res.redirect("/account")
+  res.redirect("/matching")
 })
 
 // account
@@ -493,6 +510,34 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
 
   // wachtwoord check minimale eisen bij updaten
   if (req.body.newPassword && req.body.newPassword !== "") {
+
+    // checkt of bevestig wachtwoord is ingevuld
+    if (!req.body.confirmNewPassword) {
+      const games = await gamesCol.find({
+        gameId: { $in: user.games || [] }
+      }).toArray()
+
+      return res.render("account", {
+        user,
+        games,
+        provinces,
+        error: "Bevestig je nieuwe wachtwoord"
+      })
+    }
+
+    // checkt of wachtwoorden overeenkomen
+    if (req.body.newPassword !== req.body.confirmNewPassword) {
+      const games = await gamesCol.find({
+        gameId: { $in: user.games || [] }
+      }).toArray()
+
+      return res.render("account", {
+        user,
+        games,
+        provinces,
+        error: "Wachtwoorden komen niet overeen"
+      })
+    }
 
     if (!isValidPassword(req.body.newPassword)) {
       // games opnieuw ophalen zodat pagina correct rendert

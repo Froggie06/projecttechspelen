@@ -1,3 +1,4 @@
+// Toggle security form
 const btn = document.getElementById("showSecurity")
 const form = document.getElementById("securityForm")
 
@@ -13,3 +14,10 @@ if (btn && form) {
     })
 }
 
+// Toggle wachtwoord zichtbaarheid
+document.querySelectorAll(".toggle-btn").forEach(button => {
+    button.addEventListener("click", () => {
+        const input = document.getElementById(button.dataset.target)
+        input.type = input.type === "password" ? "text" : "password"
+    })
+})
