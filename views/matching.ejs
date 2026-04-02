@@ -40,25 +40,20 @@
             }
     %>
 
-    <h1>Matches voor <%= currentUser.username %></h1>
-
+    <main class="matching-page">
     <section class="match-panel">
-        <h2>Jouw profiel</h2>
-        <p>Speelstijl: <%= currentUser.playStyle === "competitive" ? "Competitief" : currentUser.playStyle === "casual" ? "Casual" : "Nog niet ingevuld" %></p>
-        <p>Provincie: <%= currentUser.province || "Niet ingevuld" %></p>
-        <p>Provincie meetellen: <%= currentUser.includeProvinceInMatching ? "Ja" : "Nee" %></p>
-        <p>Games: <%= currentUser.gameDetails.length ? currentUser.gameDetails.map((game) => game.name).join(", ") : "Nog geen games toegevoegd" %></p>
-    </section>
-
-    <section class="match-panel">
-        <h2>Beste matches</h2>
+        <header class="matching-hero">
+            <p class="matching-kicker">Ontdek spelers die bij jou passen</p>
+            <h1>Jouw Matches</h1>
+            <p class="matching-subtitle">Voor <%= currentUser.username %></p>
+        </header>
 
         <% if (matches.length === 0) { %>
-            <p>Nog geen matches gevonden. Voeg games toe of vul speelstijl en provincie aan.</p>
+            <p class="match-empty-state">Nog geen matches gevonden. Voeg games toe of vul speelstijl en provincie aan.</p>
         <% } else { %>
             <section class="match-filters">
                 <h3>Filters</h3>
-                <p class="filter-intro">Filter op provincies en speelstijl. De carrousel toont daarna alleen de profielen die overblijven.</p>
+                <p class="filter-intro">Kies een provincie of speelstijl en blader daarna door de overgebleven matches.</p>
 
                 <div class="filter-grid">
                     <label class="filter-field" for="provinceFilter">
@@ -98,38 +93,60 @@
                         data-play-style="<%= match.playStyle || '' %>"
                         data-province="<%= match.province || '' %>">
                         <div class="match-top">
-                            <div>
+                            <div class="match-heading">
                                 <p class="match-rank">Match <%= index + 1 %></p>
                                 <h3><%= match.username %></h3>
-                                <p>
+                                <p class="match-meta">
                                     <%= match.playStyle === "competitive" ? "Competitief" : match.playStyle === "casual" ? "Casual" : "Onbekend" %>
                                     <% if (match.province) { %>
                                         • <%= match.province %>
                                     <% } %>
                                 </p>
                             </div>
-                            <div class="score-badge"><%= match.score %>%</div>
                         </div>
 
-                        <p><%= match.bio || "Deze gebruiker heeft nog geen bio ingevuld." %></p>
-                        <p><strong>Gedeelde games:</strong> <%= match.sharedGames.length ? match.sharedGames.map((game) => game.name).join(", ") : "Geen" %></p>
-                        <p><strong>Waarom deze match:</strong> <%= match.reasons.join(", ") %></p>
+                        <div class="match-avatar-frame">
+                            <img
+                                class="match-avatar"
+                                src="<%= match.profilePicture || '/images/defaultAvatar.jpg' %>"
+                                alt="Profiel van <%= match.username %>">
+                        </div>
 
-                        <a class="match-profile-link" href="/user/<%= encodeURIComponent(match.username) %>">Bekijk profiel</a>
+                        <p class="match-bio"><%= match.bio || "Deze gebruiker heeft nog geen bio ingevuld." %></p>
 
-                        <% if (match.isFriend) { %>
-                            <button disabled>Vrienden</button>
+                        <div class="match-section">
+                            <p class="match-section-title">Gedeelde games:</p>
+                            <p><%= match.sharedGames.length ? match.sharedGames.map((game) => game.name).join(", ") : "Geen" %></p>
+                        </div>
 
-                        <% } else if (match.requestSent) { %>
-                            <button disabled>Verzoek verzonden</button>
+                        <div class="match-section">
+                            <p class="match-section-title">Waarom deze match:</p>
+                            <p><%= match.reasons.join(", ") %></p>
+                        </div>
 
-                        <% } else { %>
-                            <button 
-                                class="connect-btn" 
-                                data-user-id="<%= match._id %>">
-                                Connect
-                            </button>
-                        <% } %>
+                        <div class="match-actions">
+                            <a class="match-profile-link" href="/user/<%= encodeURIComponent(match.username) %>">Bekijk profiel</a>
+
+                            <% if (match.isFriend) { %>
+                                <button disabled>Vrienden</button>
+
+                            <% } else if (match.requestSent) { %>
+                                <button disabled>Verzoek verzonden</button>
+
+                            <% } else { %>
+                                <button 
+                                    class="connect-btn" 
+                                    data-user-id="<%= match._id %>">
+                                    Connect
+                                </button>
+                            <% } %>
+                        </div>
+
+                        <div class="score-meter" aria-label="Matchscore <%= match.score %> procent">
+                            <div class="score-meter-fill" style="width: <%= match.score %>%;">
+                                <span class="score-meter-label"><%= match.score %>%</span>
+                            </div>
+                        </div>
 
                     </article>
                 <% }) %>
@@ -142,8 +159,8 @@
             </section>
         <% } %>
     </section>
+    </main>
 
-    <a href="/account">Terug naar account</a>
     <script src="/js/matching.js"></script>
 </body>
 </html>
