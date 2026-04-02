@@ -1,51 +1,13 @@
 const input = document.getElementById("searchInput")
 const dropdown = document.getElementById("dropdown")
 
-// ==============================
-// HELPER FUNCTIES UI
-// ==============================
-
-// toevoegen aan UI
-function addGameToUI(game, cover) {
-  const list = document.getElementById("game-list")
-  const noGamesText = document.getElementById("no-games")
-
-  if (!list) return
-
-  // voorkom dubbele games
-  if (document.querySelector(`[data-id="${game.id}"]`)) return
-
-  if (noGamesText) noGamesText.remove()
-
-  const newGame = document.createElement("article")
-  newGame.classList.add("game-card")
-  newGame.dataset.id = game.id
-
-  newGame.innerHTML = `
-    ${cover ? `<img src="${cover}" width="60">` : ""}
-    <p>${game.name}</p>
-    <button class="remove-game-btn" data-id="${game.id}">
-      Verwijderen
-    </button>
-  `
-
-  list.appendChild(newGame)
+function getCurrentPage() {
+  const page = Number.parseInt(new URLSearchParams(window.location.search).get("page"), 10)
+  return Number.isNaN(page) || page < 1 ? 1 : page
 }
 
-// verwijderen uit UI
-function removeGameFromUI(gameId) {
-  const card = document.querySelector(`[data-id="${gameId}"]`)
-  if (card) card.remove()
-
-  const list = document.getElementById("game-list")
-
-  if (list && list.children.length === 0) {
-    list.innerHTML = ""
-    list.insertAdjacentHTML(
-      "afterend",
-      '<p id="no-games">Je hebt nog geen games toegevoegd.</p>'
-    )
-  }
+function goToPage(page) {
+  window.location.href = `/account?page=${page}`
 }
 
 // ==============================
@@ -61,13 +23,16 @@ document.addEventListener("click", async (e) => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ id: gameId })
+        body: JSON.stringify({
+          id: gameId,
+          currentPage: getCurrentPage()
+        })
       })
 
       const data = await res.json()
 
       if (data.success) {
-        removeGameFromUI(gameId)
+        goToPage(data.targetPage || getCurrentPage())
       }
     } catch (err) {
       console.error("Error removing game:", err)
@@ -134,8 +99,7 @@ if (input && dropdown) {
               if (data.success) {
                 button.textContent = "✔"
                 added = true
-
-                addGameToUI(game, cover)
+                goToPage(data.targetPage || getCurrentPage())
               }
 
             } else {
@@ -146,7 +110,8 @@ if (input && dropdown) {
                   "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                  id: game.id
+                  id: game.id,
+                  currentPage: getCurrentPage()
                 })
               })
 
@@ -155,8 +120,7 @@ if (input && dropdown) {
               if (data.success) {
                 button.textContent = "+"
                 added = false
-
-                removeGameFromUI(game.id)
+                goToPage(data.targetPage || getCurrentPage())
               }
             }
           } catch (err) {

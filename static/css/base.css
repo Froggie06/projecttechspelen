@@ -3,6 +3,7 @@
     margin: 0;
     list-style: none;
     font-family: "Cascadia Code", monospace;
+    text-decoration: none
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
@@ -15,9 +16,8 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    margin-top: 3em;
+    margin-top: 2em;
     margin-bottom: 6em;
-
 }
 
 h1,
