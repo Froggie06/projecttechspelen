@@ -186,12 +186,6 @@ form input::placeholder {
     border: 1px solid #b83a2e;
 }
 
-.lijn {
-    height: 0.3em;
-    background-color: #ddc6a7;
-    border-radius: 0.5em;
-}
-
 .buttons-games {
     display: flex;
     flex-direction: row;

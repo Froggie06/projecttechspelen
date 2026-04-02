@@ -475,13 +475,33 @@ app.get("/account", requireLogin, async (req, res) => { // moet ingelogd zijn om
 // publieke profiel pagina
 app.get("/user/:username", async (req, res) => {
   const collection = client.db("accounts").collection("users")
+  const gamesCol = client.db("games").collection("games")
   const user = await collection.findOne({ username: req.params.username })
 
   if (!user) {
     return res.status(404).send("User not found") // error als gebruiker niet bestaat
   }
 
-  res.render("profile", { user })
+  const requestedPage = Math.max(1, Number.parseInt(req.query.page, 10) || 1)
+  const totalGames = await gamesCol.countDocuments({
+    gameId: { $in: user.games || [] }
+  })
+  const totalPages = Math.max(1, Math.ceil(totalGames / GAMES_PER_PAGE))
+  const currentPage = Math.min(requestedPage, totalPages)
+
+  const games = await gamesCol.find({
+    gameId: { $in: user.games || [] }
+  })
+  .skip((currentPage - 1) * GAMES_PER_PAGE)
+  .limit(GAMES_PER_PAGE)
+  .toArray()
+
+  res.render("profile", {
+    user,
+    games,
+    currentPage,
+    totalPages
+  })
 })
 
 // profiel updaten
