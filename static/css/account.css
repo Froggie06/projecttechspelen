@@ -163,6 +163,10 @@ form input::placeholder {
     gap: 0.5em;
 }
 
+.game-card img {
+    border-radius: 0.75em;
+}
+
 .game-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
