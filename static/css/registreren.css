@@ -7,10 +7,17 @@ body {
         radial-gradient(circle at top, rgba(221, 198, 167, 0.18), transparent 30%),
         linear-gradient(180deg, #161616 0%, #0d0d0d 100%);
     padding: 1rem;
+
+    img {
+        display: flex;
+        width: 80%;
+        max-width: 22rem;
+        padding: 2.5em 0 2.5em 0;
+    }
 }
 
 form {
-    width: 100%;
+    width: 80%;
     max-width: 22rem;
     padding: 1.5rem 1rem;
     margin-bottom: 1.25rem;
@@ -119,4 +126,3 @@ body > p[style] {
     font-family: "Noto Sans", sans-serif;
     font-size: 0.9rem;
 }
-
