@@ -137,8 +137,8 @@ body > p[style] {
     margin: 0 0 1rem;
     padding: 0.85rem 1rem;
     border-radius: 0.9rem;
-    background-color: rgba(var(--kleur-primair-rgb), 0.18);
-    border: 1px solid rgba(var(--kleur-primair-rgb), 0.45);
+    background-color: var(--kleur-primair-rgb);
+    border: 1px solid var(--kleur-primair-rgb);
     color: var(--kleur-tekst-donker);
     box-sizing: border-box;
     font-family: "Noto Sans", sans-serif;
