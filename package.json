@@ -17,8 +17,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
+    "build": "node build.js",
     "terserminify": "terser static/script.js -c -m -o output/script.min.js",
-    "minifycss": "postcss static/style.css -o output/style.min.css"
+    "minifycss": "postcss static/css/input.css -o output/style.min.css --use postcss-import --use cssnano"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -37,6 +38,7 @@
     "nodemon": "^3.1.14",
     "postcss": "^8.5.8",
     "postcss-cli": "^11.0.1",
+    "postcss-import": "^16.1.1",
     "stylelint": "^17.4.0",
     "stylelint-config-standard": "^40.0.0"
   }
