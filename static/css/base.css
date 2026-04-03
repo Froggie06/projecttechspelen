@@ -67,19 +67,48 @@ nav {
 nav ul {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.35em;
     align-items: center;
     height: 100%;
     margin: 0;
     padding: 0;
     background-color: #4c6851;
-    list-style: none;
+    padding: 0.90em 1em;
     border-top: 5px solid #ddc6a7;
 }
 
+nav li {
+    background-color: #ffffff;
+    border-radius: 1em;
+    border: 3px solid #ddc6a7;
+    padding: 0.35em 0.2em;
+    width: calc((100% - (3 * 0.35em)) / 4);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.12em;
+}
+
+nav li a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav li p {
+    color: #1a1a1a;
+    font-size: 0.7rem;
+    line-height: 1;
+}
+
 nav img {
-    height: 3em;
-    width: 3em;
+    height: 2.2em;
+    width: 2.2em;
 }
 
 /* notification badge voor friends requests */
@@ -90,6 +119,8 @@ nav img {
   padding: 4px 8px;
   font-size: 12px;
   position: absolute;
+  top: -6px;
+  right: -10px;
 }
 
 .lijn {
@@ -97,5 +128,3 @@ nav img {
     background-color: #ddc6a7;
     border-radius: 0.5em;
 }
-
-
