@@ -65,7 +65,7 @@
 .account form textarea::placeholder,
 .account form input::placeholder,
 .account form select::placeholder {
-    color: var(--kleur-tekst);
+    color: var(--kleur-tekst-donker);
 }
 
 /* Specifiek voor form submit / opslaan buttons */
@@ -104,6 +104,51 @@
     border: 1px solid var(--kleur-primair-donker);
     font-weight: 700;
     text-align: center;
+}
+
+/* Password wrapper */
+.password-wrapper {
+    display: flex;               /* horizontaal uitlijnen */
+    align-items: center;         /* verticaal centreren */
+    gap: 0.5em;                  /* ruimte tussen input en knop */
+}
+
+.password-wrapper input {
+    flex: 1;                     /* input neemt beschikbare ruimte */
+    padding: 0.5em;
+    font-size: 0.875em;
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst-donker);
+    border-radius: 0.5em;
+    border: 1px solid var(--kleur-primair-donker);
+}
+
+.password-wrapper .toggle-btn {
+    flex: 0 0 auto;              /* knop behoudt eigen grootte */
+    padding: 0.5em 0.7em;
+    background-color: var(--kleur-primair-donker);
+    color: var(--kleur-tekst-donker);
+    border: 1px solid var(--kleur-primair);
+    border-radius: 0.5em;
+    cursor: pointer;
+}
+
+/* Password hint */
+.password-hint {
+    font-size: 0.75em;
+    color: var(--kleur-tekst-donker);
+}
+
+#username::placeholder {
+  color: var(--kleur-tekst);
+}
+
+#newPassword::placeholder {
+    color: var(--kleur-tekst);
+}
+
+#confirmNewPassword::placeholder {
+    color: var(--kleur-tekst);
 }
 
 /* Zoekbalk */
