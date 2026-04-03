@@ -31,6 +31,11 @@
     /* Gradient kleuren */
     --grad-top: rgba(221, 198, 167, 0.18);
     --grad-bottom: #0d0d0d;
+
+    /* Banner kleuren */
+    --competetief: #400904;
+    --casual: #4c6851;
+    --banner-lijn: #ddc6a7;
 }
 
 

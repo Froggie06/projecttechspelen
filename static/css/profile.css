@@ -3,7 +3,15 @@ body {
     background-color: var(--kleur-achtergrond);
     color: var(--kleur-tekst);
     margin: 0;
-    font-family: sans-serif;
+    font-family: noto sans;
+}
+
+body.playstyle-competitive {
+    background-color: var(--competetief);
+}
+
+body.playstyle-casual {
+    background-color: var(--casual);
 }
 
 .profile {
@@ -26,19 +34,11 @@ body {
     border-radius: 0.5em;
 }
 
-body.playstyle-competitive .playstyle-banner {
-    background-color: var(--kleur-primair);
-}
-
-body.playstyle-casual .playstyle-banner {
-    background-color: var(--kleur-casual);
-}
-
 /* Headings */
 .profile h1,
 .profile h2 {
     margin-bottom: 1em;
-    color: var(--kleur-tekst-donker);
+    color: var(--kleur-tekst);
 }
 
 /* Profielfoto */
@@ -58,7 +58,7 @@ body.playstyle-casual .playstyle-banner {
 .playstyle-styling,
 .p-styling,
 .lijn {
-    background-color: var(--kleur-primair);
+    background-color: var(--banner-lijn);
     color: var(--kleur-tekst-accent);
     width: min(40em, 90vw);
     border-radius: 0.3em;
@@ -146,4 +146,8 @@ body.playstyle-casual .playstyle-banner {
 .page-btn:hover {
     transform: translateY(-2px);
     opacity: 0.9;
+}
+
+.pagination span {
+    color: var(--kleur-tekst);
 }
