@@ -1,3 +1,4 @@
+/* Body */
 body {
     background-color: var(--kleur-achtergrond);
     color: var(--kleur-tekst);
@@ -7,15 +8,17 @@ body {
     margin: 0;
 }
 
+/* Friends container */
+.friends {
+    min-height: auto;
+}
+
 .friends main {
     flex: 1;
     width: 100%;
     padding: 1rem;
+    padding-bottom: 5em;
     box-sizing: border-box;
-}
-
-.friends {
-    min-height: auto;
 }
 
 .friends h1 {
@@ -69,4 +72,70 @@ body {
     border-radius: 0.3125rem;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Navigatie onderaan */
+.friends nav {
+    z-index: 2;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.friends nav ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.35em;
+    background-color: var(--kleur-casual);
+    padding: 0.9em 1em;
+    border-top: 5px solid var(--kleur-accent-zacht);
+    margin: 0;
+    list-style: none;
+}
+
+.friends nav li {
+    background-color: var(--kleur-tekst);
+    border-radius: 1em;
+    border: 3px solid var(--kleur-accent-zacht);
+    padding: 0.35em 0.2em;
+    width: calc((100% - (3 * 0.35em)) / 4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.12em;
+    min-width: 0;
+}
+
+.friends nav li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.friends nav li p {
+    color: var(--kleur-achtergrond);
+    font-size: 0.7rem;
+    line-height: 1;
+}
+
+.friends nav img {
+    height: 2.2em;
+    width: 2.2em;
+}
+
+/* Notification badge voor friend requests */
+.friends .badge {
+  background: var(--badge-achtergrond);
+  color: var(--kleur-tekst);
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 12px;
+  position: absolute;
+  top: -6px;
+  right: -10px;
 }

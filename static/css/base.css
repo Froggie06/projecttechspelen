@@ -1,88 +1,85 @@
-/*font*/
+/* Font */
 @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
-/*root kleuren*/
+/* Root kleuren */
 :root {
-    /* Basis kleuren */
     --kleur-achtergrond: #1a1a1a;
     --kleur-oppervlak: #2a2a2a;
     --kleur-tekst: #ffffff;
     --kleur-tekst-zacht: #f0c7bc;
-    
-    /* Primaire accentkleur (rood) */
     --kleur-primair: #B83A2E;
     --kleur-primair-donker: #400904;
-
-    /* Casual accentkleur (groen) */
     --kleur-casual: #4c6851;
-
-    /* Lichte accentkleur (voor boxes, lijnen, highlights) */
     --kleur-accent-zacht: #DDC6A7;
-
-    /* Schaduwen */
     --schaduw-standaard: 0 18px 40px rgba(0, 0, 0, 0.38);
     --schaduw-hover: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.6);
+
+    /* Navbar kleuren */
+    --navbar-achtergrond: #4c6851;
+    --navbar-border-top: #ddc6a7;
+    --navbar-item-achtergrond: #ffffff;
+    --navbar-item-border: #ddc6a7;
+    --navbar-item-tekst: #1a1a1a;
+    --badge-achtergrond: red;
 }
 
-/* Gedeelde css, wordt op meer pagina's gebruikt */
+/* Gedeelde CSS */
 * {
     margin: 0;
     list-style: none;
     font-family: "Cascadia Code", monospace;
-    text-decoration: none
+    text-decoration: none;
 }
 
 body {
-    background-color: #1a1a1a;
-    color: white;
+    background-color: var(--kleur-achtergrond);
+    color: var(--kleur-tekst);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     margin-top: 1em;
-    margin-bottom: 3em;
+    margin-bottom: 3em; /* was 3em, verhoog dit */
 }
 
-h1,
-h2 {
+h1, h2 {
     text-align: center;
 }
 
 button {
     cursor: pointer;
-    background-color: #b83a2d;
-    color: white;
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst);
 }
 
+/* Navigatie */
 nav {
     z-index: 2;
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 4.5rem;
+    background-color: var(--navbar-achtergrond);
 }
 
 nav ul {
+    padding-left: 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     gap: 0.35em;
-    align-items: center;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #4c6851;
+    background-color: var(--navbar-achtergrond);
     padding: 0.90em 1em;
-    border-top: 5px solid #ddc6a7;
+    padding-bottom: calc(0.90em + env(safe-area-inset-bottom));
+    border-top: 5px solid var(--navbar-border-top);
 }
 
 nav li {
-    background-color: #ffffff;
+    background-color: var(--navbar-item-achtergrond);
     border-radius: 1em;
-    border: 3px solid #ddc6a7;
+    border: 3px solid var(--navbar-item-border);
     padding: 0.35em 0.2em;
     width: calc((100% - (3 * 0.35em)) / 4);
     min-width: 0;
@@ -101,7 +98,7 @@ nav li a {
 }
 
 nav li p {
-    color: #1a1a1a;
+    color: var(--navbar-item-tekst);
     font-size: 0.7rem;
     line-height: 1;
 }
@@ -111,10 +108,10 @@ nav img {
     width: 2.2em;
 }
 
-/* notification badge voor friends requests */
+/* Notification badge voor friend requests */
 .badge {
-  background: red;
-  color: white;
+  background: var(--badge-achtergrond);
+  color: var(--kleur-tekst);
   border-radius: 50%;
   padding: 4px 8px;
   font-size: 12px;
@@ -123,8 +120,9 @@ nav img {
   right: -10px;
 }
 
+/* Lijn */
 .lijn {
     height: 0.3em;
-    background-color: #ddc6a7;
+    background-color: var(--kleur-accent-zacht);
     border-radius: 0.5em;
 }
