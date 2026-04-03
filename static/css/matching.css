@@ -33,7 +33,7 @@ body {
 .matching-hero h1 {
     margin: 0;
     text-align: left;
-    color: var(--kleur-tekst);
+    color: var(--kleur-tekst-donker);
     font-size: clamp(2.1rem, 7vw, 3rem);
     line-height: 0.95;
     text-transform: uppercase;
@@ -58,15 +58,15 @@ body {
 }
 
 .match-filters {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(238, 231, 231, 0.05);
+    background: var(--achtergrond-match);
+    border: 1px solid var(--achtergrond-match-border);
     border-radius: 1.25rem;
     padding: 1.15rem;
 }
 
 .filter-intro {
     margin: 0;
-    color: var(--kleur-tekst-zacht);
+    color: var(--kleur-tekst-bijzonder);
     line-height: 1.5;
 }
 
@@ -79,7 +79,7 @@ body {
 .filter-field span {
     font-size: 1.05rem;
     font-weight: 800;
-    color: var(--kleur-tekst);
+    color: var(--kleur-tekst-donker);
 }
 
 .filter-field select {
@@ -137,7 +137,7 @@ body {
 .carousel-status {
     margin: 0;
     text-align: center;
-    color: var(--kleur-tekst);
+    color: var(--kleur-tekst-donker);
     font-size: 1.95rem;
     font-weight: 800;
 }
@@ -205,7 +205,7 @@ body {
     justify-self: center;
     border-radius: 0.2rem;
     padding: 0.3rem;
-    background: #DDC6A7;
+    background: var(--kleur-accent-zacht);
 }
 
 .match-avatar {
@@ -289,7 +289,7 @@ body {
 }
 
 .carousel-controls button {
-    background: rgba(43, 10, 8, 0.55);
+    background: var(--kleur-primair-donker);
 }
 
 .carousel-controls button:last-child {

@@ -1,7 +1,7 @@
 /* Body */
 body {
     background-color: var(--kleur-achtergrond);
-    color: var(--kleur-tekst);
+    color: var(--kleur-tekst-donker);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -24,11 +24,13 @@ body {
 .friends h1 {
     text-align: left;
     margin-bottom: 1.5625rem;
+    color: var(--kleur-tekst-donker);
 }
 
 .friends h2 {
     text-align: left;
     margin: 1.25rem 0 0.625rem;
+    color: var(--kleur-tekst-donker);
 }
 
 .friends ul {
@@ -48,6 +50,7 @@ body {
     margin-bottom: 1rem;
     box-shadow: var(--schaduw-standaard);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    color: var(--kleur-tekst-donker);
 }
 
 .friends article:hover {
@@ -118,7 +121,7 @@ body {
 }
 
 .friends nav li p {
-    color: var(--kleur-achtergrond);
+    color: var(--navbar-item-tekst);
     font-size: 0.7rem;
     line-height: 1;
 }
@@ -130,12 +133,12 @@ body {
 
 /* Notification badge voor friend requests */
 .friends .badge {
-  background: var(--badge-achtergrond);
-  color: var(--kleur-tekst);
-  border-radius: 50%;
-  padding: 4px 8px;
-  font-size: 12px;
-  position: absolute;
-  top: -6px;
-  right: -10px;
+    background: var(--badge-achtergrond);
+    color: var(--kleur-tekst);
+    border-radius: 50%;
+    padding: 4px 8px;
+    font-size: 12px;
+    position: absolute;
+    top: -6px;
+    right: -10px;
 }

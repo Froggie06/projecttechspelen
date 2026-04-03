@@ -1,19 +1,23 @@
 /* Font */
 @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
-/* Root kleuren */
+/* Root kleuren - Dark mode (standaard) */
 :root {
     --kleur-achtergrond: #1a1a1a;
     --kleur-oppervlak: #2a2a2a;
     --kleur-tekst: #ffffff;
     --kleur-tekst-zacht: #f0c7bc;
+    --kleur-tekst-donker: #ffffff;
     --kleur-primair: #B83A2E;
     --kleur-primair-donker: #400904;
+    --kleur-secundair: #4c6851;
+    --kleur-secundair-donker: #2e3f31;
     --kleur-casual: #4c6851;
     --kleur-accent-zacht: #DDC6A7;
-    --schaduw-standaard: 0 18px 40px rgba(0, 0, 0, 0.38);
+    --schaduw-standaard: 0 2px 6px rgba(0, 0, 0, 0.4);
     --schaduw-hover: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.6);
-    --dropdown-achtergrond: #B83A2E;
+    --achtergrond-match: rgba(255, 255, 255, 0.02);
+    --achtergrond-match-border: rgba(238, 231, 231, 0.05);
 
     /* Navbar kleuren */
     --navbar-achtergrond: #4c6851;
@@ -21,8 +25,48 @@
     --navbar-item-achtergrond: #ffffff;
     --navbar-item-border: #ddc6a7;
     --navbar-item-tekst: #1a1a1a;
-    --badge-achtergrond: red;
+    --badge-achtergrond: #B83A2E;
+
+    /* Gradient kleuren */
+    --grad-top: rgba(221, 198, 167, 0.18);
+    --grad-bottom: #0d0d0d;
 }
+
+
+/* Light mode */
+@media (prefers-color-scheme: light) {
+    :root {
+        --kleur-achtergrond: #F3F3F3;
+        --kleur-oppervlak: #ffffff;
+        --kleur-tekst: #ffffff;
+        --kleur-tekst-bijzonder: #262626;
+        --kleur-tekst-zacht: #f0f0f0;
+        --kleur-tekst-donker: #262626;
+        --kleur-primair: #4054AD;
+        --kleur-primair-donker: #182476;
+        --kleur-secundair: #FF7461;
+        --kleur-secundair-donker: #e05a48;
+        --kleur-casual: #4054AD;
+        --kleur-accent-zacht: #ffd6d0;
+        --schaduw-standaard: 0 2px 6px rgba(0, 0, 0, 0.15);
+        --schaduw-hover: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
+        --achtergrond-match: rgba(228, 228, 228, 0.708);
+        --achtergrond-match-border: rgba(179, 179, 179, 0.05);
+
+        /* Navbar kleuren */
+        --navbar-achtergrond: #4054AD;
+        --navbar-border-top: #ffd6d0;
+        --navbar-item-achtergrond: #ffffff;
+        --navbar-item-border: #ffd6d0;
+        --navbar-item-tekst: #262626;
+        --badge-achtergrond: #FF7461;
+
+         /* Gradient kleuren light mode */
+        --grad-top: #182476;
+        --grad-bottom: #f3f3f3;
+    }
+}
+
 
 /* Gedeelde CSS */
 * {
@@ -34,7 +78,7 @@
 
 body {
     background-color: var(--kleur-achtergrond);
-    color: var(--kleur-tekst);
+    color: var(--kleur-tekst-donker);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -46,6 +90,7 @@ body {
 
 h1, h2 {
     text-align: center;
+    color: var(--kleur-tekst-donker);
 }
 
 button {

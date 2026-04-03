@@ -1,10 +1,11 @@
 /* Styling specifiek voor views/login.ejs. */
 body {
     font-family: "Cascadia Code", monospace;
-    background:
-        radial-gradient(circle at top, rgba(221, 198, 167, 0.18), transparent 30%),
-        linear-gradient(180deg, var(--kleur-achtergrond) 0%, #0d0d0d 100%);
+    background: 
+        radial-gradient(circle at top, var(--grad-top), transparent 30%),
+        linear-gradient(180deg, var(--kleur-achtergrond) 0%, var(--grad-bottom) 100%);
     padding: 1rem;
+    color: var(--kleur-tekst);
 }
 
 body img {
@@ -34,7 +35,7 @@ form::before {
     font-weight: 700;
     letter-spacing: 0.02em;
     margin-bottom: 0.15rem;
-    color: var(--kleur-tekst);
+    color: var(--kleur-tekst-donker);
 }
 
 /* Inputs & buttons basis */
@@ -110,4 +111,5 @@ body > p a {
 
 p:last-of-type {
     padding-bottom: 0.75em;
+    color: var(--kleur-tekst-bijzonder);
 }

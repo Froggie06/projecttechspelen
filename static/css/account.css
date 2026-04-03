@@ -1,18 +1,7 @@
-/* Root variabelen */
-:root {
-    --kleur-achtergrond: #1a1a1a;
-    --kleur-primair: #B83A2E;
-    --kleur-primair-donker: #400904;
-    --kleur-tekst: #ffffff;
-    --kleur-oppervlak: #2a2a2a;
-    --kleur-accent-zacht: #DDC6A7;
-    --schaduw-standaard: 0 2px 6px rgba(0, 0, 0, 0.4);
-}
-
 /* Algemene pagina styling */
 .account {
     background-color: var(--kleur-achtergrond);
-    color: var(--kleur-tekst);
+    color: var(--kleur-tekst-donker);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -24,7 +13,7 @@
 .account h2 {
     margin-top: 0.7em;
     margin-bottom: 1em;
-    color: var(--kleur-tekst);
+    color: var(--kleur-tekst-donker);
 }
 
 /* Container aanpassen profiel */
@@ -68,7 +57,7 @@
     padding: 0.5em;
     font-size: 0.875em;
     background-color: var(--kleur-achtergrond);
-    color: var(--kleur-tekst);
+    color: var(--kleur-tekst-donker);
     border-radius: 0.5em;
     border: 3px solid var(--kleur-primair);
 }
@@ -81,8 +70,8 @@
 
 /* Specifiek voor form submit / opslaan buttons */
 .account form button {
-    margin: 1em 4em 1.3em 4em; /* origineel */
-    padding: 0.7em;             /* origineel */
+    margin: 1em 4em 1.3em 4em;
+    padding: 0.7em;
     font-size: 0.875em;
     background-color: var(--kleur-primair);
     color: var(--kleur-tekst);
@@ -154,7 +143,7 @@
     cursor: pointer;
 }
 
-/* Add / Remove buttons (uniform mobiel) */
+/* Add / Remove buttons */
 .add-btn,
 .remove-game-btn {
     padding: 1em;
@@ -174,6 +163,7 @@
 /* Game cards */
 .game-card {
     background-color: var(--kleur-oppervlak);
+    color: var(--kleur-tekst-donker);
     border-radius: 0.75em;
     padding: 0.7em;
     display: flex;

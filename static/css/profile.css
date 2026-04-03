@@ -1,5 +1,12 @@
-.profile {
+/* Basis achtergrond en tekst */
+body {
+    background-color: var(--kleur-achtergrond);
     color: var(--kleur-tekst);
+    margin: 0;
+    font-family: sans-serif;
+}
+
+.profile {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8,24 +15,30 @@
     margin-bottom: 6em;
 }
 
-/* Achtergrond per speelstijl */
-body.playstyle-competitive {
-    background-color: var(--kleur-primair-donker); /* donker rood */
+/* Playstyle accent box */
+.playstyle-banner {
+    width: 100%;
+    padding: 1em 0;
+    text-align: center;
+    color: var(--kleur-achtergrond);
+    font-weight: bold;
+    margin-bottom: 2em;
+    border-radius: 0.5em;
 }
 
-body.playstyle-casual {
-    background-color: var(--kleur-casual); /* groen */
+body.playstyle-competitive .playstyle-banner {
+    background-color: var(--kleur-primair);
 }
 
-body.playstyle-default {
-    background-color: var(--kleur-achtergrond);
+body.playstyle-casual .playstyle-banner {
+    background-color: var(--kleur-casual);
 }
 
 /* Headings */
 .profile h1,
 .profile h2 {
     margin-bottom: 1em;
-    color: var(--kleur-tekst);
+    color: var(--kleur-tekst-donker);
 }
 
 /* Profielfoto */
@@ -34,7 +47,7 @@ body.playstyle-default {
     margin-bottom: 1em;
 }
 
-/* Tekst */
+/* Algemeen profiel tekst */
 .profile p {
     text-align: center;
     max-width: 45ch;
@@ -45,8 +58,8 @@ body.playstyle-default {
 .playstyle-styling,
 .p-styling,
 .lijn {
-    background-color: var(--kleur-accent-zacht);
-    color: var(--kleur-achtergrond);
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst-accent);
     width: min(40em, 90vw);
     border-radius: 0.3em;
 }
@@ -75,6 +88,7 @@ body.playstyle-default {
 /* Game cards */
 .game-card {
     background-color: var(--kleur-oppervlak);
+    color: var(--kleur-tekst);
     border-radius: 0.75em;
     padding: 0.7em;
     display: flex;
@@ -86,6 +100,17 @@ body.playstyle-default {
     box-shadow: var(--schaduw-standaard);
 }
 
+/* Game card tekst */
+.game-card p {
+    color: var(--kleur-tekst-bijzonder); /* altijd leesbaar op card */
+}
+
+/* Playstyle box tekst */
+.playstyle-styling p,
+.p-styling p {
+    color: var(--kleur-tekst-accent); /* wit in light mode, donker in dark mode */
+}
+
 /* Game list */
 .game-list {
     display: grid;
@@ -95,12 +120,7 @@ body.playstyle-default {
     margin-bottom: 1em;
 }
 
-/* Pagination */
-.pagination {
-    text-align: center;
-    margin-bottom: 1em;
-}
-
+/* Pagination buttons */
 .buttons-games {
     display: flex;
     flex-direction: row;
@@ -109,7 +129,6 @@ body.playstyle-default {
     margin-top: 1em;
 }
 
-/* Paginate buttons */
 .page-btn {
     font-size: 0.875em;
     padding: 0.7em 1.5em;
@@ -119,22 +138,11 @@ body.playstyle-default {
     font-weight: 700;
     text-align: center;
     min-width: 6rem;
-}
-
-/* Competitief rood */
-body.playstyle-competitive .page-btn {
-    color: var(--kleur-achtergrond);
+    color: var(--kleur-tekst);
     background-color: var(--kleur-primair);
     border: 1px solid var(--kleur-primair);
 }
 
-body.playstyle-casual .page-btn {
-    color: var(--kleur-achtergrond);
-    background-color: var(--kleur-casual);
-    border: 1px solid var(--kleur-casual);
-}
-
-/* Hover states */
 .page-btn:hover {
     transform: translateY(-2px);
     opacity: 0.9;
