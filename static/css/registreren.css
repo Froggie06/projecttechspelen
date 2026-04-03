@@ -21,7 +21,7 @@ form {
     max-width: 22rem;
     padding: 1.5rem 1rem;
     margin-bottom: 1.25rem;
-    border: 1px solid rgba(221, 198, 167, 0.28);
+    border: 1px solid rgb(221 198 167 / 28%);
     border-radius: 1.25rem;
     background: var(--kleur-oppervlak);
     box-shadow: var(--schaduw-standaard);
@@ -43,7 +43,7 @@ form input,
 form textarea,
 form select {
     background-color: var(--kleur-primair);
-    border: 1px solid rgba(221, 198, 167, 0.24);
+    border: 1px solid rgb(221 198 167 / 24%);
     color: var(--kleur-tekst);
     min-height: 3rem;
     padding: 0.85rem 0.95rem;
@@ -73,6 +73,21 @@ form textarea {
     resize: vertical;
 }
 
+/* Checkbox */
+.checkbox-row {
+    width: 100%;
+    margin: 0.25rem 0;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgb(221 198 167 / 18%);
+    border-radius: 0.9rem;
+    background-color: rgb(255 255 255 / 4%);
+    box-sizing: border-box;
+}
+
+.checkbox-row input {
+    accent-color: var(--kleur-primair);
+}
+
 /* Focus */
 form input:focus,
 form textarea:focus,
@@ -95,21 +110,6 @@ form button {
     border-radius: 0.9rem;
 }
 
-/* Checkbox */
-.checkbox-row {
-    width: 100%;
-    margin: 0.25rem 0;
-    padding: 0.9rem 1rem;
-    border: 1px solid rgba(221, 198, 167, 0.18);
-    border-radius: 0.9rem;
-    background-color: rgba(255, 255, 255, 0.04);
-    box-sizing: border-box;
-}
-
-.checkbox-row input {
-    accent-color: var(--kleur-primair);
-}
-
 /* Text onder form */
 body > p {
     margin: 0;
@@ -120,7 +120,7 @@ body > p {
 }
 
 body > p a {
-    color: var(--kleur-tekst-zacht);
+    color: var(--kleur-tekst-donker);
     text-decoration: none;
     font-weight: 700;
 }
@@ -131,7 +131,7 @@ body > p a:hover {
 }
 
 /* Error / message */
-body > p[style] {
+[style] {
     width: 100%;
     max-width: 22rem;
     margin: 0 0 1rem;
@@ -150,9 +150,5 @@ body > p[style] {
 }
 
 .checkbox-row span {
-    color: var(--kleur-tekst-donker);
-}
-
-body > p a {
     color: var(--kleur-tekst-donker);
 }

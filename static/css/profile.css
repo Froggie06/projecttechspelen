@@ -3,14 +3,14 @@ body {
     background-color: var(--kleur-achtergrond);
     color: var(--kleur-tekst);
     margin: 0;
-    font-family: noto sans;
+    font-family: "noto sans", sans-serif;
 }
 
-body.playstyle-competitive {
+.playstyle-competitive {
     background-color: var(--competetief);
 }
 
-body.playstyle-casual {
+.playstyle-casual {
     background-color: var(--casual);
 }
 

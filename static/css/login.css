@@ -21,7 +21,7 @@ form {
     max-width: 22rem;
     padding: 1.5rem 1rem;
     margin-bottom: 1.25rem;
-    border: 1px solid rgba(221, 198, 167, 0.28);
+    border: 1px solid rgb(221 198 167 / 28%);
     border-radius: 1.25rem;
     background: var(--kleur-oppervlak);
     box-shadow: var(--schaduw-standaard);
@@ -38,21 +38,30 @@ form::before {
     color: var(--kleur-tekst-donker);
 }
 
-/* Inputs & buttons basis */
-form input,
-form button,
+/* Button basis */
 button {
     min-height: 3rem;
     padding: 0.85rem 0.95rem;
     font-size: 0.95rem;
     border-radius: 0.9rem;
     font-family: inherit;
+    border: none;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    background: var(--kleur-primair);
+    color: var(--kleur-tekst);
+    cursor: pointer;
 }
 
-/* Input */
+/* Input basis */
 form input {
+    min-height: 3rem;
+    padding: 0.85rem 0.95rem;
+    font-size: 0.95rem;
+    border-radius: 0.9rem;
+    font-family: inherit;
     background-color: var(--kleur-primair);
-    border: 1px solid rgba(221, 198, 167, 0.24);
+    border: 1px solid rgb(221 198 167 / 24%);
     color: var(--kleur-tekst-donker);
     transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
@@ -64,22 +73,23 @@ form input::placeholder {
 form input:focus {
     outline: none;
     border-color: var(--kleur-primair);
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgb(255 255 255 / 10%);
     transform: translateY(-1px);
 }
 
-/* Button */
-form button,
-button {
+/* Form button specifiek */
+form button {
+    min-height: 3rem;
+    padding: 0.85rem 0.95rem;
+    font-size: 0.95rem;
+    border-radius: 0.9rem;
+    font-family: inherit;
     border: none;
     font-weight: 700;
     letter-spacing: 0.03em;
     background: var(--kleur-primair);
     color: var(--kleur-tekst);
     cursor: pointer;
-}
-
-form button {
     margin-top: 0.35rem;
 }
 
@@ -99,7 +109,7 @@ button a {
 body > p {
     margin: 0;
     text-align: center;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgb(255 255 255 / 75%);
     font-size: 0.9rem;
     max-width: 22rem;
 }

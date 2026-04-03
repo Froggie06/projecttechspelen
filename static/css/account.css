@@ -40,17 +40,6 @@
     gap: 0.625em;
 }
 
-/* Form inputs en select */
-.account form input,
-.account form select {
-    padding: 0.5em;
-    font-size: 0.875em;
-    background-color: var(--kleur-primair);
-    color: var(--kleur-tekst);
-    border-radius: 0.5em;
-    border: 1px solid var(--kleur-primair-donker);
-}
-
 .account form textarea {
     resize: vertical;
     min-height: 7em;
@@ -62,6 +51,10 @@
     border: 3px solid var(--kleur-primair);
 }
 
+.search-container input::placeholder {
+    color: var(--kleur-tekst);
+}
+
 .account form textarea::placeholder,
 .account form input::placeholder,
 .account form select::placeholder {
@@ -70,7 +63,7 @@
 
 /* Specifiek voor form submit / opslaan buttons */
 .account form button {
-    margin: 1em 4em 1.3em 4em;
+    margin: 1em 4em 1.3em;
     padding: 0.7em;
     font-size: 0.875em;
     background-color: var(--kleur-primair);
@@ -95,7 +88,7 @@
 
 /* Security button */
 #showSecurity {
-    margin: 2em 0 1.3em 0;
+    margin: 2em 0 1.3em;
     padding: 0.7em;
     font-size: 0.875em;
     background-color: var(--kleur-primair);
@@ -169,8 +162,14 @@
     margin-bottom: 2em;
 }
 
-.search-container input::placeholder {
+.account form input,
+.account form select {
+    padding: 0.5em;
+    font-size: 0.875em;
+    background-color: var(--kleur-primair);
     color: var(--kleur-tekst);
+    border-radius: 0.5em;
+    border: 1px solid var(--kleur-primair-donker);
 }
 
 #dropdown {

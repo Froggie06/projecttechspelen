@@ -5,31 +5,31 @@
 :root {
     --kleur-achtergrond: #1a1a1a;
     --kleur-oppervlak: #2a2a2a;
-    --kleur-tekst: #ffffff;
+    --kleur-tekst: #fff;
     --kleur-tekst-zacht: #f0c7bc;
-    --kleur-tekst-donker: #ffffff;
+    --kleur-tekst-donker: #fff;
     --kleur-primair: #B83A2E;
     --kleur-primair-donker: #400904;
     --kleur-secundair: #4c6851;
     --kleur-secundair-donker: #2e3f31;
     --kleur-casual: #4c6851;
     --kleur-accent-zacht: #DDC6A7;
-    --schaduw-standaard: 0 2px 6px rgba(0, 0, 0, 0.4);
-    --schaduw-hover: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.6);
-    --achtergrond-match: rgba(255, 255, 255, 0.02);
-    --achtergrond-match-border: rgba(238, 231, 231, 0.05);
+    --schaduw-standaard: 0 2px 6px rgb(0 0 0 / 40%);
+    --schaduw-hover: 0 0.25rem 0.5rem rgb(0 0 0 / 60%);
+    --achtergrond-match: rgb(255 255 255 / 2%);
+    --achtergrond-match-border: rgb(238 231 231 / 5%);
     --kleur-primair-rgb: 184, 58, 46;
 
     /* Navbar kleuren */
     --navbar-achtergrond: #4c6851;
     --navbar-border-top: #ddc6a7;
-    --navbar-item-achtergrond: #ffffff;
+    --navbar-item-achtergrond: #fff;
     --navbar-item-border: #ddc6a7;
     --navbar-item-tekst: #1a1a1a;
     --badge-achtergrond: #B83A2E;
 
     /* Gradient kleuren */
-    --grad-top: rgba(221, 198, 167, 0.18);
+    --grad-top: rgb(221 198 167 / 18%);
     --grad-bottom: #0d0d0d;
 
     /* Banner kleuren */
@@ -43,8 +43,8 @@
 @media (prefers-color-scheme: light) {
     :root {
         --kleur-achtergrond: #F3F3F3;
-        --kleur-oppervlak: #ffffff;
-        --kleur-tekst: #ffffff;
+        --kleur-oppervlak: #fff;
+        --kleur-tekst: #fff;
         --kleur-tekst-bijzonder: #262626;
         --kleur-tekst-zacht: #f0f0f0;
         --kleur-tekst-donker: #262626;
@@ -54,16 +54,16 @@
         --kleur-secundair-donker: #e05a48;
         --kleur-casual: #4054AD;
         --kleur-accent-zacht: #ffd6d0;
-        --schaduw-standaard: 0 2px 6px rgba(0, 0, 0, 0.15);
-        --schaduw-hover: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
-        --achtergrond-match: rgba(228, 228, 228, 0.708);
-        --achtergrond-match-border: rgba(179, 179, 179, 0.05);
+        --schaduw-standaard: 0 2px 6px rgb(0 0 0 / 15%);
+        --schaduw-hover: 0 0.25rem 0.5rem rgb(0 0 0 / 25%);
+        --achtergrond-match: rgb(228 228 228 / 70.8%);
+        --achtergrond-match-border: rgb(179 179 179 / 5%);
         --kleur-primair-rgb: 64, 84, 173;
 
         /* Navbar kleuren */
         --navbar-achtergrond: #4054AD;
         --navbar-border-top: #ffd6d0;
-        --navbar-item-achtergrond: #ffffff;
+        --navbar-item-achtergrond: #fff;
         --navbar-item-border: #ffd6d0;
         --navbar-item-tekst: #262626;
         --badge-achtergrond: #FF7461;
@@ -117,7 +117,6 @@ nav {
 }
 
 nav ul {
-    padding-left: 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
