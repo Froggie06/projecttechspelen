@@ -1,7 +1,5 @@
-/* Styling specifiek voor views/profile.ejs. */
-
 .profile {
-    color: white;
+    color: var(--kleur-tekst);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -10,64 +8,73 @@
     margin-bottom: 6em;
 }
 
+/* Achtergrond per speelstijl */
 body.playstyle-competitive {
-    background-color: #400904;
+    background-color: var(--kleur-primair-donker); /* donker rood */
 }
 
 body.playstyle-casual {
-    background-color: #4c6851;
+    background-color: var(--kleur-casual); /* groen */
 }
 
 body.playstyle-default {
-    background-color: #1a1a1a;
+    background-color: var(--kleur-achtergrond);
 }
 
-.profile h1, h2 {
+/* Headings */
+.profile h1,
+.profile h2 {
     margin-bottom: 1em;
+    color: var(--kleur-tekst);
 }
 
+/* Profielfoto */
 .profile img {
     border-radius: 0.75em;
     margin-bottom: 1em;
 }
 
+/* Tekst */
 .profile p {
     text-align: center;
     max-width: 45ch;
+    color: var(--kleur-tekst);
+}
+
+/* Playstyle styling box */
+.playstyle-styling,
+.p-styling,
+.lijn {
+    background-color: var(--kleur-accent-zacht);
+    color: var(--kleur-achtergrond);
+    width: min(40em, 90vw);
+    border-radius: 0.3em;
 }
 
 .playstyle-styling {
-    background-color: #ddc6a7;
-    width: min(40em, 90vw);
-    border-radius: 0.3em;
     margin-bottom: 0.5em;
-    color: #1a1a1a;
 }
 
 .p-styling {
-    background-color: #ddc6a7;
-    width: min(40em, 90vw);
-    border-radius: 0.3em;
     margin-bottom: 1.2em;
-    color: #1a1a1a;
 }
 
 .lijn {
-    width: min(40em, 90vw);
     height: 0.3em;
-    background-color: #ddc6a7;
     border-radius: 0.5em;
     margin: 1.5em 0;
 }
 
+/* Sections */
 .profile section {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+/* Game cards */
 .game-card {
-    background-color: #2a2a2a;
+    background-color: var(--kleur-oppervlak);
     border-radius: 0.75em;
     padding: 0.7em;
     display: flex;
@@ -76,9 +83,10 @@ body.playstyle-default {
     align-items: center;
     text-align: center;
     gap: 0.5em;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--schaduw-standaard);
 }
 
+/* Game list */
 .game-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -87,6 +95,7 @@ body.playstyle-default {
     margin-bottom: 1em;
 }
 
+/* Pagination */
 .pagination {
     text-align: center;
     margin-bottom: 1em;
@@ -100,18 +109,33 @@ body.playstyle-default {
     margin-top: 1em;
 }
 
+/* Paginate buttons */
 .page-btn {
-    color: white;
     font-size: 0.875em;
     padding: 0.7em 1.5em;
-    background-color: #400904;
     border-radius: 0.5em;
-    border: 1px solid #b83a2e;
     text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    font-weight: 700;
+    text-align: center;
+    min-width: 6rem;
 }
 
+/* Competitief rood */
 body.playstyle-competitive .page-btn {
-    color: #1a1a1a;
-    background-color: #ddc6a7;
-    border: 1px solid #ddc6a7;
+    color: var(--kleur-achtergrond);
+    background-color: var(--kleur-primair);
+    border: 1px solid var(--kleur-primair);
+}
+
+body.playstyle-casual .page-btn {
+    color: var(--kleur-achtergrond);
+    background-color: var(--kleur-casual);
+    border: 1px solid var(--kleur-casual);
+}
+
+/* Hover states */
+.page-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
 }

@@ -3,13 +3,24 @@
 
 /*root kleuren*/
 :root {
+    /* Basis kleuren */
     --kleur-achtergrond: #1a1a1a;
-    --kleur-primair: #B83A2E;
-    --kleur-primair-donker: #400904;
+    --kleur-oppervlak: #2a2a2a;
     --kleur-tekst: #ffffff;
     --kleur-tekst-zacht: #f0c7bc;
+    
+    /* Primaire accentkleur (rood) */
+    --kleur-primair: #B83A2E;
+    --kleur-primair-donker: #400904;
+
+    /* Casual accentkleur (groen) */
+    --kleur-casual: #4c6851;
+
+    /* Lichte accentkleur (voor boxes, lijnen, highlights) */
+    --kleur-accent-zacht: #DDC6A7;
+
+    /* Schaduwen */
     --schaduw-standaard: 0 18px 40px rgba(0, 0, 0, 0.38);
-    --kleur-oppervlak: #2a2a2a;
     --schaduw-hover: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.6);
 }
 

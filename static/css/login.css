@@ -1,21 +1,20 @@
 /* Styling specifiek voor views/login.ejs. */
-@import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
-
 body {
     font-family: "Cascadia Code", monospace;
     background:
         radial-gradient(circle at top, rgba(221, 198, 167, 0.18), transparent 30%),
-        linear-gradient(180deg, #161616 0%, #0d0d0d 100%);
+        linear-gradient(180deg, var(--kleur-achtergrond) 0%, #0d0d0d 100%);
     padding: 1rem;
-
-    img {
-        display: flex;
-        width: 80%;
-        max-width: 22rem;
-        padding-bottom: 5em;
-    }
 }
 
+body img {
+    display: flex;
+    width: 80%;
+    max-width: 22rem;
+    padding-bottom: 5em;
+}
+
+/* Form */
 form {
     width: 80%;
     max-width: 22rem;
@@ -23,8 +22,8 @@ form {
     margin-bottom: 1.25rem;
     border: 1px solid rgba(221, 198, 167, 0.28);
     border-radius: 1.25rem;
-    background: rgba(27, 27, 27, 0.92);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    background: var(--kleur-oppervlak);
+    box-shadow: var(--schaduw-standaard);
     backdrop-filter: blur(12px);
     gap: 0.75rem;
 }
@@ -35,19 +34,25 @@ form::before {
     font-weight: 700;
     letter-spacing: 0.02em;
     margin-bottom: 0.15rem;
+    color: var(--kleur-tekst);
 }
 
+/* Inputs & buttons basis */
 form input,
-form button {
+form button,
+button {
     min-height: 3rem;
     padding: 0.85rem 0.95rem;
     font-size: 0.95rem;
     border-radius: 0.9rem;
+    font-family: inherit;
 }
 
+/* Input */
 form input {
     background-color: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(221, 198, 167, 0.24);
+    color: var(--kleur-tekst);
     transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -55,14 +60,41 @@ form input::placeholder {
     color: rgba(255, 255, 255, 0.56);
 }
 
+form input:focus {
+    outline: none;
+    border-color: var(--kleur-primair);
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
 
-form button {
-    margin-top: 0.35rem;
+/* Button */
+form button,
+button {
     border: none;
     font-weight: 700;
     letter-spacing: 0.03em;
+    background: var(--kleur-primair);
+    color: var(--kleur-tekst);
+    cursor: pointer;
 }
 
+form button {
+    margin-top: 0.35rem;
+}
+
+/* Links */
+a {
+    color: var(--kleur-primair);
+    text-decoration: none;
+}
+
+button a {
+    text-decoration: none;
+    color: inherit;
+    font-family: "Cascadia Code", monospace;
+}
+
+/* Tekst onder form */
 body > p {
     margin: 0;
     text-align: center;
@@ -72,29 +104,10 @@ body > p {
 }
 
 body > p a {
-    color: #f2d8b5;
-    text-decoration: none;
+    color: var(--kleur-tekst-zacht);
     font-weight: 700;
 }
 
 p:last-of-type {
-   padding-bottom: 0.75em;
-}
-
-button {
-    min-height: 3rem;
-    padding: 0.85rem 0.95rem;
-    font-size: 0.95rem;
-    border-radius: 0.9rem;
-    border: none;
-
-    a {
-        text-decoration: none;
-        color: inherit;
-        font-family: "Cascadia Code", monospace;
-    }
-}
-
-a {
-    color: #B83B2F;
+    padding-bottom: 0.75em;
 }

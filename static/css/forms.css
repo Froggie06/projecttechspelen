@@ -1,6 +1,5 @@
 /* Gedeelde css, wordt op meer pagina's gebruikt */
 
-
 form {
     margin-bottom: 1em;
     display: flex;
@@ -15,10 +14,10 @@ form select,
 form button {
     padding: 0.5em;
     font-size: 0.875em;
-    background-color: #b83a2e;
-    color: white;
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst);
     border-radius: 0.5em;
-    border: 1px solid #ddc6a7;
+    border: 1px solid var(--kleur-accent-zacht);
 }
 
 form textarea {
@@ -28,13 +27,14 @@ form textarea {
 
 form textarea::placeholder,
 form input::placeholder {
-    color: white;
+    color: var(--kleur-tekst);
 }
 
 form select {
-    color: white;
+    color: var(--kleur-tekst);
 }
 
+/* Checkbox row */
 .checkbox-row {
     width: 18.75em;
     display: flex;
