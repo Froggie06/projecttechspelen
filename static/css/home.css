@@ -5,6 +5,13 @@ main {
     align-items: center;
 }
 
+img {
+    display: flex;
+    width: 80%;
+    max-width: 22rem;
+    padding: 0 0;
+}
+
 h1 {
     font-family: "Cascadia Code", monospace;
     font-size: 2.5em;
