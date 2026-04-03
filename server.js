@@ -755,6 +755,32 @@ app.post("/friend-request/reject", requireLogin, async (req, res) => {
   }
 })
 
+// vriend verwijderen, moet ingelogd zijn om een vriend te kunnen verwijderen, anders redirect naar login pagina
+app.post("/remove-friend", requireLogin, async (req, res) => {
+  const users = client.db("accounts").collection("users")
+  const currentUserId = new ObjectId(req.session.userId)
+  const friendId = new ObjectId(req.body.friendId)
+
+  try {
+    // verwijder vriend van huidige gebruiker
+    await users.updateOne(
+      { _id: currentUserId },
+      { $pull: { friends: friendId } }
+    )
+
+    // verwijder huidige gebruiker uit vriendenlijst van de andere gebruiker
+    await users.updateOne(
+      { _id: friendId },
+      { $pull: { friends: currentUserId } }
+    )
+
+    res.redirect("/friends")
+  } catch (err) {
+    console.error(err)
+    res.status(500).send("Error removing friend")
+  }
+})
+
 // Twitch token ophalen
 app.get("/token", async (req, res) => {
   try {

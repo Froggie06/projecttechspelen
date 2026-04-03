@@ -142,3 +142,25 @@ body {
     top: -6px;
     right: -10px;
 }
+
+.friends .vriendknop {
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst);
+    border: none;
+    border-radius: 0.3125rem;
+    padding: 0.5rem 0.875rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.friends .vriendknop:hover {
+    background-color: var(--kleur-primair-donker);
+    transform: translateY(-0.125rem);
+    box-shadow: var(--schaduw-hover);
+}
+
+.friends .vriendknop:active {
+    transform: translateY(0);
+    box-shadow: var(--schaduw-standaard);
+}
