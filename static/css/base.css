@@ -2,7 +2,11 @@
 * {
     margin: 0;
     list-style: none;
+    font-family: "Cascadia Code", monospace;
+    text-decoration: none
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 body {
     background-color: #1a1a1a;
@@ -12,8 +16,8 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    margin-bottom: 6em;
-
+    margin-top: 1em;
+    margin-bottom: 3em;
 }
 
 h1,
@@ -46,6 +50,7 @@ nav ul {
     padding: 0;
     background-color: #4c6851;
     list-style: none;
+    border-top: 5px solid #ddc6a7;
 }
 
 nav img {
@@ -61,6 +66,12 @@ nav img {
   padding: 4px 8px;
   font-size: 12px;
   position: absolute;
+}
+
+.lijn {
+    height: 0.3em;
+    background-color: #ddc6a7;
+    border-radius: 0.5em;
 }
 
 

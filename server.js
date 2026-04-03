@@ -12,6 +12,7 @@ const fs = require("fs")
 
 const app = express()
 const port = Number(process.env.PORT) || 3000
+const GAMES_PER_PAGE = 4
 
 const uri = process.env.MONGODB_URI
 const client = new MongoClient(uri)
@@ -445,23 +446,62 @@ app.get("/account", requireLogin, async (req, res) => { // moet ingelogd zijn om
 
   const user = await users.findOne({ _id: userId })
 
-  const games = await gamesCol.find({ // haalt de games op die in de database die zijn opgeslagen door deze gebruiker
-    gameId: { $in: user.games || [] }
-  }).toArray()
+  const requestedPage = Math.max(1, Number.parseInt(req.query.page, 10) || 1)
 
-  res.render("account", { user, games, provinces })
+  const totalGames = await gamesCol.countDocuments({
+    gameId: { $in: user.games || [] }
+  })
+
+  const totalPages = Math.max(1, Math.ceil(totalGames / GAMES_PER_PAGE))
+  const currentPage = Math.min(requestedPage, totalPages)
+
+  const games = await gamesCol.find({
+    gameId: { $in: user.games || [] }
+  })
+  .skip((currentPage - 1) * GAMES_PER_PAGE)
+  .limit(GAMES_PER_PAGE)
+  .toArray()
+
+  res.render("account", {
+    user,
+    games,
+    currentPage,
+    totalPages,
+    provinces
+  })
+
 })
 
 // publieke profiel pagina
 app.get("/user/:username", async (req, res) => {
   const collection = client.db("accounts").collection("users")
+  const gamesCol = client.db("games").collection("games")
   const user = await collection.findOne({ username: req.params.username })
 
   if (!user) {
     return res.status(404).send("User not found") // error als gebruiker niet bestaat
   }
 
-  res.render("profile", { user })
+  const requestedPage = Math.max(1, Number.parseInt(req.query.page, 10) || 1)
+  const totalGames = await gamesCol.countDocuments({
+    gameId: { $in: user.games || [] }
+  })
+  const totalPages = Math.max(1, Math.ceil(totalGames / GAMES_PER_PAGE))
+  const currentPage = Math.min(requestedPage, totalPages)
+
+  const games = await gamesCol.find({
+    gameId: { $in: user.games || [] }
+  })
+  .skip((currentPage - 1) * GAMES_PER_PAGE)
+  .limit(GAMES_PER_PAGE)
+  .toArray()
+
+  res.render("profile", {
+    user,
+    games,
+    currentPage,
+    totalPages
+  })
 })
 
 // profiel updaten
@@ -792,7 +832,15 @@ app.post("/add-game", requireLogin, async (req, res) => {
       { $addToSet: { games: game.gameId } }
     )
 
-    res.json({ success: true, gameId: game.gameId })
+    const updatedUser = await usersCollection.findOne(
+      { _id: userId },
+      { projection: { games: 1 } }
+    )
+
+    const totalGames = Array.isArray(updatedUser?.games) ? updatedUser.games.length : 0
+    const targetPage = Math.max(1, Math.ceil(totalGames / GAMES_PER_PAGE))
+
+    res.json({ success: true, gameId: game.gameId, targetPage })
 
   } catch (err) {
     console.error("❌ Error adding game:", err)
@@ -800,13 +848,13 @@ app.post("/add-game", requireLogin, async (req, res) => {
   }
 })
 
-
 // game verwijderen van user account, game blijft wel bestaan in games collectie zodat deze nog steeds zichtbaar is in matches van andere gebruikers die deze game ook hebben toegevoegd
 app.post("/remove-game", requireLogin, async (req, res) => {
   const usersCollection = client.db("accounts").collection("users")
 
   const userId = new ObjectId(req.session.userId)
   const gameId = String(req.body.id)
+  const currentPage = Math.max(1, Number.parseInt(req.body.currentPage, 10) || 1)
 
   try {
     await usersCollection.updateOne(
@@ -814,7 +862,16 @@ app.post("/remove-game", requireLogin, async (req, res) => {
       { $pull: { games: gameId } }
     )
 
-    res.json({ success: true, gameId })
+    const updatedUser = await usersCollection.findOne(
+      { _id: userId },
+      { projection: { games: 1 } }
+    )
+
+    const totalGames = Array.isArray(updatedUser?.games) ? updatedUser.games.length : 0
+    const totalPages = Math.max(1, Math.ceil(totalGames / GAMES_PER_PAGE))
+    const targetPage = Math.min(currentPage, totalPages)
+
+    res.json({ success: true, gameId, targetPage })
 
   } catch (err) {
     console.error("❌ Error removing game:", err)

@@ -1,1 +1,117 @@
 /* Styling specifiek voor views/profile.ejs. */
+
+.profile {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin-top: 2em;
+    margin-bottom: 6em;
+}
+
+body.playstyle-competitive {
+    background-color: #400904;
+}
+
+body.playstyle-casual {
+    background-color: #4c6851;
+}
+
+body.playstyle-default {
+    background-color: #1a1a1a;
+}
+
+.profile h1, h2 {
+    margin-bottom: 1em;
+}
+
+.profile img {
+    border-radius: 0.75em;
+    margin-bottom: 1em;
+}
+
+.profile p {
+    text-align: center;
+    max-width: 45ch;
+}
+
+.playstyle-styling {
+    background-color: #ddc6a7;
+    width: min(40em, 90vw);
+    border-radius: 0.3em;
+    margin-bottom: 0.5em;
+    color: #1a1a1a;
+}
+
+.p-styling {
+    background-color: #ddc6a7;
+    width: min(40em, 90vw);
+    border-radius: 0.3em;
+    margin-bottom: 1.2em;
+    color: #1a1a1a;
+}
+
+.lijn {
+    width: min(40em, 90vw);
+    height: 0.3em;
+    background-color: #ddc6a7;
+    border-radius: 0.5em;
+    margin: 1.5em 0;
+}
+
+.profile section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-card {
+    background-color: #2a2a2a;
+    border-radius: 0.75em;
+    padding: 0.7em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 0.5em;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.game-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1em;
+    width: min(40em, 90vw);
+    margin-bottom: 1em;
+}
+
+.pagination {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.buttons-games {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 3em;
+    margin-top: 1em;
+}
+
+.page-btn {
+    color: white;
+    font-size: 0.875em;
+    padding: 0.7em 1.5em;
+    background-color: #400904;
+    border-radius: 0.5em;
+    border: 1px solid #b83a2e;
+    text-decoration: none;
+}
+
+body.playstyle-competitive .page-btn {
+    color: #1a1a1a;
+    background-color: #ddc6a7;
+    border: 1px solid #ddc6a7;
+}

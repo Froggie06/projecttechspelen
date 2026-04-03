@@ -6,13 +6,55 @@
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/profile.css">
 </head>
-<body>
-<%- include('partials/navbar') %>
-    <h1><%= user.username %></h1>
+<body class="<%= user.playStyle === 'competitive' ? 'playstyle-competitive' : user.playStyle === 'casual' ? 'playstyle-casual' : 'playstyle-default' %>">
+    <header>
+        <%- include('partials/navbar') %>
+    </header>
 
-    <img src="<%= user.profilePicture || '/images/defaultAvatar.jpg' %>" width="150">
+    <main class="profile">
+        <h1><%= user.username %></h1>
 
-    <p><%= user.bio %></p>
+        <img src="<%= user.profilePicture || '/images/defaultAvatar.jpg' %>" width="200">
+
+        <p class="playstyle-styling"><%= user.playStyle %></p>
+        <p class="p-styling"><%= user.province %></p>
+
+        <p><%= user.bio %></p>
+
+        <div class="lijn"></div>
+
+        <section>
+            <h2>Games</h2>
+            <% if (games.length === 0) { %>
+                <p id="no-games">Je hebt nog geen games toegevoegd.</p>
+            <% } else { %>
+                <div class="game-list" id="game-list">
+                    <% games.forEach((game) => { %>
+                        <article class="game-card" data-id="<%= game.gameId %>">
+                            <% if (game.cover) { %>
+                                <img src="<%= game.cover %>" width="60" alt="<%= game.name %>">
+                            <% } %>
+                            <p><%= game.name %></p>
+                        </article>
+                    <% }) %>
+                </div>
+                <div class="pagination">
+                    <span>Pagina <%= currentPage %> van <%= totalPages %></span>
+
+                    <div class="buttons-games">
+                        <% if (currentPage > 1) { %>
+                            <a class="page-btn" href="/user/<%= user.username %>?page=<%= currentPage - 1 %>">Terug</a>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                            <a class="page-btn" href="/user/<%= user.username %>?page=<%= currentPage + 1 %>">Volgende</a>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+        </section>
+
+        <div class="lijn"></div>
+    </main>
 
     <script src="/js/login.js"></script>
 </body>

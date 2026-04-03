@@ -1,22 +1,114 @@
-#showSecurity {
+.account {
+    background-color: #1a1a1a;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin-top: 2em;
+    margin-bottom: 6em;
+}
+
+.account h2 {
+    margin-top: 0.7em;
     margin-bottom: 1em;
+}
+
+.aanpassen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.profielfoto {
+    border: 5px solid #ddc6a7;
+    margin-bottom: 1em;
+}
+
+.account form {
+    margin-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+    width: 18.75em;
+    gap: 0.625em;
+}
+
+.account form input,
+form select {
+    padding: 0.5em;
+    font-size: 0.875em;
+    background-color: #b83a2e;
+    color: white;
+    border-radius: 0.5em;
+    border: 1px solid #400904;
+}
+
+.account form button {
+    margin: 1em 4em 1.3em 4em;
+    padding: 0.7em;
+    font-size: 0.875em;
+    background-color: #b83a2e;
+    color: white;
+    border-radius: 0.5em;
+    border: 1px solid #400904;
+}
+
+.account form textarea {
+    resize: vertical;
+    min-height: 7em;
+    padding: 0.5em;
+    font-size: 0.875em;
+    background-color: #1a1a1a;
+    color: white;
+    border-radius: 0.5em;
+    border: 3px solid #b83a2e;
+}
+
+.account form textarea::placeholder,
+form input::placeholder {
+    color: white;
+}
+
+.account form select {
+    color: white;
+}
+
+.checkbox-row {
+    width: 18.75em;
+    display: flex;
+    align-items: center;
+    gap: 0.625em;
+}
+
+.checkbox-row input {
+    width: auto;
+}
+
+#showSecurity {
+    margin: 2em 0 1.3em 0;
+    padding: 0.7em;
+    font-size: 0.875em;
+    background-color: #b83a2e;
+    color: white;
+    border-radius: 0.5em;
+    border: 1px solid #400904;
 }
 
 .search-container {
     position: relative;
-    width: 300px;
+    width: 22em;
 }
 
 .search-container input {
     background-color: #b83a2e;
     outline: none;
-    border: 1px solid #ddc6a7;
+    border: 1px solid #b83a2e;
     border-radius: 0.5em;
     width: 100%;
     box-sizing: border-box;
-    padding: 0.5em;
+    padding: 0.7em;
     color: white;
-    margin-bottom: 1em;
+    margin-bottom: 2em;
 }
 
 .search-container input::placeholder {
@@ -51,26 +143,68 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
-.remove-game-btn {
-    margin-left: auto;
+.remove-game-btn { 
     padding: 1em;
-    border: 1px solid #ddc6a7;
+    border: 1px solid #1a1a1a;;
     border-radius: 0.3em;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
-.game-list {
-    display: grid;
-    gap: 1em;
-    width: min(40em, 90vw);
-}
-
 .game-card {
     background-color: #2a2a2a;
-    border: 1px solid #ddc6a7;
     border-radius: 0.75em;
-    padding: 1em;
+    padding: 0.7em;
+
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    text-align: center;
+    gap: 0.5em;
+}
+
+.game-card img {
+    border-radius: 0.75em;
+}
+
+.game-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1em;
+    width: min(40em, 90vw);
+    margin-bottom: 1em;
+}
+
+.pagination {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.logout {
+    margin: 0 13em 1.3em 0;
+    padding: 0.7em;
+    font-size: 0.875em;
+    background-color: #400904;
+    color: white;
+    border-radius: 0.5em;
+    border: 1px solid #b83a2e;
+}
+
+.buttons-games {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 3em;
+    margin-top: 1em;
+    margin-bottom: 2em;
+}
+
+.page-btn {
+    color: white;
+    font-size: 0.875em;
+    padding: 0.7em 1.5em;
+    background-color: #400904;
+    border-radius: 0.5em;
+    border: 1px solid #b83a2e;
+    text-decoration: none;
 }
