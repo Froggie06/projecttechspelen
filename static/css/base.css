@@ -1,3 +1,18 @@
+/*font*/
+@import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+/*root kleuren*/
+:root {
+    --kleur-achtergrond: #1a1a1a;
+    --kleur-primair: #B83A2E;
+    --kleur-primair-donker: #400904;
+    --kleur-tekst: #ffffff;
+    --kleur-tekst-zacht: #f0c7bc;
+    --schaduw-standaard: 0 18px 40px rgba(0, 0, 0, 0.38);
+    --kleur-oppervlak: #2a2a2a;
+    --schaduw-hover: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.6);
+}
+
 /* Gedeelde css, wordt op meer pagina's gebruikt */
 * {
     margin: 0;
@@ -5,8 +20,6 @@
     font-family: "Cascadia Code", monospace;
     text-decoration: none
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 body {
     background-color: #1a1a1a;

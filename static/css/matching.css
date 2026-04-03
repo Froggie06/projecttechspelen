@@ -1,18 +1,6 @@
-:root {
-    --matching-card: #400904;
-    --matching-card-dark: #400904;
-    --matching-border: #B83A2E;
-    --matching-border-soft: #B83A2E;
-    --matching-accent: #B83A2E;
-    --matching-accent-strong: #B83A2E;
-    --matching-text: #fff4ec;
-    --matching-text-soft: #f0c7bc;
-    --matching-shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
-}
-
 body {
     justify-content: flex-start;
-    padding: 1.5rem 1rem 7.5rem;
+    padding: 1.5rem 1rem 3rem;
     box-sizing: border-box;
 }
 
@@ -35,7 +23,7 @@ body {
 
 .matching-kicker {
     margin: 0;
-    color: var(--matching-accent-strong);
+    color: var(--kleur-primair);
     font-size: 0.9rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -45,7 +33,7 @@ body {
 .matching-hero h1 {
     margin: 0;
     text-align: left;
-    color: var(--matching-text);
+    color: var(--kleur-tekst);
     font-size: clamp(2.1rem, 7vw, 3rem);
     line-height: 0.95;
     text-transform: uppercase;
@@ -54,7 +42,7 @@ body {
 
 .matching-subtitle {
     margin: 0;
-    color: var(--matching-text-soft);
+    color: var(--kleur-tekst-zacht);
     font-size: 1rem;
 }
 
@@ -65,6 +53,10 @@ body {
     gap: 1rem;
 }
 
+.match-list {
+    width: 100%;
+}
+
 .match-filters {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(238, 231, 231, 0.05);
@@ -72,23 +64,9 @@ body {
     padding: 1.15rem;
 }
 
-.match-filters h3,
-.match-card h3 {
-    margin: 0;
-}
-
-.filter-intro,
-.match-empty-message,
-.carousel-status,
-.match-empty-state,
-.match-meta,
-.match-bio,
-.match-section p {
-    margin: 0;
-}
-
 .filter-intro {
-    color: var(--matching-text-soft);
+    margin: 0;
+    color: var(--kleur-tekst-zacht);
     line-height: 1.5;
 }
 
@@ -101,37 +79,22 @@ body {
 .filter-field span {
     font-size: 1.05rem;
     font-weight: 800;
-    color: var(--matching-text);
-}
-
-.filter-field select,
-.filter-reset,
-.carousel-controls button,
-.connect-btn,
-.match-card button,
-.match-profile-link {
-    min-height: 3rem;
-    border-radius: 0.8rem;
-    border: 1px solid var(--matching-border);
-    font: inherit;
+    color: var(--kleur-tekst);
 }
 
 .filter-field select {
     appearance: none;
-    background: #400904;
-    color: var(--matching-text);
+    background: var(--kleur-primair-donker);
+    color: var(--kleur-tekst);
     padding: 0.8rem 0.95rem;
+    border-radius: 0.8rem;
+    border: 1px solid var(--kleur-primair);
+    min-height: 3rem;
+    font: inherit;
     box-sizing: border-box;
     outline: none;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
-
-.filter-field select:focus-visible,
-.filter-reset:focus-visible,
-.carousel-controls button:focus-visible,
-.connect-btn:focus-visible,
-.match-card button:focus-visible,
-
 
 .filter-reset,
 .carousel-controls button,
@@ -142,21 +105,25 @@ body {
     align-items: center;
     justify-content: center;
     padding: 0.75rem 1rem;
-    box-sizing: border-box;
-    text-decoration: none;
-    color: var(--matching-text);
+    min-height: 3rem;
+    border-radius: 0.8rem;
+    border: 1px solid var(--kleur-primair);
+    font: inherit;
     font-weight: 700;
+    text-decoration: none;
+    color: var(--kleur-tekst);
+    box-sizing: border-box;
     transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
 }
 
 .filter-reset,
 .connect-btn {
-    background: #B83A2E;
+    background: var(--kleur-primair);
 }
 
 .match-profile-link,
 .match-card button:disabled {
-    background: #400904;
+    background: var(--kleur-primair-donker);
 }
 
 .filter-reset:hover,
@@ -168,29 +135,27 @@ body {
 }
 
 .carousel-status {
+    margin: 0;
     text-align: center;
-    color: var(--matching-text);
+    color: var(--kleur-tekst);
     font-size: 1.95rem;
     font-weight: 800;
 }
 
 .match-empty-message,
 .match-empty-state {
-    color: var(--matching-text-soft);
+    margin: 0;
+    color: var(--kleur-tekst-zacht);
     text-align: center;
-}
-
-.match-list {
-    width: 100%;
 }
 
 .match-card {
     display: none;
-    background: linear-gradient(180deg, var(--matching-card), var(--matching-card-dark));
-    border: 2px solid var(--matching-border);
+    background: linear-gradient(180deg, var(--kleur-primair-donker), var(--kleur-primair-donker));
+    border: 2px solid var(--kleur-primair);
     border-radius: 1rem;
     padding: 1rem;
-    box-shadow: var(--matching-shadow);
+    box-shadow: var(--schaduw-standaard);
 }
 
 .match-card[hidden] {
@@ -215,20 +180,22 @@ body {
 
 .match-rank {
     margin: 0;
-    color: var(--matching-text);
+    color: var(--kleur-tekst);
     font-size: 2rem;
     font-weight: 800;
     line-height: 1;
 }
 
 .match-card h3 {
-    color: var(--matching-text);
+    margin: 0;
+    color: var(--kleur-tekst);
     font-size: 1.55rem;
     line-height: 1.1;
 }
 
 .match-meta {
-    color: var(--matching-text-soft);
+    margin: 0;
+    color: var(--kleur-tekst-zacht);
     font-size: 0.95rem;
 }
 
@@ -250,7 +217,8 @@ body {
 }
 
 .match-bio {
-    color: var(--matching-text-soft);
+    margin: 0;
+    color: var(--kleur-tekst-zacht);
     line-height: 1.45;
 }
 
@@ -260,13 +228,17 @@ body {
 }
 
 .match-section-title {
-    color: var(--matching-text);
+    color: var(--kleur-tekst);
     font-size: 1.05rem;
     font-weight: 800;
 }
 
+.match-section p {
+    margin: 0;
+}
+
 .match-section p:last-child {
-    color: var(--matching-text-soft);
+    color: var(--kleur-tekst-zacht);
     line-height: 1.45;
 }
 
@@ -281,7 +253,7 @@ body {
 }
 
 .match-card button:disabled {
-    border-color: var(--matching-border-soft);
+    border-color: var(--kleur-primair);
     color: rgba(255, 244, 236, 0.78);
     cursor: not-allowed;
 }
@@ -289,7 +261,7 @@ body {
 .score-meter {
     overflow: hidden;
     min-height: 1.25rem;
-    background: #400904;
+    background: var(--kleur-primair-donker);
     border-radius: 999px;
 }
 
@@ -298,14 +270,14 @@ body {
     align-items: center;
     min-height: 1.25rem;
     min-width: fit-content;
-    background: linear-gradient(90deg, #B83A2E, var(--matching-accent));
+    background: linear-gradient(90deg, var(--kleur-primair), var(--kleur-primair));
     border-radius: inherit;
     padding: 0 0.65rem;
     box-sizing: border-box;
 }
 
 .score-meter-label {
-    color: #ffffff;
+    color: var(--kleur-tekst);
     font-size: 0.95rem;
     font-weight: 800;
 }
@@ -321,7 +293,7 @@ body {
 }
 
 .carousel-controls button:last-child {
-    background: #B83A2E;
+    background: var(--kleur-primair);
 }
 
 @media (min-width: 48rem) {

@@ -1,6 +1,6 @@
 body {
-    background-color: #1a1a1a;
-    color: white;
+    background-color: var(--kleur-achtergrond);
+    color: var(--kleur-tekst);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -38,18 +38,18 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #2a2a2a;
-    border: 0.0625rem solid #444; 
+    background-color: var(--kleur-oppervlak);
+    border: 0.0625rem solid var(--kleur-primair);
     border-radius: 0.5rem;
     padding: 1rem;
     margin-bottom: 1rem;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.4);
+    box-shadow: var(--schaduw-standaard);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .friends article:hover {
     transform: translateY(-0.125rem);
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.6);
+    box-shadow: var(--schaduw-hover);
 }
 
 .friends article div {
@@ -62,9 +62,9 @@ body {
 }
 
 .vriendknop {
-    background-color: #B83A2E;
+    background-color: var(--kleur-primair);
     border: none;
-    color: white;
+    color: var(--kleur-tekst);
     padding: 0.375rem 0.75rem;
     border-radius: 0.3125rem;
     cursor: pointer;
