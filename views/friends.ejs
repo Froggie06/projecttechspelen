@@ -23,7 +23,7 @@
         <% requests.forEach(user => { %>
           <li>
             <article>
-              <p><%= user.username %></p>
+              <a href="/user/<%= user.username %>"><%= user.username %></a>
 
               <div>
                 <form method="POST" action="/friend-request/accept">
@@ -49,19 +49,16 @@
         <% friends.forEach(user => { %>
           <li>
             <article>
-              <!-- Klikbare naam naar profiel -->
               <p>
                 <a href="/user/<%= user.username %>"><%= user.username %></a>
               </p>
 
               <div>
-                <!-- Vriend verwijderen -->
                 <form method="POST" action="/remove-friend" style="display:inline">
                   <input type="hidden" name="friendId" value="<%= user._id %>">
                   <button class="vriendknop" type="submit">Verwijder</button>
                 </form>
 
-                <!-- Speel samen via Discord -->
                 <a class="vriendknop" href="https://discord.com/" target="_blank" rel="noopener noreferrer">
                   Speel samen
                 </a>
