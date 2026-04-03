@@ -1,4 +1,4 @@
-/* Styling specifiek voor views/registreren.ejs. */
+/* Styling specifiek voor views/registreren.ejs */
 body {
     font-family: "Cascadia Code", monospace;
     background:
@@ -37,34 +37,39 @@ form::before {
     color: var(--kleur-tekst);
 }
 
+/* Inputs */
 form input,
 form textarea,
-form select,
-form button {
+form select {
+    background-color: rgba(255, 255, 255, 0.06); 
+    border: 1px solid rgba(221, 198, 167, 0.24);
+    color: var(--kleur-tekst);
     min-height: 3rem;
     padding: 0.85rem 0.95rem;
     font-size: 0.95rem;
     border-radius: 0.9rem;
     font-family: inherit;
-}
-
-/* Inputs */
-form input,
-form textarea,
-form select {
-    background-color: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(221, 198, 167, 0.24);
-    color: var(--kleur-tekst);
     transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
+form select {
+    color: var(--kleur-tekst);
+}
+
+select option {
+    background-color: var(--dropdown-achtergrond);
+    color: var(--kleur-tekst);
+}
+
 form input::placeholder,
-form textarea::placeholder {
+form textarea::placeholder,
+form select::placeholder {
     color: rgba(255, 255, 255, 0.56);
 }
 
-form select {
-    color: rgba(255, 255, 255, 0.56);
+form textarea {
+    min-height: 6rem;
+    resize: vertical;
 }
 
 /* Focus */
@@ -77,10 +82,6 @@ form select:focus {
     transform: translateY(-1px);
 }
 
-form textarea {
-    min-height: 6rem;
-}
-
 /* Button */
 form button {
     margin-top: 0.35rem;
@@ -90,6 +91,7 @@ form button {
     background: var(--kleur-primair);
     color: var(--kleur-tekst);
     cursor: pointer;
+    border-radius: 0.9rem;
 }
 
 /* Checkbox */
@@ -134,8 +136,8 @@ body > p[style] {
     margin: 0 0 1rem;
     padding: 0.85rem 1rem;
     border-radius: 0.9rem;
-    background-color: rgba(184, 58, 46, 0.18);
-    border: 1px solid rgba(184, 58, 46, 0.45);
+    background-color: rgba(var(--kleur-primair-rgb, 184, 58, 46), 0.18);
+    border: 1px solid rgba(var(--kleur-primair-rgb, 184, 58, 46), 0.45);
     box-sizing: border-box;
     font-family: "Noto Sans", sans-serif;
     font-size: 0.9rem;
