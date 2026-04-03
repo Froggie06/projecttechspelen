@@ -18,6 +18,7 @@
     --schaduw-hover: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.6);
     --achtergrond-match: rgba(255, 255, 255, 0.02);
     --achtergrond-match-border: rgba(238, 231, 231, 0.05);
+    --kleur-primair-rgb: 184, 58, 46;
 
     /* Navbar kleuren */
     --navbar-achtergrond: #4c6851;
@@ -52,6 +53,7 @@
         --schaduw-hover: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
         --achtergrond-match: rgba(228, 228, 228, 0.708);
         --achtergrond-match-border: rgba(179, 179, 179, 0.05);
+        --kleur-primair-rgb: 64, 84, 173;
 
         /* Navbar kleuren */
         --navbar-achtergrond: #4054AD;
