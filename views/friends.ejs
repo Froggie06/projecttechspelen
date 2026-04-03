@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vrienden</title>
+    <link rel="icon" type="image/svg+xml" href="/images/Middel 5.svg">
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/friends.css">
 </head>
@@ -54,14 +55,14 @@
               </p>
 
               <div>
+                <a class="vriendknop" href="https://discord.com/" target="_blank" rel="noopener noreferrer">
+                  Speel samen
+                </a>
+
                 <form method="POST" action="/remove-friend" style="display:inline">
                   <input type="hidden" name="friendId" value="<%= user._id %>">
                   <button class="vriendknop" type="submit">Verwijder</button>
                 </form>
-
-                <a class="vriendknop" href="https://discord.com/" target="_blank" rel="noopener noreferrer">
-                  Speel samen
-                </a>
               </div>
             </article>
           </li>
