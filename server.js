@@ -67,7 +67,7 @@ app.use(async (req, res, next) => {
     res.locals.currentUser = user || null
   } catch (err) {
     console.error(err)
-    res.locals.currentUser = null
+    res.locals.currentUser = null // de huidige gebruiker kan niet worden opgehaald, mogelijk door een database fout, we zetten currentUser op null zodat de site nog steeds functioneel blijft en voorkomen dat er fouten optreden in de views die currentUser gebruiken
   }
 
   next()
@@ -426,12 +426,12 @@ app.post("/login", async (req, res) => {
 
   const user = await collection.findOne({ email: req.body.email })
   if (!user) {
-    return res.send("User not found")
+    return res.send("Gebruiker niet gevonden") // error teruggeven als er geen gebruiker is gevonden met het opgegeven emailadres
   }
 
   const match = await bcrypt.compare(req.body.password, user.password)
   if (!match) {
-    return res.send("Wrong password")
+    return res.send("Verkeerd wachtwoord")
   }
 
   req.session.userId = user._id
@@ -447,7 +447,7 @@ app.get("/account", requireLogin, async (req, res) => { // moet ingelogd zijn om
 
   const user = await users.findOne({ _id: userId })
 
-  const requestedPage = Math.max(1, Number.parseInt(req.query.page, 10) || 1)
+  const requestedPage = Math.max(1, Number.parseInt(req.query.page, 10) || 1) // berekent het totale aantal games dat de gebruiker heeft toegevoegd, zodat we dit kunnen gebruiken voor de paginering van de games op de account pagina
 
   const totalGames = await gamesCol.countDocuments({
     gameId: { $in: user.games || [] }
@@ -480,7 +480,7 @@ app.get("/user/:username", async (req, res) => {
   const user = await collection.findOne({ username: req.params.username })
 
   if (!user) {
-    return res.status(404).send("User not found") // error als gebruiker niet bestaat
+    return res.status(404).send("Gebruiker niet gevonden") // error als gebruiker niet bestaat
   }
 
   const requestedPage = Math.max(1, Number.parseInt(req.query.page, 10) || 1)
@@ -541,7 +541,7 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
 
       if (fs.existsSync(oldPath)) {
         fs.unlink(oldPath, err => { // oude afbeelding verwijderen
-          if (err) console.error("Error deleting old image:", err) // error in console als er iets misgaat bij het verwijderen van de oude profielfoto
+          if (err) console.error("Error verwijderen oude profielfoto:", err) // error in console als er iets misgaat bij het verwijderen van de oude profielfoto
         })
       }
     }
@@ -569,7 +569,7 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
     // checkt of wachtwoorden overeenkomen
     if (req.body.newPassword !== req.body.confirmNewPassword) {
       const games = await gamesCol.find({
-        gameId: { $in: user.games || [] }
+        gameId: { $in: user.games || [] } // games opnieuw ophalen zodat pagina correct rendert
       }).toArray()
 
       return res.render("account", {
@@ -672,7 +672,7 @@ app.post("/friend-request", requireLogin, async (req, res) => {
 
   } catch (err) {
     console.error(err)
-    res.status(500).json({ success: false })
+    res.status(500).json({ success: false }) // error teruggeven als er iets misgaat bij het versturen van het vriendverzoek, zodat de frontend hierop kan reageren en een foutmelding kan tonen aan de gebruiker
   }
 })
 
@@ -778,7 +778,7 @@ app.post("/remove-friend", requireLogin, async (req, res) => {
     res.redirect("/friends")
   } catch (err) {
     console.error(err)
-    res.status(500).send("Error removing friend")
+    res.status(500).send("Error verwijderen vriend")
   }
 })
 
