@@ -1,0 +1,47 @@
+/* Gedeelde css, wordt op meer pagina's gebruikt */
+
+form {
+    margin-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+    width: 18.75em;
+    gap: 0.625em;
+}
+
+form input,
+form textarea,
+form select,
+form button {
+    padding: 0.5em;
+    font-size: 0.875em;
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst);
+    border-radius: 0.5em;
+    border: 1px solid var(--kleur-accent-zacht);
+}
+
+form textarea {
+    resize: vertical;
+    min-height: 5em;
+}
+
+form textarea::placeholder,
+form input::placeholder {
+    color: var(--kleur-tekst);
+}
+
+form select {
+    color: var(--kleur-tekst);
+}
+
+/* Checkbox row */
+.checkbox-row {
+    width: 18.75em;
+    display: flex;
+    align-items: center;
+    gap: 0.625em;
+}
+
+.checkbox-row input {
+    width: auto;
+}

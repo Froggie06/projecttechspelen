@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mijn account</title>
+    <link rel="icon" type="image/svg+xml" href="/images/Middel 5.svg">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/account.css">
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <main class="account">
+
+        <h1>Profiel aanpassen</h1>
+
+        <h2><%= user.username %></h2>
+
+        <section class="aanpassen">
+            <img class="profielfoto" src="<%= user.profilePicture || '/images/defaultAvatar.jpg' %>" width="200">
+
+            <!-- PROFIEL FORM -->
+            <form action="/update-profile" method="post" enctype="multipart/form-data">
+                <!-- profielfoto -->
+                <label>Verander profielfoto:</label>
+                <input type="file" name="profilePicture">
+
+                <!-- bio -->
+                <textarea name="bio" placeholder="Bio:"><%= user.bio || "" %></textarea>
+
+                <!-- speelstijl -->
+                <select name="playStyle">
+                    <option value="">Kies speelstijl</option>
+                    <option value="competitive" <%= user.playStyle === 'competitive' ? 'selected' : '' %>>Competitief</option>
+                    <option value="casual" <%= user.playStyle === 'casual' ? 'selected' : '' %>>Casual</option>
+                </select>
+
+                <!-- provincie kiezne -->
+                <select name="province">
+                    <option value="">Kies provincie</option>
+                    <% provinces.forEach((province) => { %>
+                        <option value="<%= province %>" <%= user.province === province ? 'selected' : '' %>><%= province %></option>
+                    <% }) %>
+                </select>
+
+                <!-- provincie in matching -->
+                <label class="checkbox-row">
+                    <input type="checkbox" name="includeProvinceInMatching" <%= user.includeProvinceInMatching ? 'checked' : '' %>>
+                    <span>Neem provincie mee in matching</span>
+                </label>
+
+                <!-- opslaan -->
+                <button type="submit">Gegevens opslaan</button>
+            </form>
+        </section>
+
+        <div class="lijn"></div>
+
+        <!-- Game toevoegen aan profiel -->
+        <section>
+            <h2>Mijn games</h2>
+            <% if (games.length === 0) { %>
+                <p id="no-games">Je hebt nog geen games toegevoegd.</p>
+            <% } else { %>
+                <div class="game-list" id="game-list">
+                    <% games.forEach((game) => { %>
+                        <article class="game-card" data-id="<%= game.gameId %>">
+                            <% if (game.cover) { %>
+                                <img src="<%= game.cover %>" width="60" alt="<%= game.name %>">
+                            <% } %>
+                            <p><%= game.name %></p>
+                            <button class="remove-game-btn" data-id="<%= game.gameId %>">Verwijderen</button>
+                        </article>
+                    <% }) %>
+                </div>
+                <!-- Geeft games meerdere pagina's met knoppen -->
+                <div class="pagination">
+                    <span>Pagina <%= currentPage %> van <%= totalPages %></span>
+
+                    <div class="buttons-games">
+                        <% if (currentPage > 1) { %>
+                        <button class="page-btn" data-page="<%= currentPage - 1 %>">Terug</button>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                        <button class="page-btn" data-page="<%= currentPage + 1 %>">Volgende</button>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+
+            <div class="search-container">
+                <input type="search" id="searchInput" placeholder="Voeg games toe..." autocomplete="off"/>
+                <div id="dropdown"></div>
+            </div>
+        </section>
+
+        <div class="lijn"></div>
+
+        <!-- KNOP OM SECURITY FORM TE TONEN -->
+        <button id="showSecurity">Verander wachtwoord of gebruikersnaam</button>
+
+        <!-- SECURITY FORM -->
+        <form id="securityForm" action="/update-profile" method="post" style="display:none;">
+            <input type="text" id="username" name="username" placeholder="Nieuwe username">
+
+            <!-- nieuw wachtwoord -->
+            <div class="password-wrapper">
+                <input type="password" id="newPassword" name="newPassword" placeholder="Nieuw wachtwoord">
+                <button type="button" class="toggle-btn" data-target="newPassword">👁️</button>
+            </div>
+
+            <!-- bevestig wachtwoord -->
+            <div class="password-wrapper">
+                <input type="password" id="confirmNewPassword" name="confirmNewPassword" placeholder="Bevestig wachtwoord">
+                <button type="button" class="toggle-btn" data-target="confirmNewPassword">👁️</button>
+            </div>
+
+            <div class="password-hint">
+                Wachtwoord moet minimaal:
+                <ul>
+                    <li>8 tekens bevatten</li>
+                    <li>1 hoofdletter bevatten</li>
+                    <li>1 cijfer bevatten</li>
+                    <li>1 speciaal teken bevatten</li>
+                </ul>
+            </div>
+
+            <button type="submit">Opslaan</button>
+        </form>
+
+        <a class="logout" href="/logout">Logout</a>
+    </main>
+
+    <script src="/js/login.js"></script>
+    <script src="/js/dropdown.js"></script>
+    <script src="/js/account.js"></script>
+</body>
+</html>

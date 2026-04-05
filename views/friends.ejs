@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vrienden</title>
+    <link rel="icon" type="image/svg+xml" href="/images/Middel 5.svg">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/friends.css">
+</head>
+<body class="friends">
+
+  <header>
+    <%- include('partials/navbar') %>
+  </header>
+
+  <main>
+    <h1>Vrienden en vriendverzoeken</h1>
+
+    <section aria-labelledby="verzoeken-title">
+      <h2 id="verzoeken-title">Vriendverzoeken</h2>
+
+      <ul>
+        <% requests.forEach(user => { %>
+          <li>
+            <article>
+              <a href="/user/<%= user.username %>"><%= user.username %></a>
+
+              <div>
+                <form method="POST" action="/friend-request/accept">
+                  <input type="hidden" name="fromUserId" value="<%= user._id %>">
+                  <button class="vriendknop" type="submit">Accepteren</button>
+                </form>
+
+                <form method="POST" action="/friend-request/reject">
+                  <input type="hidden" name="fromUserId" value="<%= user._id %>">
+                  <button class="vriendknop" type="submit">Weigeren</button>
+                </form>
+              </div>
+            </article>
+          </li>
+        <% }) %>
+      </ul>
+    </section>
+
+    <section aria-labelledby="vrienden-title">
+      <h2 id="vrienden-title">Vrienden</h2>
+
+      <ul>
+        <% friends.forEach(user => { %>
+          <li>
+            <article>
+              <p>
+                <a href="/user/<%= user.username %>"><%= user.username %></a>
+              </p>
+
+              <div>
+                <a class="vriendknop" href="https://discord.com/" target="_blank" rel="noopener noreferrer">
+                  Speel samen
+                </a>
+
+                <form method="POST" action="/remove-friend" style="display:inline">
+                  <input type="hidden" name="friendId" value="<%= user._id %>">
+                  <button class="vriendknop" type="submit">Verwijder</button>
+                </form>
+              </div>
+            </article>
+          </li>
+        <% }) %>
+      </ul>
+    </section>
+  </main>
+
+</body>
+</html>

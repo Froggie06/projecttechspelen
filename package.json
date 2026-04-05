@@ -1,0 +1,45 @@
+{
+  "name": "projecttechspelen",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Froggie06/projecttechspelen#readme",
+  "bugs": {
+    "url": "https://github.com/Froggie06/projecttechspelen/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Froggie06/projecttechspelen.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js",
+    "build": "node build.js",
+    "terserminify": "terser static/script.js -c -m -o output/script.min.js",
+    "minifycss": "postcss static/css/input.css -o output/style.min.css --use postcss-import --use cssnano"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "ejs": "^5.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongodb": "^7.1.0",
+    "multer": "^2.1.1",
+    "path": "^0.12.7",
+    "terser": "^5.46.0",
+    "xss": "^1.0.15"
+  },
+  "devDependencies": {
+    "cssnano": "^7.1.3",
+    "nodemon": "^3.1.14",
+    "postcss": "^8.5.8",
+    "postcss-cli": "^11.0.1",
+    "postcss-import": "^16.1.1",
+    "stylelint": "^17.4.0",
+    "stylelint-config-standard": "^40.0.0"
+  }
+}

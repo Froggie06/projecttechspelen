@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>navbar</title>
+    <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+   <nav>
+        <ul>
+            <!-- Vrienden -->
+            <li>
+                <a href="/friends">
+                    <img src="/images/friends.png" alt="friends">
+                    <% if (requestCount > 0) { %>
+                        <span class="badge"><%= requestCount %></span>
+                    <% } %>
+                </a>
+                <p>Vrienden</p>
+            </li>
+
+            <!-- Matching / home -->
+            <li>
+                <a href="/matching">
+                    <img src="/images/home.png" alt="matching">
+                </a>
+                <p>Matching</p>
+            </li>
+
+            <!-- Profiellink -->
+            <li>
+                <% if (currentUser) { %>
+                    <a href="/user/<%= currentUser.username %>">
+                        <img src="/images/profile.png" alt="profiel">
+                    </a>
+                <% } else { %>
+                    <a href="/login">
+                        <img src="/images/profile.png" alt="profiel">
+                    </a>
+                <% } %>
+                <p>Profiel</p>
+            </li>
+
+            <!-- Instellingen -->
+            <li>
+                <a href="/account">
+                    <img src="/images/settings.png" alt="instellingen">
+                </a>
+                <p>Instellingen</p>
+            </li>
+        </ul>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,166 @@
+/* Body */
+body {
+    background-color: var(--kleur-achtergrond);
+    color: var(--kleur-tekst-donker);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Friends container */
+.friends {
+    min-height: auto;
+}
+
+.friends main {
+    flex: 1;
+    width: 100%;
+    padding: 1rem;
+    padding-bottom: 5em;
+    box-sizing: border-box;
+}
+
+.friends h1 {
+    text-align: left;
+    margin-bottom: 1.5625rem;
+    color: var(--kleur-tekst-donker);
+}
+
+.friends h2 {
+    text-align: left;
+    margin: 1.25rem 0 0.625rem;
+    color: var(--kleur-tekst-donker);
+}
+
+.friends ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.friends article {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--kleur-oppervlak);
+    border: 0.0625rem solid var(--kleur-primair);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--schaduw-standaard);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    color: var(--kleur-tekst-donker);
+}
+
+.friends article:hover {
+    transform: translateY(-0.125rem);
+    box-shadow: var(--schaduw-hover);
+}
+
+.friends article div {
+    display: flex;
+    gap: 0.625rem;
+}
+
+.friends form {
+    display: inline;
+}
+
+.vriendknop {
+    background-color: var(--kleur-primair);
+    border: none;
+    color: var(--kleur-tekst);
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.3125rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Navigatie onderaan */
+.friends nav {
+    z-index: 2;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.friends nav ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.35em;
+    background-color: var(--kleur-casual);
+    padding: 0.9em 1em;
+    border-top: 5px solid var(--kleur-accent-zacht);
+    margin: 0;
+    list-style: none;
+}
+
+.friends nav li {
+    background-color: var(--kleur-tekst);
+    border-radius: 1em;
+    border: 3px solid var(--kleur-accent-zacht);
+    padding: 0.35em 0.2em;
+    width: calc((100% - (3 * 0.35em)) / 4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.12em;
+    min-width: 0;
+}
+
+.friends nav li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.friends nav li p {
+    color: var(--navbar-item-tekst);
+    font-size: 0.7rem;
+    line-height: 1;
+}
+
+.friends nav img {
+    height: 2.2em;
+    width: 2.2em;
+}
+
+/* Notification badge voor friend requests */
+.friends .badge {
+    background: var(--badge-achtergrond);
+    color: var(--kleur-tekst);
+    border-radius: 50%;
+    padding: 4px 8px;
+    font-size: 12px;
+    position: absolute;
+    top: -6px;
+    right: -10px;
+}
+
+.friends .vriendknop {
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst);
+    border: none;
+    border-radius: 0.3125rem;
+    padding: 0.5rem 0.875rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.friends .vriendknop:hover {
+    background-color: var(--kleur-primair-donker);
+    transform: translateY(-0.125rem);
+    box-shadow: var(--schaduw-hover);
+}
+
+.friends .vriendknop:active {
+    transform: translateY(0);
+    box-shadow: var(--schaduw-standaard);
+}

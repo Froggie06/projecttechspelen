@@ -1,0 +1,180 @@
+/* Font */
+@import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:ital,wght@0,200..700;1,200..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Root kleuren - Dark mode (standaard) */
+:root {
+    --kleur-achtergrond: #1a1a1a;
+    --kleur-oppervlak: #2a2a2a;
+    --kleur-tekst: #fff;
+    --kleur-tekst-zacht: #f0c7bc;
+    --kleur-tekst-donker: #fff;
+    --kleur-primair: #B83A2E;
+    --kleur-primair-donker: #400904;
+    --kleur-secundair: #4c6851;
+    --kleur-secundair-donker: #2e3f31;
+    --kleur-casual: #4c6851;
+    --kleur-accent-zacht: #DDC6A7;
+    --schaduw-standaard: 0 2px 6px rgb(0 0 0 / 40%);
+    --schaduw-hover: 0 0.25rem 0.5rem rgb(0 0 0 / 60%);
+    --achtergrond-match: rgb(255 255 255 / 2%);
+    --achtergrond-match-border: rgb(238 231 231 / 5%);
+    --kleur-primair-rgb: 184, 58, 46;
+
+    /* Navbar kleuren */
+    --navbar-achtergrond: #4c6851;
+    --navbar-border-top: #ddc6a7;
+    --navbar-item-achtergrond: #fff;
+    --navbar-item-border: #ddc6a7;
+    --navbar-item-tekst: #1a1a1a;
+    --badge-achtergrond: #B83A2E;
+
+    /* Gradient kleuren */
+    --grad-top: rgb(221 198 167 / 18%);
+    --grad-bottom: #0d0d0d;
+
+    /* Banner kleuren */
+    --competetief: #400904;
+    --casual: #4c6851;
+    --banner-lijn: #ddc6a7;
+}
+
+
+/* Light mode */
+@media (prefers-color-scheme: light) {
+    :root {
+        --kleur-achtergrond: #F3F3F3;
+        --kleur-oppervlak: #fff;
+        --kleur-tekst: #fff;
+        --kleur-tekst-bijzonder: #262626;
+        --kleur-tekst-zacht: #f0f0f0;
+        --kleur-tekst-donker: #262626;
+        --kleur-primair: #4054AD;
+        --kleur-primair-donker: #182476;
+        --kleur-secundair: #FF7461;
+        --kleur-secundair-donker: #e05a48;
+        --kleur-casual: #4054AD;
+        --kleur-accent-zacht: #ffd6d0;
+        --schaduw-standaard: 0 2px 6px rgb(0 0 0 / 15%);
+        --schaduw-hover: 0 0.25rem 0.5rem rgb(0 0 0 / 25%);
+        --achtergrond-match: rgb(228 228 228 / 70.8%);
+        --achtergrond-match-border: rgb(179 179 179 / 5%);
+        --kleur-primair-rgb: 64, 84, 173;
+
+        /* Navbar kleuren */
+        --navbar-achtergrond: #4054AD;
+        --navbar-border-top: #ffd6d0;
+        --navbar-item-achtergrond: #fff;
+        --navbar-item-border: #ffd6d0;
+        --navbar-item-tekst: #262626;
+        --badge-achtergrond: #FF7461;
+
+         /* Gradient kleuren light mode */
+        --grad-top: #182476;
+        --grad-bottom: #f3f3f3;
+    }
+}
+
+
+/* Gedeelde CSS */
+* {
+    margin: 0;
+    list-style: none;
+    font-family: "Cascadia Code", monospace;
+    text-decoration: none;
+}
+
+body {
+    background-color: var(--kleur-achtergrond);
+    color: var(--kleur-tekst-donker);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin-top: 1em;
+    margin-bottom: 3em; /* was 3em, verhoog dit */
+}
+
+h1, h2 {
+    text-align: center;
+    color: var(--kleur-tekst-donker);
+}
+
+button {
+    cursor: pointer;
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst);
+}
+
+/* Navigatie */
+nav {
+    z-index: 2;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--navbar-achtergrond);
+}
+
+nav ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.35em;
+    background-color: var(--navbar-achtergrond);
+    padding: 0.90em 1em;
+    padding-bottom: calc(0.90em + env(safe-area-inset-bottom));
+    border-top: 5px solid var(--navbar-border-top);
+}
+
+nav li {
+    background-color: var(--navbar-item-achtergrond);
+    border-radius: 1em;
+    border: 3px solid var(--navbar-item-border);
+    padding: 0.35em 0.2em;
+    width: calc((100% - (3 * 0.35em)) / 4);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.12em;
+}
+
+nav li a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav li p {
+    color: var(--navbar-item-tekst);
+    font-size: 0.7rem;
+    line-height: 1;
+}
+
+nav img {
+    height: 2.2em;
+    width: 2.2em;
+}
+
+/* Notification badge voor friend requests */
+.badge {
+  background: var(--badge-achtergrond);
+  color: var(--kleur-tekst);
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 12px;
+  position: absolute;
+  top: -6px;
+  right: -10px;
+}
+
+/* Lijn */
+.lijn {
+    height: 0.3em;
+    background-color: var(--kleur-accent-zacht);
+    border-radius: 0.5em;
+}

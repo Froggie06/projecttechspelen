@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registreren</title>
+    <link rel="icon" type="image/svg+xml" href="/images/Middel 5.svg">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/registreren.css">
+</head>
+<body>
+
+    <img src="/images/Gamelink.svg" alt="Logo gamelink">
+
+    <% if (error) { %>
+    <p style="color: red;"><%= error %></p>
+    <% } %>
+    
+    <form action="/registreren" method="post">
+        <input type="text" name="username" placeholder="Username" value="<%= formData?.username || '' %>">
+        <input type="email" name="email" placeholder="Email" value="<%= formData?.email || '' %>">
+
+        <!-- Wachtwoord -->
+        <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Wachtwoord"
+            pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
+            title="Minimaal 8 tekens, 1 hoofdletter, 1 cijfer en 1 speciaal teken">
+            
+            <button type="button" class="toggle-btn" data-target="password">👁️</button>
+        </div>
+
+        <!-- Bevestig wachtwoord -->
+        <div class="password-wrapper">
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Bevestig wachtwoord">
+            <button type="button" class="toggle-btn" data-target="confirmPassword">👁️</button>
+        </div>
+
+        <!-- Wachtwoord eisen -->
+        <small class="password-hint">
+            Wachtwoord moet minimaal:
+            <ul>
+                <li>8 tekens bevatten</li>
+                <li>1 hoofdletter bevatten</li>
+                <li>1 cijfer bevatten</li>
+                <li>1 speciaal teken bevatten</li>
+            </ul>
+        </small>
+
+        <textarea name="bio" placeholder="Vertel iets over jezelf"><%= formData?.bio || '' %></textarea>
+
+        <select name="playStyle">
+            <option value="">Kies speelstijl</option>
+            <option value="competitive" <%= formData?.playStyle === 'competitive' ? 'selected' : '' %>>Competitief</option>
+            <option value="casual" <%= formData?.playStyle === 'casual' ? 'selected' : '' %>>Casual</option>
+        </select>
+
+        <select name="province">
+            <option value="">Kies provincie</option>
+            <% provinces.forEach((province) => { %>
+                <option value="<%= province %>" <%= formData?.province === province ? 'selected' : '' %>><%= province %></option>
+            <% }) %>
+        </select>
+
+        <label class="checkbox-row">
+            <input type="checkbox" name="includeProvinceInMatching" <%= formData?.includeProvinceInMatching ? 'checked' : '' %>>
+            <span>Neem provincie mee in matching</span>
+        </label>
+
+        <button type="submit">Registreren</button>
+    </form>
+
+    <p> Heb je al een account? <a href="/login">Log in</a></p>
+
+    <script src="/js/login.js"></script>
+</body>
+</html>

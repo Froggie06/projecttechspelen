@@ -1,0 +1,261 @@
+/* Algemene pagina styling */
+.account {
+    background-color: var(--kleur-achtergrond);
+    color: var(--kleur-tekst-donker);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin-top: 2em;
+    margin-bottom: 6em;
+}
+
+/* Headings */
+.account h2 {
+    margin-top: 0.7em;
+    margin-bottom: 1em;
+    color: var(--kleur-tekst-donker);
+}
+
+/* Container aanpassen profiel */
+.aanpassen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Profielfoto */
+.profielfoto {
+    border: 5px solid var(--kleur-accent-zacht);
+    margin-bottom: 1em;
+    border-radius: 0.75em;
+}
+
+/* Formulieren */
+.account form {
+    margin-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+    width: 18.75em;
+    gap: 0.625em;
+}
+
+.account form textarea {
+    resize: vertical;
+    min-height: 7em;
+    padding: 0.5em;
+    font-size: 0.875em;
+    background-color: var(--kleur-achtergrond);
+    color: var(--kleur-tekst-donker);
+    border-radius: 0.5em;
+    border: 3px solid var(--kleur-primair);
+}
+
+.search-container input::placeholder {
+    color: var(--kleur-tekst);
+}
+
+.account form textarea::placeholder,
+.account form input::placeholder,
+.account form select::placeholder {
+    color: var(--kleur-tekst-donker);
+}
+
+/* Specifiek voor form submit / opslaan buttons */
+.account form button {
+    margin: 1em 4em 1.3em;
+    padding: 0.7em;
+    font-size: 0.875em;
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst);
+    border-radius: 0.5em;
+    border: 1px solid var(--kleur-primair-donker);
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Checkbox row */
+.checkbox-row {
+    width: 18.75em;
+    display: flex;
+    align-items: center;
+    gap: 0.625em;
+}
+
+.checkbox-row input {
+    width: auto;
+}
+
+/* Security button */
+#showSecurity {
+    margin: 2em 0 1.3em;
+    padding: 0.7em;
+    font-size: 0.875em;
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst);
+    border-radius: 0.5em;
+    border: 1px solid var(--kleur-primair-donker);
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Password wrapper */
+.password-wrapper {
+    display: flex;               /* horizontaal uitlijnen */
+    align-items: center;         /* verticaal centreren */
+    gap: 0.5em;                  /* ruimte tussen input en knop */
+}
+
+.password-wrapper input {
+    flex: 1;                     /* input neemt beschikbare ruimte */
+    padding: 0.5em;
+    font-size: 0.875em;
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst-donker);
+    border-radius: 0.5em;
+    border: 1px solid var(--kleur-primair-donker);
+}
+
+.password-wrapper .toggle-btn {
+    flex: 0 0 auto;              /* knop behoudt eigen grootte */
+    padding: 0.5em 0.7em;
+    background-color: var(--kleur-primair-donker);
+    color: var(--kleur-tekst-donker);
+    border: 1px solid var(--kleur-primair);
+    border-radius: 0.5em;
+    cursor: pointer;
+}
+
+/* Password hint */
+.password-hint {
+    font-size: 0.75em;
+    color: var(--kleur-tekst-donker);
+}
+
+#username::placeholder {
+  color: var(--kleur-tekst);
+}
+
+#newPassword::placeholder {
+    color: var(--kleur-tekst);
+}
+
+#confirmNewPassword::placeholder {
+    color: var(--kleur-tekst);
+}
+
+/* Zoekbalk */
+.search-container {
+    position: relative;
+    width: 22em;
+}
+
+.search-container input {
+    background-color: var(--kleur-primair);
+    outline: none;
+    border: 1px solid var(--kleur-primair);
+    border-radius: 0.5em;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.7em;
+    color: var(--kleur-tekst);
+    margin-bottom: 2em;
+}
+
+.account form input,
+.account form select {
+    padding: 0.5em;
+    font-size: 0.875em;
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst);
+    border-radius: 0.5em;
+    border: 1px solid var(--kleur-primair-donker);
+}
+
+#dropdown {
+    width: 100%;
+    background-color: var(--kleur-primair);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 3;
+}
+
+.result {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
+}
+
+/* Add / Remove buttons */
+.add-btn,
+.remove-game-btn {
+    padding: 1em;
+    border-radius: 0.3em;
+    box-shadow: var(--schaduw-standaard);
+}
+
+.add-btn {
+    margin-left: auto;
+    border: 1px solid var(--kleur-accent-zacht);
+}
+
+.remove-game-btn {
+    border: 1px solid var(--kleur-achtergrond);
+}
+
+/* Game cards */
+.game-card {
+    background-color: var(--kleur-oppervlak);
+    color: var(--kleur-tekst-donker);
+    border-radius: 0.75em;
+    padding: 0.7em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 0.5em;
+}
+
+.game-card img {
+    border-radius: 0.75em;
+}
+
+/* Game list */
+.game-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1em;
+    width: min(40em, 90vw);
+    margin-bottom: 1em;
+}
+
+/* Pagination */
+.pagination {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.buttons-games {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 3em;
+    margin-top: 1em;
+    margin-bottom: 2em;
+}
+
+/* Logout & page buttons */
+.logout,
+.page-btn {
+    font-size: 0.875em;
+    padding: 0.7em 1.5em;
+    border-radius: 0.5em;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 700;
+    background-color: var(--kleur-primair);
+    color: var(--kleur-tekst);
+    border: 1px solid var(--kleur-primair-donker);
+}
