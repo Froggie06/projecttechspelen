@@ -43,6 +43,7 @@ document.addEventListener("click", async (e) => {
 // ==============================
 // DROPDOWN SEARCH
 // ==============================
+// Deze heb ik met behulp van chatgpt gemaakt voor de html
 if (input && dropdown) {
   input.addEventListener("input", async () => {
     const query = input.value
@@ -58,7 +59,7 @@ if (input && dropdown) {
 
       dropdown.innerHTML = ""
 
-      games.forEach(game => {
+      games.forEach(game => { 
         const div = document.createElement("div")
         div.classList.add("result")
 

@@ -40,6 +40,8 @@ app.use(express.static("output"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// /////////// Myrthe /////////////
+//////////////////////////////////
 // express session
 app.use(session({
   secret: process.env.SESSION_SECRET, //geheime key om sessie te beveiligen -> terug te zien in .env
@@ -322,6 +324,8 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } // max 5mb
 })
 
+// /////// Myrthe ///////////
+/////////////////////////////
 // IGDB / Twitch helpers https://api-docs.igdb.com/#getting-started
 // haalt token op van Twitch API, nodig voor IGDB API calls
 async function getAccessToken() {
@@ -456,11 +460,15 @@ app.get("/account", requireLogin, async (req, res) => { // moet ingelogd zijn om
   const totalPages = Math.max(1, Math.ceil(totalGames / GAMES_PER_PAGE))
   const currentPage = Math.min(requestedPage, totalPages)
 
-  const games = await gamesCol.find({
+// //////// Myrthe ////////////
+//////////////////////////////
+// Als de gebruiker geen games heeft, gebruik dan een lege array om fouten te voorkomen
+const games = await gamesCol.find({
     gameId: { $in: user.games || [] }
   })
+  // Sla de eerste X resultaten over op basis van de huidige pagina
   .skip((currentPage - 1) * GAMES_PER_PAGE)
-  .limit(GAMES_PER_PAGE)
+  .limit(GAMES_PER_PAGE)  // limiet op pagina qua games
   .toArray()
 
   res.render("account", {
@@ -797,6 +805,8 @@ app.get("/token", async (req, res) => {
   }
 })
 
+////////////////////////////////// Myrthe ////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 // zoekfunctie dropdown voor games toevoegen
 app.get("/search", async (req, res) => {
   try {
@@ -878,42 +888,48 @@ app.post("/add-game", requireLogin, async (req, res) => {
 // game verwijderen van user account, game blijft wel bestaan in games collectie zodat deze nog steeds zichtbaar is in matches van andere gebruikers die deze game ook hebben toegevoegd
 app.post("/remove-game", requireLogin, async (req, res) => {
   const usersCollection = client.db("accounts").collection("users")
-
   const userId = new ObjectId(req.session.userId)
   const gameId = String(req.body.id)
+
+  // Haal de huidige paginanummer op; minimaal 1, standaard 1 als het ontbreekt of ongeldig is
   const currentPage = Math.max(1, Number.parseInt(req.body.currentPage, 10) || 1)
 
   try {
+    // Verwijder het gameId uit de 'games' array van de gebruiker in de database
     await usersCollection.updateOne(
       { _id: userId },
       { $pull: { games: gameId } }
     )
 
+    // Haal de gebruiker op, maar geef alleen de games terug
     const updatedUser = await usersCollection.findOne(
       { _id: userId },
       { projection: { games: 1 } }
     )
 
+    // Tel het totale aantal games na de verwijdering (0 als 'games' geen array is)
     const totalGames = Array.isArray(updatedUser?.games) ? updatedUser.games.length : 0
+
+    // Bereken het totale aantal pagina's op basis van het aantal games (minimaal 1 pagina)
     const totalPages = Math.max(1, Math.ceil(totalGames / GAMES_PER_PAGE))
+
+    // Zorg dat de doelpagina niet hoger is dan het nieuwe totaal aantal pagina's
+    // (bijv. als je op de laatste pagina zat en die nu leeg is)
     const targetPage = Math.min(currentPage, totalPages)
 
     res.json({ success: true, gameId, targetPage })
-
   } catch (err) {
     console.error("❌ Error removing game:", err)
     res.status(500).json({ success: false })
   }
 })
 
-// uitloggen, sessie vernietigen en redirect naar login pagina
 app.get("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/login")
   })
 })
 
-// 404
 app.use((req, res) => {
   res.status(404).send("404 Not Found")
 })

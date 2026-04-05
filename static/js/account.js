@@ -1,4 +1,4 @@
-// Scroll positie herstellen bij terugkomen via pagination
+// Scroll positie herstellen bij terugkomen via de knoppen bij pagination
 const savedScroll = sessionStorage.getItem("accountScroll")
 if (savedScroll) {
     document.documentElement.style.scrollBehavior = "auto"
