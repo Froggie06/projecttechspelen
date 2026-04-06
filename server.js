@@ -42,7 +42,7 @@ app.use(express.urlencoded({ extended: true }))
 
 // /////////// Myrthe /////////////
 //////////////////////////////////
-// express session
+// express session // bron: notion
 app.use(session({
   secret: process.env.SESSION_SECRET, //geheime key om sessie te beveiligen -> terug te zien in .env
   resave: false, 
@@ -76,6 +76,7 @@ app.use(async (req, res, next) => {
 })
 
 // middleware om het aantal vriendverzoeken bij te houden, zodat deze getoond worden in de navbar
+// bron: https://www.reddit.com/r/webdev/comments/znrxih/how_to_create_a_friend_request_system_on_the/ en https://stackoverflow.com/questions/43508901/friend-request-system-with-express-mongodb
 app.use(async (req, res, next) => {
   if (!req.session.userId) {
     res.locals.requestCount = 0
@@ -99,6 +100,7 @@ app.use(async (req, res, next) => {
 })
 
 // database connect
+// bron: https://bnieskens.notion.site/MongoDB-conf-1d40e9dd9620804eb322f81c79992f4c en https://www.mongodb.com/docs/drivers/node/current/quick-start/
 async function connectDB() {
   try {
     await client.connect()
@@ -118,12 +120,14 @@ async function connectDB() {
 connectDB()
 
 // minimale eisen wachtwoord functie
+// bron: https://stackoverflow.com/questions/64938077/add-controls-for-minimum-password-length-and-complexity en hulp van claude.ai
 function isValidPassword(password) {
   const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
   return regex.test(password)
 }
 
 // moet ingelogd zijn functie -> voorkomt dat niet ingelogde gebruikers bepaalde routes kunnen bezoeken
+// bron: hulp van claude.ai
 function requireLogin(req, res, next) {
   if (!req.session.userId) {
     return res.redirect("/login")
@@ -295,6 +299,7 @@ async function getMatchesForCurrentUser(userId) {
 }
 
 // profielfoto opslag met multer in uploads map
+// bron: https://www.npmjs.com/package/multer en https://medium.com/@mohsinansari.dev/handling-file-uploads-and-file-validations-in-node-js-with-multer-a3716ec528a3
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "static/uploads")
@@ -306,6 +311,7 @@ const storage = multer.diskStorage({
 })
 
 // file filter om alleen afbeeldingen toe te staan en max grootte 5mb
+//bron: https://medium.com/@mohsinansari.dev/handling-file-uploads-and-file-validations-in-node-js-with-multer-a3716ec528a3
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif/
   const ext = allowedTypes.test(path.extname(file.originalname).toLowerCase()) 
@@ -351,6 +357,7 @@ app.get("/registreren", (req, res) => {
 })
 
 // registreren
+// bron: https://medium.com/@itsdavidmandal/crafting-a-login-and-signup-system-with-node-js-express-js-and-mongodb-11b4bcad6da6 en hulp van chatgpt
 app.post("/registreren", async (req, res) => {
   const collection = client.db("accounts").collection("users")
 
@@ -425,6 +432,7 @@ app.get("/login", (req, res) => {
 })
 
 // gebruiker inlog checken en sessie starten
+// bron: https://bnieskens.notion.site/Login-logout-met-session-1d40e9dd962080e8bb72c8c1695b5263
 app.post("/login", async (req, res) => {
   const collection = client.db("accounts").collection("users")
 
@@ -451,6 +459,7 @@ app.get("/account", requireLogin, async (req, res) => { // moet ingelogd zijn om
 
   const user = await users.findOne({ _id: userId })
 
+  //bron: https://bnieskens.notion.site/BcryptJS-1d40e9dd9620803a9210c0bde2ed332e
   const requestedPage = Math.max(1, Number.parseInt(req.query.page, 10) || 1) // berekent het totale aantal games dat de gebruiker heeft toegevoegd, zodat we dit kunnen gebruiken voor de paginering van de games op de account pagina
 
   const totalGames = await gamesCol.countDocuments({
@@ -461,7 +470,7 @@ app.get("/account", requireLogin, async (req, res) => { // moet ingelogd zijn om
   const currentPage = Math.min(requestedPage, totalPages)
 
 // //////// Myrthe ////////////
-//////////////////////////////
+////////////////////////////// Bron: chatgpt voor berekening pagina's
 // Als de gebruiker geen games heeft, gebruik dan een lege array om fouten te voorkomen
 const games = await gamesCol.find({
     gameId: { $in: user.games || [] }
@@ -558,6 +567,7 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
   }
 
   // wachtwoord check minimale eisen bij updaten
+  // bron: https://stackoverflow.com/questions/64938077/add-controls-for-minimum-password-length-and-complexity en hulp van claude.ai
   if (req.body.newPassword && req.body.newPassword !== "") {
 
     // checkt of bevestig wachtwoord is ingevuld
@@ -575,6 +585,7 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
     }
 
     // checkt of wachtwoorden overeenkomen
+    // bron: https://www.geeksforgeeks.org/node-js/how-to-compare-password-and-confirm-password-inputs-using-express-validator/ en hulp van claude.ai
     if (req.body.newPassword !== req.body.confirmNewPassword) {
       const games = await gamesCol.find({
         gameId: { $in: user.games || [] } // games opnieuw ophalen zodat pagina correct rendert
@@ -635,6 +646,7 @@ app.get("/matching", requireLogin, async (req, res) => {
 })
 
 // vriendverzoek route, moet ingelogd zijn om een vriendverzoek te kunnen sturen, anders redirect naar login pagina
+// bron: https://www.reddit.com/r/webdev/comments/znrxih/how_to_create_a_friend_request_system_on_the/ en https://stackoverflow.com/questions/43508901/friend-request-system-with-express-mongodb en hulp van claude.ai
 app.post("/friend-request", requireLogin, async (req, res) => {
   const users = client.db("accounts").collection("users")
 
@@ -818,6 +830,7 @@ app.get("/search", async (req, res) => {
 
     const accessToken = await getAccessToken()
     // IGDB API call om games te zoeken op basis van de ingevoerde zoekterm, filtert op android en ios games
+    // bron: igdb documentatie
     const igdbResponse = await fetch("https://api.igdb.com/v4/games", {
       method: "POST",
       headers: {

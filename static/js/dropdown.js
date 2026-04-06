@@ -1,7 +1,7 @@
 const input = document.getElementById("searchInput")
 const dropdown = document.getElementById("dropdown")
 
-function getCurrentPage() {
+function getCurrentPage() { // Bron: chatgpt
   const page = Number.parseInt(new URLSearchParams(window.location.search).get("page"), 10)
   return Number.isNaN(page) || page < 1 ? 1 : page
 }
@@ -82,7 +82,6 @@ if (input && dropdown) {
         button.addEventListener("click", async () => {
           try {
             if (!added) {
-              // ADD GAME
               const res = await fetch("/add-game", {
                 method: "POST",
                 headers: {
