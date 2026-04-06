@@ -42,7 +42,7 @@ app.use(express.urlencoded({ extended: true }))
 
 // /////////// Myrthe /////////////
 //////////////////////////////////
-// express session
+// express session // bron: notion
 app.use(session({
   secret: process.env.SESSION_SECRET, //geheime key om sessie te beveiligen -> terug te zien in .env
   resave: false, 
@@ -461,7 +461,7 @@ app.get("/account", requireLogin, async (req, res) => { // moet ingelogd zijn om
   const currentPage = Math.min(requestedPage, totalPages)
 
 // //////// Myrthe ////////////
-//////////////////////////////
+////////////////////////////// Bron: chatgpt voor berekening pagina's
 // Als de gebruiker geen games heeft, gebruik dan een lege array om fouten te voorkomen
 const games = await gamesCol.find({
     gameId: { $in: user.games || [] }
@@ -818,6 +818,7 @@ app.get("/search", async (req, res) => {
 
     const accessToken = await getAccessToken()
     // IGDB API call om games te zoeken op basis van de ingevoerde zoekterm, filtert op android en ios games
+    // bron: igdb documentatie
     const igdbResponse = await fetch("https://api.igdb.com/v4/games", {
       method: "POST",
       headers: {
