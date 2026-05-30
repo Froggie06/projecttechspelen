@@ -155,6 +155,7 @@ function calculateMatchScore(currentUser, candidateUser) {
 
   const provinceRelevant = // provincie relevantie check, alleen als beide gebruikers hebben aangegeven dat ze provincie mee willen laten wegen in de matching en beide gebruikers een provincie hebben ingevuld
     currentUser.includeProvinceInMatching &&
+    candidateUser.includeProvinceInMatching &&
     currentUser.province &&
     candidateUser.province &&
     currentUser.province === candidateUser.province
@@ -181,6 +182,31 @@ function calculateMatchScore(currentUser, candidateUser) {
     score,
     reasons,
   }
+}
+
+// slaat de berekende matches op in de database
+async function saveMatchesForUser(userId, scoredMatches) {
+  const matchesCollection = client.db("accounts").collection("matches")
+
+  // oude matches van deze gebruiker verwijderen, zodat de score opnieuw berekend kan worden
+  await matchesCollection.deleteMany({ userId: userId })
+
+  if (scoredMatches.length === 0) {
+    return
+  }
+
+  const matchesToSave = scoredMatches.map((match) => {
+    return {
+      userId: userId,
+      matchedUserId: match.candidateUser._id,
+      score: match.score,
+      sharedGameIds: match.sharedGameIds,
+      reasons: match.reasons,
+      createdAt: new Date()
+    }
+  })
+
+  await matchesCollection.insertMany(matchesToSave)
 }
 
 // maakt filteropties aan op basis van de matches die echt gevonden zijn
@@ -241,6 +267,8 @@ async function getMatchesForCurrentUser(userId) {
     .map((candidateUser) => calculateMatchScore(currentUser, candidateUser))
     .filter((match) => match.sharedGameIds.length > 0) // voorkomt het tonen van 0% matches
     .sort((a, b) => b.score - a.score) // sorteert de matches op score van hoog naar laag
+
+  await saveMatchesForUser(currentUser._id, scoredMatches)
 
   const allRelevantGameIds = [ // lijst van games die relevant zijn voor de match
     ...new Set([
