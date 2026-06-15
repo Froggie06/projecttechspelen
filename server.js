@@ -149,7 +149,7 @@ function calculateMatchScore(currentUser, candidateUser) {
     ? Math.round((sharedGameIds.length / currentUserGames.length) * 70) // berekent het percentage gedeelde games en weegt dit voor 70% mee in de totale score
     : 0
   const styleScore =
-    currentUser.playStyle && candidateUser.playStyle && currentUser.playStyle === candidateUser.playStyle // berekent het percentage gedeelde speelstijl en weegt dit voor 10% mee in de totale score
+    currentUser.playStyle && candidateUser.playStyle && currentUser.playStyle === candidateUser.playStyle // berekent het percentage gedeelde speelstijl en weegt dit voor 20% mee in de totale score
       ? 20
       : 0
 
@@ -249,8 +249,10 @@ function buildMatchFilters(matches) {
 async function getMatchesForCurrentUser(userId) {
   const usersCollection = client.db("accounts").collection("users") // ophalen uit database
   const gamesCollection = client.db("games").collection("games") // ophalen uit database
+  const matchesCollection = client.db("accounts").collection("matches") // opgeslagen matches ophalen uit database
   const currentUser = await usersCollection.findOne({ _id: new ObjectId(userId) }) // huidige gebruiker ophalen
 
+// Check of de gebruiker bestaat
   if (!currentUser) {
     return {
       currentUser: null,
@@ -270,11 +272,22 @@ async function getMatchesForCurrentUser(userId) {
 
   await saveMatchesForUser(currentUser._id, scoredMatches)
 
+  const savedMatches = await matchesCollection
+    .find({ userId: currentUser._id })
+    .sort({ score: -1 })
+    .toArray()
+
+  const matchedUserIds = savedMatches.map((match) => match.matchedUserId)
+  const matchedUsers = matchedUserIds.length
+    ? await usersCollection.find({ _id: { $in: matchedUserIds } }).toArray()
+    : []
+  const matchedUserMap = new Map(matchedUsers.map((user) => [user._id.toString(), user]))
+
   const allRelevantGameIds = [ // lijst van games die relevant zijn voor de match
     ...new Set([
       ...normalizeUserGames(currentUser),
-      ...scoredMatches.flatMap((match) => match.sharedGameIds),
-      ...scoredMatches.flatMap((match) => normalizeUserGames(match.candidateUser)),
+      ...savedMatches.flatMap((match) => match.sharedGameIds),
+      ...matchedUsers.flatMap((user) => normalizeUserGames(user)),
     ]),
   ]
 
@@ -291,8 +304,12 @@ async function getMatchesForCurrentUser(userId) {
       .filter(Boolean),
   }
 
-  const matches = scoredMatches.map((match) => {
-    const candidate = match.candidateUser
+  const matches = savedMatches.map((match) => {
+    const candidate = matchedUserMap.get(match.matchedUserId.toString())
+
+    if (!candidate) {
+      return null
+    }
 
     const isFriend = currentUser.friends?.some(
       id => id.toString() === candidate._id.toString()
@@ -315,7 +332,7 @@ async function getMatchesForCurrentUser(userId) {
         .map((gameId) => gameMap.get(gameId))
         .filter(Boolean),
     }
-  })
+  }).filter(Boolean)
 
   const filters = buildMatchFilters(matches)
 
