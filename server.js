@@ -135,24 +135,46 @@ function requireLogin(req, res, next) {
   next()
 }
 
-// zorgt dat de games altijd in een array van strings staan
+// NOTITIE MATCHING/FILTEREN:
+// Deze helper maakt alle game-id's vergelijkbaar door ze naar strings om te zetten.
+// Daardoor werkt filteren op gedeelde games ook als MongoDB of de API soms nummers/objecten teruggeeft.
 function normalizeUserGames(user) {
   return Array.isArray(user.games) ? user.games.map(String) : []
 }
 
-// berekening match percentage en matching onderdelen
+// NOTITIE FILTEREN OPSLAAN:
+// Deze helper zorgt dat opgeslagen filterwaarden altijd bestaan, maar leeg mogen zijn.
+// Leeg betekent: er is geen filter actief voor dat onderdeel.
+function normalizeSavedMatchFilters(user) {
+  return {
+    province: String(user?.matchingFilters?.province || ""),
+    playStyle: String(user?.matchingFilters?.playStyle || ""),
+  }
+}
+
+// NOTITIE MATCHING/SORTEREN:
+// Deze functie berekent per andere gebruiker hoeveel die persoon matcht met de ingelogde gebruiker.
+// De score bepaalt later ook de volgorde: hoogste score komt bovenaan.
 function calculateMatchScore(currentUser, candidateUser) {
   const currentUserGames = normalizeUserGames(currentUser)
   const candidateGames = normalizeUserGames(candidateUser) // zorgt dat beide gebruikers vergelijkbare data hebben
+
+  // Filtert de games van de andere gebruiker op games die de huidige gebruiker ook heeft.
+  // Alleen gebruikers met minstens 1 gedeelde game worden later getoond.
   const sharedGameIds = candidateGames.filter((gameId) => currentUserGames.includes(gameId)) // loopt door de games heen van beide gebruikers en kijkt of er games zijn die overeen komen
+
+  // Sorteerbasis deel 1: gedeelde games tellen het zwaarst mee, maximaal 70 punten.
   const gameScore = currentUserGames.length
     ? Math.round((sharedGameIds.length / currentUserGames.length) * 70) // berekent het percentage gedeelde games en weegt dit voor 70% mee in de totale score
     : 0
+
+  // Sorteerbasis deel 2: dezelfde speelstijl geeft extra punten.
   const styleScore =
     currentUser.playStyle && candidateUser.playStyle && currentUser.playStyle === candidateUser.playStyle // berekent het percentage gedeelde speelstijl en weegt dit voor 10% mee in de totale score
       ? 20
       : 0
 
+  // Sorteerbasis deel 3: provincie telt alleen mee als beide gebruikers dit willen meenemen.
   const provinceRelevant = // provincie relevantie check, alleen als beide gebruikers hebben aangegeven dat ze provincie mee willen laten wegen in de matching en beide gebruikers een provincie hebben ingevuld
     currentUser.includeProvinceInMatching &&
     candidateUser.includeProvinceInMatching &&
@@ -162,6 +184,8 @@ function calculateMatchScore(currentUser, candidateUser) {
 
   const provinceScore = provinceRelevant ? 10 : 0 // berekent het percentage gedeelde provincie en weegt dit voor 10% mee in de totale score, alleen als beide gebruikers hebben aangegeven dat ze provincie mee willen laten wegen in de matching
   const score = gameScore + styleScore + provinceScore // totale score van de 3 onderdelen samen, max 100%
+
+  // Deze redenen worden in de matchkaart getoond onder "Waarom deze match".
   const reasons = [] // lijst waarom gebruikers gematched zijn
 
   if (sharedGameIds.length) {
@@ -209,33 +233,45 @@ async function saveMatchesForUser(userId, scoredMatches) {
   await matchesCollection.insertMany(matchesToSave)
 }
 
-// maakt filteropties aan op basis van de matches die echt gevonden zijn
+// NOTITIE FILTEREN:
+// Deze functie maakt de dropdown-opties voor de filterbalk.
+// Belangrijk: de opties komen alleen uit matches die echt gevonden zijn.
+// Zo krijgt de gebruiker geen filteropties waar daarna nul resultaten voor zijn.
 function buildMatchFilters(matches) {
+  // Map voorkomt dubbele games; Set voorkomt dubbele provincies en speelstijlen.
   const availableGames = new Map()
   const availableProvinces = new Set()
   const availablePlayStyles = new Set()
 
   matches.forEach((match) => {
+    // Verzamelt alle games die voorkomen bij de gevonden matches.
     match.gameDetails.forEach((game) => {
       if (game?.gameId && game?.name) {
         availableGames.set(String(game.gameId), game.name)
       }
     })
 
+    // Verzamelt alleen ingevulde provincies voor de provincie-dropdown.
     if (match?.province) {
       availableProvinces.add(match.province)
     }
 
+    // Verzamelt alleen ingevulde speelstijlen voor de speelstijl-dropdown.
     if (match?.playStyle) {
       availablePlayStyles.add(match.playStyle)
     }
   })
 
   return {
+    // Sorteert games alfabetisch op Nederlandse manier, zodat de dropdown logisch leest.
     games: [...availableGames.entries()]
       .map(([id, name]) => ({ id, name }))
       .sort((a, b) => a.name.localeCompare(b.name, "nl")),
+
+    // Sorteert provincies alfabetisch.
     provinces: [...availableProvinces].sort((a, b) => a.localeCompare(b, "nl")),
+
+    // Zet technische waarden om naar leesbare labels en sorteert daarna op label.
     playStyles: [...availablePlayStyles]
       .map((playStyle) => ({
         value: playStyle,
@@ -245,7 +281,14 @@ function buildMatchFilters(matches) {
   }
 }
 
-// haalt de matches op voor de huidige gebruiker
+// NOTITIE MATCHING/FILTEREN/SORTEREN:
+// Deze functie haalt alle data op voor de matchingpagina:
+// 1. huidige gebruiker ophalen
+// 2. andere gebruikers ophalen
+// 3. score berekenen
+// 4. matches filteren en sorteren
+// 5. extra gamegegevens toevoegen voor de view
+// 6. filteropties bouwen voor de dropdowns
 async function getMatchesForCurrentUser(userId) {
   const usersCollection = client.db("accounts").collection("users") // ophalen uit database
   const gamesCollection = client.db("games").collection("games") // ophalen uit database
@@ -256,6 +299,7 @@ async function getMatchesForCurrentUser(userId) {
       currentUser: null,
       matches: [],
       filters: buildMatchFilters([]),
+      savedFilters: normalizeSavedMatchFilters(null),
     }
   } // voorkomt dat huidige gebruiker wordt meegenomen in de matches, zoekt alleen naar andere gebruikers in de database die niet dezelfde _id hebben als de huidige gebruiker
 
@@ -263,6 +307,9 @@ async function getMatchesForCurrentUser(userId) {
     .find({ _id: { $ne: currentUser._id } })
     .toArray()
 
+  // Hier gebeurt de belangrijkste sorteerlogica:
+  // eerst krijgt elke gebruiker een score, daarna worden 0%-matches weggehaald,
+  // daarna worden de overgebleven matches van hoogste naar laagste score gesorteerd.
   const scoredMatches = otherUsers // voor elke gebruiker een score berekenen
     .map((candidateUser) => calculateMatchScore(currentUser, candidateUser))
     .filter((match) => match.sharedGameIds.length > 0) // voorkomt het tonen van 0% matches
@@ -270,6 +317,8 @@ async function getMatchesForCurrentUser(userId) {
 
   await saveMatchesForUser(currentUser._id, scoredMatches)
 
+  // Alle game-id's die nodig zijn om namen/afbeeldingen te tonen worden verzameld.
+  // Door dit in 1 databasequery te doen, hoeft er niet per match opnieuw gezocht te worden.
   const allRelevantGameIds = [ // lijst van games die relevant zijn voor de match
     ...new Set([
       ...normalizeUserGames(currentUser),
@@ -284,6 +333,7 @@ async function getMatchesForCurrentUser(userId) {
 
   const gameMap = new Map(games.map((game) => [String(game.gameId), game])) // maakt een map van gameId naar game object voor snelle lookup, zorgt dat we de details van de games kunnen tonen in de matches zonder dat we meerdere database calls hoeven te doen
 
+  // De huidige gebruiker krijgt gameDetails, zodat de view volledige game-informatie kan tonen.
   const hydratedCurrentUser = { // voegt de game details toe zodat deze ook in de view komen te staan
     ...currentUser,
     gameDetails: normalizeUserGames(currentUser)
@@ -291,6 +341,8 @@ async function getMatchesForCurrentUser(userId) {
       .filter(Boolean),
   }
 
+  // De gesorteerde matches worden klaargemaakt voor matching.ejs.
+  // Hier blijven score, redenen, gedeelde games en filterbare velden zoals province/playStyle bij elkaar.
   const matches = scoredMatches.map((match) => {
     const candidate = match.candidateUser
 
@@ -317,12 +369,15 @@ async function getMatchesForCurrentUser(userId) {
     }
   })
 
+  // Bouwt de dropdown-opties nadat alle matches hun volledige gamegegevens hebben.
   const filters = buildMatchFilters(matches)
+  const savedFilters = normalizeSavedMatchFilters(currentUser)
 
   return {
     currentUser: hydratedCurrentUser,
     matches,
     filters,
+    savedFilters,
   }
 }
 
@@ -656,7 +711,7 @@ app.post("/update-profile", requireLogin, upload.single("profilePicture"), async
 // haalt de matches van de gebruiker op en laat deze zien op de ejs matching pagina, moet ingelogd zijn om deze pagina te kunnen bezoeken anders redirect naar login pagina
 app.get("/matching", requireLogin, async (req, res) => {
   try {
-    const { currentUser, matches, filters } = await getMatchesForCurrentUser(req.session.userId)
+    const { currentUser, matches, filters, savedFilters } = await getMatchesForCurrentUser(req.session.userId)
 
     if (!currentUser) {
       return res.redirect("/login")
@@ -666,10 +721,43 @@ app.get("/matching", requireLogin, async (req, res) => {
       currentUser,
       matches,
       filters,
+      savedFilters,
     })
   } catch (err) {
     console.error("Error loading matches:", err)
     res.status(500).send("Error loading matches")
+  }
+})
+
+// NOTITIE FILTEREN OPSLAAN:
+// Deze route slaat de gekozen matching-filters op bij de ingelogde gebruiker.
+// matching.js roept deze route aan zodra iemand provincie/speelstijl wijzigt of filters wist.
+app.post("/matching/filters", requireLogin, async (req, res) => {
+  try {
+    const usersCollection = client.db("accounts").collection("users")
+    const selectedProvince = xss(req.body.province || "").trim()
+    const selectedPlayStyle = xss(req.body.playStyle || "").trim()
+
+    await usersCollection.updateOne(
+      { _id: new ObjectId(req.session.userId) },
+      {
+        $set: {
+          "matchingFilters.province": selectedProvince,
+          "matchingFilters.playStyle": selectedPlayStyle,
+        }
+      }
+    )
+
+    res.json({
+      success: true,
+      filters: {
+        province: selectedProvince,
+        playStyle: selectedPlayStyle,
+      }
+    })
+  } catch (err) {
+    console.error("Error saving matching filters:", err)
+    res.status(500).json({ success: false, message: "Filters opslaan mislukt" })
   }
 })
 
