@@ -11,12 +11,19 @@
 <body>
     <%- include('partials/navbar') %>
     <%
+        // NOTITIE FILTEREN:
+        // fallbackProvinces wordt gebruikt als de server geen filters-object meestuurt.
+        // Uit alle matches worden de provincies gehaald, lege waarden worden weggefilterd,
+        // dubbele waarden verdwijnen door de Set en daarna wordt alles alfabetisch gesorteerd.
         const fallbackProvinces = [...new Set(
             matches
                 .map((match) => match.province)
                 .filter(Boolean)
         )].sort((a, b) => a.localeCompare(b, "nl"))
 
+        // NOTITIE FILTEREN:
+        // fallbackPlayStyles doet hetzelfde voor speelstijl.
+        // De value blijft technisch ("competitive"/"casual"), maar het label wordt leesbaar.
         const fallbackPlayStyles = [...new Set(
             matches
                 .map((match) => match.playStyle)
@@ -28,6 +35,10 @@
             }))
             .sort((a, b) => a.label.localeCompare(b.label, "nl"))
 
+        // NOTITIE FILTEREN:
+        // safeFilters zorgt dat de pagina niet crasht als filters ontbreekt of leeg is.
+        // Eerst worden de filteropties uit server.js gebruikt; als die er niet zijn,
+        // gebruikt de template de fallback-lijsten hierboven.
         const safeFilters = typeof filters !== "undefined"
             ? {
                 games: filters.games || [],
@@ -38,6 +49,19 @@
                 games: [],
                 provinces: fallbackProvinces,
                 playStyles: fallbackPlayStyles
+            }
+
+        // NOTITIE FILTEREN OPSLAAN:
+        // savedFilterValues komt uit MongoDB via server.js.
+        // Deze waarden worden hieronder gebruikt om de juiste options geselecteerd te houden na refresh.
+        const savedFilterValues = typeof savedFilters !== "undefined"
+            ? {
+                province: savedFilters.province || "",
+                playStyle: savedFilters.playStyle || ""
+            }
+            : {
+                province: "",
+                playStyle: ""
             }
     %>
 
@@ -57,36 +81,57 @@
                 <p class="filter-intro">Kies een provincie of speelstijl en blader daarna door de overgebleven matches.</p>
 
                 <div class="filter-grid">
+                    <% /* NOTITIE FILTEREN:
+                        Deze select vult de provincie-dropdown met safeFilters.provinces.
+                        In static/js/matching.js wordt de gekozen value vergeleken met data-province op elke matchkaart.
+                    */ %>
                     <label class="filter-field" for="provinceFilter">
                         <span>Provincie</span>
                         <select id="provinceFilter" name="provinceFilter">
                             <option value="">Alle provincies</option>
                             <% safeFilters.provinces.forEach((province) => { %>
-                                <option value="<%= province %>"><%= province %></option>
+                                <option value="<%= province %>" <%= savedFilterValues.province === province ? "selected" : "" %>><%= province %></option>
                             <% }) %>
                         </select>
                     </label>
 
+                    <% /* NOTITIE FILTEREN:
+                        Deze select vult de speelstijl-dropdown met safeFilters.playStyles.
+                        De option value moet overeenkomen met data-play-style op de matchkaart.
+                    */ %>
                     <label class="filter-field" for="styleFilter">
                         <span>Speelstijl</span>
                         <select id="styleFilter" name="styleFilter">
                             <option value="">Alle speelstijlen</option>
                             <% safeFilters.playStyles.forEach((playStyle) => { %>
-                                <option value="<%= playStyle.value %>"><%= playStyle.label %></option>
+                                <option value="<%= playStyle.value %>" <%= savedFilterValues.playStyle === playStyle.value ? "selected" : "" %>><%= playStyle.label %></option>
                             <% }) %>
                         </select>
                     </label>
 
+                    <% /* NOTITIE FILTEREN:
+                        Deze knop wordt in matching.js gekoppeld aan resetFiltersButton.
+                        Bij klikken worden beide dropdowns leeggezet en worden alle matches weer getoond.
+                    */ %>
                     <button class="filter-reset" id="resetFilters" type="button">Filters wissen</button>
                 </div>
             </section>
 
             <section class="match-carousel" aria-label="Gefilterde matches">
+                <% /* NOTITIE FILTEREN/CAROUSEL:
+                    carouselStatus en noMatchesMessage worden door matching.js aangepast.
+                    Zo ziet de gebruiker hoeveel gefilterde matches er over zijn.
+                */ %>
                 <p class="carousel-status" id="carouselStatus">Match 1 van <%= matches.length %></p>
                 <p class="match-empty-message" id="noMatchesMessage" hidden>Er zijn geen matches die aan deze filters voldoen.</p>
 
                 <div class="match-list" id="matchCarousel">
                 <% matches.forEach((match, index) => { %>
+                    <% /* NOTITIE FILTEREN:
+                        data-match-card maakt deze article vindbaar voor JavaScript.
+                        data-play-style en data-province zijn de waarden waarop applyFilters() filtert.
+                        De volgorde van deze kaarten komt al gesorteerd uit server.js: hoogste matchscore eerst.
+                    */ %>
                     <article
                         class="match-card"
                         data-match-card
