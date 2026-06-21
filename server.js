@@ -270,17 +270,28 @@ async function getMatchesForCurrentUser(userId) {
     .filter((match) => match.sharedGameIds.length > 0) // voorkomt het tonen van 0% matches
     .sort((a, b) => b.score - a.score) // sorteert de matches op score van hoog naar laag
 
+  // Sla de net berekende matches op in de database.
+  // Hierdoor staan de matchscore, gedeelde games en redenen ook echt opgeslagen.
   await saveMatchesForUser(currentUser._id, scoredMatches)
 
+  // Haal daarna de opgeslagen matches weer op uit de database.
+  // De pagina gebruikt dus niet direct de tijdelijke berekening, maar de data uit de matches collection.
   const savedMatches = await matchesCollection
-    .find({ userId: currentUser._id })
-    .sort({ score: -1 })
-    .toArray()
+    .find({ userId: currentUser._id }) // zoek alleen matches die bij de huidige gebruiker horen
+    .sort({ score: -1 }) // zet de hoogste matchscore bovenaan
+    .toArray() // maak van het database-resultaat een gewone array
 
+  // Maak een lijst met de id's van alle gebruikers waarmee de huidige gebruiker matcht.
   const matchedUserIds = savedMatches.map((match) => match.matchedUserId)
+
+  // Haal de volledige gebruikersgegevens op van die gematchte gebruikers.
+  // Als er geen matches zijn, gebruiken we een lege array zodat de code niet crasht.
   const matchedUsers = matchedUserIds.length
     ? await usersCollection.find({ _id: { $in: matchedUserIds } }).toArray()
     : []
+
+  // Maak een snelle opzoeklijst: userId -> gebruiker.
+  // Daardoor kunnen we later makkelijk de juiste gebruiker bij een opgeslagen match vinden.
   const matchedUserMap = new Map(matchedUsers.map((user) => [user._id.toString(), user]))
 
   const allRelevantGameIds = [ // lijst van games die relevant zijn voor de match
